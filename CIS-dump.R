@@ -73,3 +73,12 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_images.png', width=7, height=7)
+
+#kingdoms by OccurrenceDescription
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Cultures in the ICMP by Kingdom, with images") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_kingdoms_occurrence.png', width=7, height=7)
