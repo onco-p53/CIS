@@ -12,7 +12,7 @@ noviruses <- subset(ICMP.dump.initial, (SpecimenType == "Bacterial Culture" | Sp
 ICMP.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
 
 
-#setting up per specimen type subsets
+#setting up per specimen type subsets, with summaries of each specimen type
 ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
 summary(ICMP.bacteria, maxsum=40)
 
@@ -34,10 +34,35 @@ head(ICMP.dump)
 summary(ICMP.dump.initial, maxsum=20) #data before subsetting
 summary(ICMP.dump, maxsum=20) #data after subsetting
 
+
+#============Type cultures================
+
+#ggplot code for type cultures
+d <- subset(ICMP.dump,!(TypeStatus == ""))
+attach(d) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the ICMP") + labs(x = "'Kind' of type", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_types.png', width=10, height=10)
+
+#another one showing just the number of types in each kind of culture?
+
+#ggplot code for type cultures factored by Specimen type
+d <- subset(ICMP.dump,!(TypeStatus == ""))
+attach(d) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the ICMP") + labs(x = "'Kind' of type", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP.types.by.kind.png', width=10, height=10)
+
 #============Kingdom Level barcharts================
 
 #plain code for a kingdom barchart
-attach(ICMP.dump) #this means we don't need the $ sign
+attach(ICMP.dump) 
 require(ggplot2)
 p <- ggplot(ICMP.dump, aes(SpecimenType)) + labs(title = "Cultures in the ICMP by Kingdom") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -45,40 +70,348 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms.png', width=7, height=7)
 
-
 #kingdoms in GenBank
 attach(ICMP.dump)
 require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) + labs(title = "Cultures in the ICMP by Kingdom, in GenBank") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) + labs(title = "Cultures in the ICMP in GenBank") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_genbank.png', width=7, height=7)
 
 #kingdoms with literature
-attach(ICMP.dump) #this means we don't need the $ sign
+attach(ICMP.dump) 
 require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Cultures in the ICMP by Kingdom, in Literature") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Cultures in the ICMP in Literature") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_Literature.png', width=7, height=7)
 
-
 #kingdoms with images
-attach(ICMP.dump) #this means we don't need the $ sign
+attach(ICMP.dump) 
 require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) + labs(title = "Cultures in the ICMP by Kingdom, with images") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) + labs(title = "Cultures in the ICMP with images") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_images.png', width=7, height=7)
 
-#kingdoms by OccurrenceDescription
-attach(ICMP.dump) #this means we don't need the $ sign
+#could also do a stacked bar chart with images, genbank, literature all on one chart.
+
+#kingdoms by Occurrence Description
+attach(ICMP.dump) 
 require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Cultures in the ICMP by Kingdom, with images") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Cultures in the ICMP by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_occurrence.png', width=7, height=7)
+
+#kingdoms by Order Status
+attach(ICMP.dump) 
+require(ggplot2)
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill= LoanStatus)) + labs(title = "ICMP Order Status") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
+
+#kingdoms by OccurrenceDescription
+attach(ICMP.dump) 
+require(ggplot2)
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "ICMP Last updated by") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_kingdoms_updated_by.png', width=7, height=7)
+
+#need a kingdoms by NZ cultures??
+
+
+#============High Taxonomy================
+
+# ----- bacterial taxon grouping -----
+
+b <- subset(ICMP.dump, SpecimenType == "Bacterial Culture")
+
+#ggplot code for bacterial Phylum
+attach(b) 
+require(ggplot2)
+p <- ggplot(b, aes(Phylum)) + labs(title = "ICMP by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_bacteria-phylum.png', width=10, height=10)
+
+#ggplot code for bacterial Class
+attach(b) 
+require(ggplot2)
+p <- ggplot(b, aes(Class)) + labs(title = "ICMP by bacterial class") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_bacteria-class.png', width=10, height=10)
+
+#ggplot code for bacterial Order
+attach(b) 
+require(ggplot2)
+p <- ggplot(b, aes(Order)) + labs(title = "ICMP by bacterial order") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_bacteria-order.png', width=10, height=10)
+
+#ggplot code for bacterial Family
+attach(b) 
+require(ggplot2)
+p <- ggplot(b, aes(Family)) + labs(title = "ICMP by bacterial family") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_bacteria-family.png', width=20, height=10)
+
+
+# -----  fungal taxon grouping ----- 
+
+f <- subset(ICMP.dump, SpecimenType == "Fungal Culture")
+
+#ggplot code for fungal Phylum
+attach(f) 
+require(ggplot2)
+p <- ggplot(f, aes(Phylum)) + labs(title = "ICMP by fungal phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_fungal-phylum.png', width=10, height=10)
+
+#ggplot code for fungal Class
+attach(f) 
+require(ggplot2)
+p <- ggplot(f, aes(Class)) + labs(title = "ICMP by fungal class") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_fungal-class.png', width=10, height=10)
+
+#ggplot code for fungal Order
+attach(f) 
+require(ggplot2)
+p <- ggplot(f, aes(Order)) + labs(title = "ICMP by fungal order") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_fungal-order.png', width=10, height=10)
+
+#ggplot code for fungal Family
+attach(f) 
+require(ggplot2)
+p <- ggplot(f, aes(Family)) + labs(title = "ICMP by fungal family") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_fungal-family.png', width=20, height=10)
+
+  NAMES
+
+
+
+names <- read.csv("names.csv")
+head(names)
+summary(names, maxsum=40)
+
+names.fungi <- subset(names,(Kingdom == "Fungi"))
+summary(names.fungi, maxsum=40)
+
+names.present.fungi <- subset(names,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+summary(names.present.fungi, maxsum=40)
+
+
+#ggplot code for fungal Phylum
+require(ggplot2)
+p <- ggplot(names, aes(names$Phlum)) + labs(title = "names by phylum") + labs(x = "Taxon", y = "number of names")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='names-phylum.png', width=10, height=10)
+
+
+
+#ggplot code for fungal Phylum
+require(ggplot2)
+p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription)) + labs(title = "names by phylum") + labs(x = "Taxon", y = "number of names")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='names-phylum-occurrence.png', width=10, height=10)
+
+
+#ggplot code for Kingdom
+require(ggplot2)
+p <- ggplot(names, aes(names$Kingdom, fill=OccurrenceDescription)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='names-Kindom-occurrence.png', width=10, height=10)
+
+
+#ggplot code for Kingdom biostatus
+require(ggplot2)
+p <- ggplot(names, aes(names$Kingdom, fill=BioStatusDescription)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='names-Kindom-biostatus.png', width=10, height=10)
+
+
+#ggplot code for Fungal Family present in NZ
+require(ggplot2)
+p <- ggplot(names.present.fungi, aes(names.present.fungi$Family)) + labs(title = "names by family in NZ") + labs(x = "Taxon", y = "number of species")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
+
+
+#============Countries================
+
+#ggplot code for country
+cy <- subset(ICMP.dump,!(Country == ""))
+require(ggplot2)
+con <- ggplot(cy, aes(Country)) + labs(title = "Top 10 Countries") + labs(x = "Country", y = "number")
+con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
+con + geom_bar()+ coord_flip()
+print_bars <- con + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_country.png', width=10, height=10)
+
+
+#ggplot code for country
+positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy")
+c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+attach(c) #this means we don't need the $ sign
+require(ggplot2)
+con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP") + labs(x = "Country", y = "number of isolates")
+con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
+con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+print_bars <- con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+ggsave(print_bars, file='ICMP_country_by_kind.png', width=10, height=10)
+
+#ggplot code for pacific country
+c <- subset(ICMP.dump, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
+attach(c) #this means we don't need the $ sign
+require(ggplot2)
+con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries cultures in the ICMP") + labs(x = "Country", y = "number of isolates")
+con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
+con + geom_bar()+ coord_flip()
+print_bars <- con + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP-pacific-countries.png', width=10, height=10)
+
+
+#ggplot code for country
+positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy", "Canada")
+c <- subset(ICMP.dump, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+attach(c) #this means we don't need the $ sign
+require(ggplot2)
+con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP") + labs(x = "Country", y = "number of isolates")
+con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
+con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+print_bars <- con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
+
+
+## could make a pseudo dataset manually replaceing all non target countries with "other"
+
+
+#============Over time================
+
+attach(ICMP.dump) 
+require(ggplot2)
+di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+di <- di + scale_x_date()
+di + geom_bar(binwidth=365.25) # this is a bin of two years binwidth=730
+dip <- di + geom_bar(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.png', width=10, height=10)
+
+
+ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
+ICMP.dump$topcontrib
+
+
+attach(ICMP.dump) 
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- dr + scale_x_date()
+dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
+drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
+
+
+ICMP.date <- read.csv("ICMP.date.csv") #i removed all nulls
+
+
+qplot(factor(as.Date(IsolationDateISO)), data=ICMP.dump, geom="bar") 
+
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+di <- di + scale_x_date()
+di + geom_bar(binwidth=365.25) # this is a bin of two years binwidth=730
+dip <- di + geom_bar(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.png', width=10, height=10)
+
+
+
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of ICMP cultures") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- dr + scale_x_date()
+dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
+drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+ggsave(drp, file='ICMP-received-dates.png', width=10, height=10)
+
+## CAN we do this by organism too?
+
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of ICMP cultures") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- dr + scale_x_date()
+dr + geom_hline(yintercept=392, linetype=3) + geom_bar(binwidth=365.25)
+drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+ggsave(drp, file='ICMP-received-dates-organism.png', width=15, height=10)
+
+
+sum2 <- ggplot_build(drp) #this extracts the values from the histogram
+sum2
+
+
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- dr + scale_x_date()
+dr + geom_hline(yintercept=392, linetype=3) + geom_bar(binwidth=365.25)
+drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
+
+
+ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
+
+ICMP.dump$topcontrib
+
+#ggplot code for collections over the years
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries cultures in the ICMP") + labs(x = "Country", y = "number of isolates")
+con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
+con + geom_bar()+ coord_flip()
+print_bars <- con + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP-pacific-countries.png', width=10, height=10)
+
+#ggplot code for collections over the years in NZ
+c <- subset(ICMP.dump, (Country == "New Zealand"))
+
+
+
+
+
+
+
