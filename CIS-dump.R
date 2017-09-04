@@ -212,20 +212,11 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_fungal-family.png', width=20, height=10)
 
-  NAMES
+#============Other names================
 
-
-
-names <- read.csv("names.csv")
-head(names)
-summary(names, maxsum=40)
-
-names.fungi <- subset(names,(Kingdom == "Fungi"))
-summary(names.fungi, maxsum=40)
-
-names.present.fungi <- subset(names,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+# error Kingdom is missing
+names.present.fungi <- subset(ICMP.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 summary(names.present.fungi, maxsum=40)
-
 
 #ggplot code for fungal Phylum
 require(ggplot2)
@@ -285,7 +276,7 @@ print_bars <- con + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_country.png', width=10, height=10)
 
 
-#ggplot code for country
+#ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy")
 c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
@@ -312,7 +303,7 @@ positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan"
 c <- subset(ICMP.dump, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
-con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP") + labs(x = "Country", y = "number of isolates")
+con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP (not including NZ)") + labs(x = "Country", y = "number of isolates")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
 con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
 print_bars <- con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
@@ -355,9 +346,9 @@ attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di <- di + scale_x_date()
-di + geom_bar(binwidth=365.25) # this is a bin of two years binwidth=730
-dip <- di + geom_bar(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=10, height=10)
+di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+dip <- di + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates2.png', width=10, height=10)
 
 
 
@@ -365,8 +356,8 @@ attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of ICMP cultures") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
-dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
-drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
+drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='ICMP-received-dates.png', width=10, height=10)
 
 ## CAN we do this by organism too?
@@ -375,8 +366,8 @@ attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of ICMP cultures") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
-dr + geom_hline(yintercept=392, linetype=3) + geom_bar(binwidth=365.25)
-drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
+drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='ICMP-received-dates-organism.png', width=15, height=10)
 
 
@@ -388,8 +379,8 @@ attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
-dr + geom_hline(yintercept=392, linetype=3) + geom_bar(binwidth=365.25)
-drp <- dr + geom_bar(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
+drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
 
 
@@ -402,12 +393,24 @@ attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries cultures in the ICMP") + labs(x = "Country", y = "number of isolates")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
-con + geom_bar()+ coord_flip()
-print_bars <- con + geom_bar()+ coord_flip()
+con + geom_histogram()+ coord_flip()
+print_bars <- con + geom_histogram()+ coord_flip()
 ggsave(print_bars, file='ICMP-pacific-countries.png', width=10, height=10)
 
 #ggplot code for collections over the years in NZ
 c <- subset(ICMP.dump, (Country == "New Zealand"))
+
+
+#======MAPS========
+
+#Using GGPLOT, plot the Base World Map
+mp <- NULL
+mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
+mp <- ggplot() +   mapWorld
+
+#Now Layer the cities on top
+mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3) 
+mp
 
 
 
