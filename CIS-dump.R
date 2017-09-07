@@ -319,9 +319,9 @@ attach(ICMP.dump)
 require(ggplot2)
 di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di <- di + scale_x_date()
-di + geom_bar(binwidth=365.25) # this is a bin of two years binwidth=730
-dip <- di + geom_bar(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=10, height=10)
+di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+dip <- di + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.svg', width=5, height=5)
 
 
 ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
@@ -348,7 +348,7 @@ di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolatio
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates2.png', width=10, height=10)
+ggsave(dip, file='ICMP-isolation-dates2.png', width=4, height=3)
 
 
 
