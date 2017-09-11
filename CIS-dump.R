@@ -317,6 +317,15 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 
 #============Over time================
 
+# also do a trend line of growth. so do a scatterplot and fir a trend line to project growth.
+# Do on recived date and check for any blanks
+#can do a culmalative graph?
+
+
+model for PDD too
+
+
+
 attach(ICMP.dump) 
 require(ggplot2)
 di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
@@ -326,6 +335,31 @@ dip <- di + geom_histogram(binwidth=365.25)
 ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
 ggsave(dip, file='ICMP-isolation-dates.svg', width=5, height=5)
 ggsave(dip, file='ICMP-isolation-dates.eps', width=5, height=5)
+
+attach(ICMP.dump) 
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- dr + scale_x_date()
+dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
+drp <- dr + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
+
+attach(ICMP.dump) 
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- dr + scale_x_date()
+dr + geom_line()  # this is a bin of two years binwidth=730
+drp <- dr + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
+
+
+attach(ICMP.dump) 
+require(ggplot2)
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- dr + scale_x_date()
+dr + geom_point
+drp <- dr + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
 
 
 ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
@@ -346,6 +380,12 @@ ICMP.date <- read.csv("ICMP.date.csv") #i removed all nulls
 
 qplot(factor(as.Date(IsolationDateISO)), data=ICMP.dump, geom="bar") 
 
+
+
+
+
+
+
 attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
 di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
@@ -353,6 +393,21 @@ di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
 ggsave(dip, file='ICMP-isolation-dates2.png', width=4, height=3)
+
+
+
+
+ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
+ICMP.dump$topcontrib
+
+attach(ICMP.dump) #this means we don't need the $ sign
+require(ggplot2)
+ditc <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+ditc <- ditc + scale_x_date()
+ditc + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+ditcp <- ditc + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates2.png', width=4, height=3)
+
 
 
 
