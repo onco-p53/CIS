@@ -459,6 +459,8 @@ ggsave(print_bars, file='ICMP-pacific-countries.png', width=10, height=10)
 #ggplot code for collections over the years in NZ
 c <- subset(ICMP.dump, (Country == "New Zealand"))
 
+#also need something that plots monthly e.g. fungi versus collection month.
+
 
 #======MAPS========
 
@@ -472,7 +474,19 @@ mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3)
 mp
 
 
+#======On Hosts========
 
+# subset out kiwifruit
+ICMP.dump.kiwifruit <- subset(ICMP.dump,(TaxonName_C2 == "Actinidia deliciosa"))
+
+#ggplot code for bacterial Class
+attach(b) 
+require(ggplot2)
+p <- ggplot(ICMP.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the ICMP") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
 
 
 
