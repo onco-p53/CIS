@@ -21,6 +21,9 @@ head(NZAC.dump)
 # summary(NZAC.dump.initial, maxsum=20) #data before subsetting, not implemented
 summary(NZAC.dump, maxsum=20) #data after subsetting
 
+s <- summary(NZAC.dump, maxsum=20)
+capture.output(s, file = "NZAC-summary.txt")
+
 
 #============Type cultures================
 
@@ -51,7 +54,7 @@ ggsave(print_bars, file='NZAC.types.by.kind.png', width=10, height=10)
 #plain code for a kingdom barchart
 attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType)) + labs(title = "Cultures in the NZAC by Kingdom") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(SpecimenType)) + labs(title = "Cultures in the NZAC by Specimen type") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -64,7 +67,7 @@ p <- ggplot(NZAC.dump, aes(SpecimenType, fill=GenBank)) + labs(title = "Cultures
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='NZAC_kingdoms_genbank.png', width=7, height=7)
+#ggsave(print_bars, file='NZAC_kingdoms_genbank.png', width=7, height=7)
 
 #kingdoms with literature
 attach(NZAC.dump) 
@@ -104,7 +107,7 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_kingdoms_ LoanStatus.png', width=7, height=7)
 
-#kingdoms by OccurrenceDescription
+#kingdoms by last updated by
 attach(NZAC.dump) 
 require(ggplot2)
 p <- ggplot(NZAC.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "NZAC Last updated by") + labs(x = "Taxon", y = "number of isolates")
@@ -118,45 +121,43 @@ ggsave(print_bars, file='NZAC_kingdoms_updated_by.png', width=7, height=7)
 
 #============High Taxonomy================
 
-# ----- bacterial taxon grouping -----
 
-b <- subset(NZAC.dump, SpecimenType == "Bacterial Culture")
 
-#ggplot code for bacterial Phylum
-attach(b) 
+#Phylum
+attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(b, aes(Phylum)) + labs(title = "NZAC by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(Phylum)) + labs(title = "NZAC by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='NZAC_bacteria-phylum.png', width=10, height=10)
+ggsave(print_bars, file='NZAC_phylum.png', width=10, height=10)
 
-#ggplot code for bacterial Class
-attach(b) 
+#ggplot code for Class
+attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(b, aes(Class)) + labs(title = "NZAC by bacterial class") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(Class)) + labs(title = "NZAC by bacterial class") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='NZAC_bacteria-class.png', width=10, height=10)
+ggsave(print_bars, file='NZAC_class.png', width=10, height=10)
 
 #ggplot code for bacterial Order
-attach(b) 
+attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(b, aes(Order)) + labs(title = "NZAC by bacterial order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(Order)) + labs(title = "NZAC by bacterial order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='NZAC_bacteria-order.png', width=10, height=10)
+ggsave(print_bars, file='NZAC_order.png', width=10, height=10)
 
 #ggplot code for bacterial Family
-attach(b) 
+attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(b, aes(Family)) + labs(title = "NZAC by bacterial family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(Family)) + labs(title = "NZAC by bacterial family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='NZAC_bacteria-family.png', width=20, height=10)
+ggsave(print_bars, file='NZAC_family.png', width=20, height=10)
 
 
 # -----  fungal taxon grouping ----- 
@@ -309,13 +310,13 @@ ggsave(print_bars, file='NZAC_country_by_kind_not_nz.png', width=10, height=10)
 #can do a culmalative graph?
 
 
-model for PDD too
+
 
 
 
 attach(NZAC.dump) 
 require(ggplot2)
-di <- ggplot(NZAC.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of NZAC cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+di <- ggplot(NZAC.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Isolation dates of NZAC cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
