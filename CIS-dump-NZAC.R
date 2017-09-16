@@ -10,7 +10,7 @@ NZAC.dump <- read.csv("20170915 NZAC Dump.csv")
 
 #setting up per specimen type subsets, with summaries of each specimen type
 NZAC.alcohol <- subset(NZAC.dump,(SpecimenType == "Alcohol"))
-summary(NZAC.bacteria, maxsum=40)
+summary(NZAC.alcohol, maxsum=40)
 
 
 
