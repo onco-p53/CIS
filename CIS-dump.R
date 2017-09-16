@@ -34,6 +34,9 @@ head(ICMP.dump)
 summary(ICMP.dump.initial, maxsum=20) #data before subsetting
 summary(ICMP.dump, maxsum=20) #data after subsetting
 
+s <- summary(ICMP.dump, maxsum=20)
+capture.output(s, file = "ICMP-summary.txt")
+
 
 #============Type cultures================
 
