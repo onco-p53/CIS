@@ -121,11 +121,11 @@ ggsave(print_bars, file='PDD_kingdoms_occurrence2.png', width=7, height=7)
 #kingdoms by Order Status
 attach(PDD.dump) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill= LoanStatus)) + labs(title = "PDD Order Status") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump, aes(LoanStatus)) + labs(title = "PDD Order Status") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_ LoanStatus.png', width=7, height=7)
+ggsave(print_bars, file='PDD_kingdoms_LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated by
 attach(PDD.dump) 
