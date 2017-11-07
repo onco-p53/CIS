@@ -35,7 +35,7 @@ p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the PDD") + labs(x = "'
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_types.png', width=10, height=10)
+ggsave(print_bars, file='PDD_types.png', width=5, height=5)
 
 #another one showing just the number of types in each kind of culture?
 
@@ -47,7 +47,7 @@ p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the 
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD.types.by.kind.png', width=10, height=10)
+ggsave(print_bars, file='PDD.types.by.kind.png', width=5, height=5)
 
 #============Kingdom Level barcharts================
 
@@ -58,45 +58,45 @@ p <- ggplot(PDD.dump, aes(SpecimenType)) + labs(title = "Specimens in the PDD by
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms.png', width=7, height=7)
+ggsave(print_bars, file='PDD_specimen_types.png', width=5, height=5)
 
 #kingdoms in GenBank
 attach(PDD.dump)
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill=GenBank)) + labs(title = "Specimens in the PDD in GenBank") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump, aes(GenBank)) + labs(title = "Specimens in the PDD in GenBank") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-#ggsave(print_bars, file='PDD_kingdoms_genbank.png', width=7, height=7)
+ggsave(print_bars, file='PDD_in_genbank.png', width=5, height=5)
 
 #kingdoms with literature
 attach(PDD.dump) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Specimens in the PDD in Literature") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump, aes(Literature)) + labs(title = "Specimens in the PDD in Literature") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_Literature.png', width=7, height=7)
+ggsave(print_bars, file='PDD_in_Literature.png', width=5, height=5)
 
 #kingdoms with images
 attach(PDD.dump) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill=Images)) + labs(title = "Specimens in the PDD with images") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump, aes(Images)) + labs(title = "Specimens in the PDD with images") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_images.png', width=7, height=7)
+ggsave(print_bars, file='PDD_with_images.png', width=5, height=5)
 
 #could also do a stacked bar chart with images, genbank, literature all on one chart.
 
 #kingdoms by Occurrence Description
 attach(PDD.dump) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump, aes(OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_occurrence.png', width=7, height=7)
+ggsave(print_bars, file='PDD_kingdoms_occurrence.png', width=5, height=5)
 
 #CollectionEventMethod
 attach(PDD.dump) 
@@ -116,8 +116,6 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_kingdoms_occurrence2.png', width=7, height=7)
 
-
-
 #kingdoms by Order Status
 attach(PDD.dump) 
 require(ggplot2)
@@ -125,16 +123,16 @@ p <- ggplot(PDD.dump, aes(LoanStatus)) + labs(title = "PDD Order Status") + labs
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_LoanStatus.png', width=7, height=7)
+ggsave(print_bars, file='PDD_LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated by
 attach(PDD.dump) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "PDD Last updated by") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(UpdatedBy) + labs(title = "PDD Last updated by") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kingdoms_updated_by.png', width=7, height=7)
+ggsave(print_bars, file='PDD_updated_by.png', width=7, height=7)
 
 #need a kingdoms by NZ Specimens??
 
@@ -492,7 +490,18 @@ c <- subset(PDD.dump, (Country == "New Zealand"))
 #also need something that plots monthly e.g. fungi versus collection month.
 
 
-#======MAPS========
+#======GeoGraphic stuff========
+
+#New Zealand Area codes
+nz <- subset(PDD.dump,(Country == "New Zealand"))
+attach(nz) 
+require(ggplot2)
+p <- ggplot(nz, aes(NZAreaCode)) + labs(title = "PDD specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='PDD_NZAreaCode.png', width=5, height=5)
+
 
 #Using GGPLOT, plot the Base World Map
 mp <- NULL
@@ -517,6 +526,14 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_kiwifruit-family.png', width=10, height=10)
+
+#======On Hosts========
+
+
+
+
+
+
 
 
 
