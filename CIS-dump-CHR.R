@@ -494,6 +494,16 @@ c <- subset(CHR.dump, (Country == "New Zealand"))
 
 #======MAPS========
 
+#New Zealand Area codes
+CHR.nz <- subset(CHR.dump,(Country == "New Zealand"))
+attach(CHR.nz) 
+require(ggplot2)
+p <- ggplot(CHR.nz, aes(NZAreaCode)) + labs(title = "CHR specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='CHR_NZAreaCode.png', width=5, height=5)
+
 #Using GGPLOT, plot the Base World Map
 mp <- NULL
 mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
