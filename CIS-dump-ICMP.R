@@ -465,15 +465,27 @@ c <- subset(ICMP.dump, (Country == "New Zealand"))
 #also need something that plots monthly e.g. fungi versus collection month.
 
 
-#======MAPS========
+#======georefs========
+
+#New Zealand Area codes
+ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
+attach(ICMP.nz) 
+require(ggplot2)
+p <- ggplot(ICMP.nz, aes(NZAreaCode)) + labs(title = "ICMP specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_NZAreaCode.png', width=5, height=5)
 
 #Using GGPLOT, plot the Base World Map
 mp <- NULL
 mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
 mp <- ggplot() +   mapWorld
+mp
 
 #Now Layer the cities on top
-mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3) 
+mp <- mp + geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "black", size = 5)
+
 mp
 
 
