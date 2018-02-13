@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("20170830 ICMP Dump PROD.csv")
+ICMP.dump.initial <- read.csv("20180209 CIS-1692 ICMP_PROD data dump.csv")
 
 
 # subset out viruses
