@@ -2,14 +2,16 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("20180209 CIS-1692 ICMP_PROD data dump.csv")
+ICMP.dump.initial <- read.csv("ICMP-30Aug2018.csv")
+head(ICMP.dump.initial)
 
 
 # subset out viruses
 noviruses <- subset(ICMP.dump.initial, (SpecimenType == "Bacterial Culture" | SpecimenType == "Chromist Culture" | SpecimenType == "Fungal Culture" | SpecimenType == "Yeast Culture"))
 
 # subset out "Deaccessioned=True"
-ICMP.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
+ICMP.dump <- subset(noviruses,(Deaccessioned == "false"))
+head(ICMP.dump)
 
 
 #setting up per specimen type subsets, with summaries of each specimen type
@@ -280,8 +282,8 @@ ggsave(print_bars, file='ICMP_country.png', width=10, height=10)
 
 
 #ggplot code for top ten countries by specimen type
-positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "Italy", "France")
-c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "China", "Japan", "India",  "Italy", "Iran, Islamic Republic Of")
+c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy" | Country == "Iran, Islamic Republic Of"  ))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP") + labs(x = "Country", y = "number of isolates")
