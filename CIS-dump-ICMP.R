@@ -104,7 +104,7 @@ ggsave(print_bars, file='ICMP_kingdoms_images.png', width=7, height=7)
 
 #could also do a stacked bar chart with images, genbank, literature all on one chart.
 
-#kingdoms by Occurrence Description
+# ** kingdoms by Occurrence Description
 attach(ICMP.dump) 
 require(ggplot2)
 p <- ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Cultures in the ICMP by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
@@ -122,7 +122,8 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
 
-#kingdoms by OccurrenceDescription
+#kingdoms by last updated
+ICMP.dump$UpdatedBy2 <- unique(tolower(ICMP.dump$UpdatedBy))
 attach(ICMP.dump) 
 require(ggplot2)
 p <- ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "ICMP Last updated by") + labs(x = "Taxon", y = "number of isolates")
@@ -130,6 +131,9 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_updated_by.png', width=7, height=7)
+
+#ignore.case() could be used here?
+#unique(tolower(UpdatedBy))
 
 #need a kingdoms by NZ cultures??
 
