@@ -123,10 +123,12 @@ print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated
-ICMP.dump$UpdatedBy2 <- unique(tolower(ICMP.dump$UpdatedBy))
+
+
+ICMP.dump$UpdatedBy3 <- sapply(ICMP.dump$UpdatedBy, tolower)
 attach(ICMP.dump) 
 require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "ICMP Last updated by") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy3)) + labs(title = "ICMP Last updated by") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
