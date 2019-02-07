@@ -7,12 +7,9 @@ PDD.dump <- read.csv("PDD-export-6-feb-2019.csv", header=TRUE, sep=",")
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
 
-
 #setting up per specimen type subsets, with summaries of each specimen type
 PDD.alcohol <- subset(PDD.dump,(SpecimenType == "Alcohol"))
 summary(PDD.alcohol, maxsum=40)
-
-
 
 #============Quick data check================
 #have a quick look at the data
@@ -23,7 +20,6 @@ summary(PDD.dump, maxsum=25) #data after subsetting
 
 s <- summary(PDD.dump, maxsum=25)
 capture.output(s, file = "PDD-summary.txt")
-
 
 #============Type Specimens================
 
@@ -362,11 +358,12 @@ ggsave(dip, file='PDD-collection-dates.png', width=5, height=5)
 
 
 PDD.dump$topcontrib <- ifelse(PDD.dump$StandardCollector == "Dingley, JM", "Dingley, JM", "other")
+#there must be a better way to do this
 PDD.dump$topcontrib
 
 attach(PDD.dump) 
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "")
+dr <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Collection", y =  "Number of Specimens" , fill = "")
 dr + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 drp <- di + geom_histogram(binwidth=365.25)
 ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
