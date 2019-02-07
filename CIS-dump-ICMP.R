@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-export-6-feb-2019.csv")
+ICMP.dump.initial <- read.csv("ICMP-export-6-feb-2019.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 
 
@@ -336,7 +336,7 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 
 attach(ICMP.dump) 
 require(ggplot2)
-di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO, format='%Y-%m-%d'))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -346,7 +346,7 @@ ggsave(dip, file='ICMP-isolation-dates.eps', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
@@ -354,7 +354,7 @@ ggsave(dip, file='ICMP-recieved-dates.png', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_line()  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
@@ -363,7 +363,7 @@ ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_point
 drp <- dr + geom_histogram(binwidth=365.25)
@@ -376,7 +376,7 @@ ICMP.dump$topcontrib
 
 attach(ICMP.dump) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -410,7 +410,7 @@ ICMP.dump$topcontrib
 
 attach(ICMP.dump) #this means we don't need the $ sign
 require(ggplot2)
-ditc <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+ditc <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO, format='%Y-%m-%d', fill=Contributor))) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 ditc <- ditc + scale_x_date()
 ditc + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 ditcp <- ditc + geom_histogram(binwidth=365.25)
