@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-30Aug2018.csv")
+ICMP.dump.initial <- read.csv("ICMP-export-6-feb-2019.csv")
 head(ICMP.dump.initial)
 
 
@@ -133,9 +133,6 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms_updated_by.png', width=7, height=7)
-
-#ignore.case() could be used here?
-#unique(tolower(UpdatedBy))
 
 #need a kingdoms by NZ cultures??
 
@@ -333,7 +330,7 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 #can do a culmalative graph?
 
 
-model for PDD too
+#model for PDD too
 
 
 
@@ -353,7 +350,7 @@ dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
+ggsave(dip, file='ICMP-recieved-dates.png', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)

@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-PDD.dump <- read.csv("20170917 PDD Dump.csv")
+PDD.dump <- read.csv("PDD-export-6-feb-2019.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -18,10 +18,10 @@ summary(PDD.alcohol, maxsum=40)
 #have a quick look at the data
 head(PDD.dump)
 
-# summary(PDD.dump.initial, maxsum=20) #data before subsetting, not implemented
-summary(PDD.dump, maxsum=20) #data after subsetting
+# summary(PDD.dump.initial, maxsum=25) #data before subsetting, not implemented
+summary(PDD.dump, maxsum=25) #data after subsetting
 
-s <- summary(PDD.dump, maxsum=20)
+s <- summary(PDD.dump, maxsum=25)
 capture.output(s, file = "PDD-summary.txt")
 
 
@@ -285,7 +285,7 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
 attach(PDD.dump.NZ) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(NZAreaCode)) + labs(title = "NZ Specimens in the PDD by Area Code") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.dump.NZ, aes(NZAreaCode)) + labs(title = "NZ Specimens in the PDD by Area Code") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -349,64 +349,32 @@ ggsave(print_bars, file='PDD_country_by_kind_not_nz.png', width=10, height=10)
 # Do on recived date and check for any blanks
 #can do a culmalative graph?
 
-
-
-
-
+help(as.Date)
+help(ISOdatetime)
 
 attach(PDD.dump) 
 require(ggplot2)
-di <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Isolation dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) + labs(title = "Collection dates of PDD specimens") + labs(x = "Date of collection", y =  "Number of specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='PDD-isolation-dates.png', width=5, height=5)
-ggsave(dip, file='PDD-isolation-dates.svg', width=5, height=5)
-ggsave(dip, file='PDD-isolation-dates.eps', width=5, height=5)
-
-attach(PDD.dump) 
-require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='PDD-isolation-dates.png', width=5, height=5)
-
-attach(PDD.dump) 
-require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_line()  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='PDD-isolation-dates.png', width=5, height=5)
+ggsave(dip, file='PDD-collection-dates.png', width=5, height=5)
 
 
-attach(PDD.dump) 
-require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_point
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='PDD-isolation-dates.png', width=5, height=5)
-
-
-PDD.dump$topcontrib <- ifelse(PDD.dump$Contributor == "NZP", "NZP", "other")
+PDD.dump$topcontrib <- ifelse(PDD.dump$StandardCollector == "Dingley, JM", "Dingley, JM", "other")
 PDD.dump$topcontrib
 
-
 attach(PDD.dump) 
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
-dr <- dr + scale_x_date()
-dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
-drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
-ggsave(drp, file='PDD-received-dates-contributor.png', width=15, height=10)
+dr <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "")
+dr + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+drp <- di + geom_histogram(binwidth=365.25)
+ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
 
 
-PDD.date <- read.csv("PDD.date.csv") #i removed all nulls
 
 
-qplot(factor(as.Date(IsolationDateISO)), data=PDD.dump, geom="bar") 
+
 
 
 
