@@ -141,39 +141,37 @@ ggsave(print_bars, file='ICMP_kingdoms_updated_by.png', width=7, height=7)
 
 # ----- bacterial taxon grouping -----
 
-b <- subset(ICMP.dump, SpecimenType == "Bacterial Culture")
-
 #ggplot code for bacterial Phylum
-attach(b) 
+attach(ICMP.bacteria) 
 require(ggplot2)
-p <- ggplot(b, aes(Phylum)) + labs(title = "ICMP by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.bacteria, aes(Phylum)) + labs(title = "ICMP by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_bacteria-phylum.png', width=10, height=10)
 
 #ggplot code for bacterial Class
-attach(b) 
+attach(ICMP.bacteria) 
 require(ggplot2)
-p <- ggplot(b, aes(Class)) + labs(title = "ICMP by bacterial class") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.bacteria, aes(Class)) + labs(title = "ICMP by bacterial class") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_bacteria-class.png', width=10, height=10)
 
 #ggplot code for bacterial Order
-attach(b) 
+attach(ICMP.bacteria) 
 require(ggplot2)
-p <- ggplot(b, aes(Order)) + labs(title = "ICMP by bacterial order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.bacteria, aes(Order)) + labs(title = "ICMP by bacterial order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_bacteria-order.png', width=10, height=10)
 
 #ggplot code for bacterial Family
-attach(b) 
+attach(ICMP.bacteria) 
 require(ggplot2)
-p <- ggplot(b, aes(Family)) + labs(title = "ICMP by bacterial family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.bacteria, aes(Family)) + labs(title = "ICMP by bacterial family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -182,21 +180,20 @@ ggsave(print_bars, file='ICMP_bacteria-family.png', width=20, height=10)
 
 # -----  fungal taxon grouping ----- 
 
-f <- subset(ICMP.dump, SpecimenType == "Fungal Culture")
 
 #ggplot code for fungal Phylum
-attach(f) 
+attach(ICMP.fungi) 
 require(ggplot2)
-p <- ggplot(f, aes(Phylum)) + labs(title = "ICMP by fungal phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.fungi, aes(Phylum)) + labs(title = "ICMP by fungal phylum") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_fungal-phylum.png', width=10, height=10)
 
 #ggplot code for fungal Class
-attach(f) 
+attach(ICMP.fungi) 
 require(ggplot2)
-p <- ggplot(f, aes(Class)) + labs(title = "ICMP by fungal class") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.fungi, aes(Class)) + labs(title = "ICMP by fungal class") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -212,15 +209,40 @@ print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_fungal-order.png', width=10, height=10)
 
 #ggplot code for fungal Family
-attach(f) 
+attach(ICMP.fungi) 
 require(ggplot2)
-p <- ggplot(f, aes(Family)) + labs(title = "ICMP by fungal family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(ICMP.fungi, aes(Family)) + labs(title = "ICMP by fungal family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_fungal-family.png', width=20, height=10)
 
+
+
 #============Other names================
+
+#ggplot code for bacterial Phylum
+attach(ICMP.yeast) 
+require(ggplot2)
+p <- ggplot(ICMP.yeast, aes(Phylum)) + labs(title = "ICMP by yeast phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_yeast-phylum.png', width=10, height=10)
+
+
+#ggplot code for chromist Phylum
+attach(ICMP.chromist) 
+require(ggplot2)
+p <- ggplot(ICMP.chromist, aes(Phylum)) + labs(title = "ICMP by chromist phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP_chromist-phylum.png', width=10, height=10)
+
+
+
+
 
 # error Kingdom is missing
 names.present.fungi <- subset(ICMP.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
