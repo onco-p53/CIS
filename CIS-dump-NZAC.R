@@ -1,8 +1,8 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017)
+# Author: B.S. Weir (2017-2019)
 
 #============Load and subset data================
-NZAC.dump <- read.csv("20170915 NZAC Dump.csv")
+NZAC.dump <- read.csv("NZAC-export-29-jul-2019.csv")
 
 # subset out "Deaccessioned=True", not implemented
 # NZAC.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -182,7 +182,7 @@ ggsave(print_bars, file='NZAC_order-speciemtype.png', width=10, height=10)
 #ggplot code for Family
 attach(NZAC.dump) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Family)) + labs(title = "NZAC by bacterial family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.dump, aes(Family)) + labs(title = "NZAC by family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -352,77 +352,15 @@ ggsave(print_bars, file='NZAC_country_by_kind_not_nz.png', width=10, height=10)
 #can do a culmalative graph?
 
 
-
-
-
-
 attach(NZAC.dump) 
 require(ggplot2)
-di <- ggplot(NZAC.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Isolation dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(NZAC.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Collection dates of NZAC Specimens") + labs(x = "Date of collection", y =  "Number of Specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NZAC-isolation-dates.png', width=5, height=5)
-ggsave(dip, file='NZAC-isolation-dates.svg', width=5, height=5)
-ggsave(dip, file='NZAC-isolation-dates.eps', width=5, height=5)
-
-attach(NZAC.dump) 
-require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NZAC-isolation-dates.png', width=5, height=5)
-
-attach(NZAC.dump) 
-require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_line()  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NZAC-isolation-dates.png', width=5, height=5)
-
-
-attach(NZAC.dump) 
-require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_point
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NZAC-isolation-dates.png', width=5, height=5)
-
-
-NZAC.dump$topcontrib <- ifelse(NZAC.dump$Contributor == "NZP", "NZP", "other")
-NZAC.dump$topcontrib
-
-
-attach(NZAC.dump) 
-require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the NZAC collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
-dr <- dr + scale_x_date()
-dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
-drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
-ggsave(drp, file='NZAC-received-dates-contributor.png', width=15, height=10)
-
-
-NZAC.date <- read.csv("NZAC.date.csv") #i removed all nulls
-
-
-qplot(factor(as.Date(IsolationDateISO)), data=NZAC.dump, geom="bar") 
-
-
-
-
-
-
-
-attach(NZAC.dump) #this means we don't need the $ sign
-require(ggplot2)
-di <- ggplot(NZAC.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
-di <- di + scale_x_date()
-di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
-dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NZAC-isolation-dates2.png', width=4, height=3)
+ggsave(dip, file='NZAC-collection-dates.png', width=5, height=5)
+ggsave(dip, file='NZAC-collection-dates.svg', width=5, height=5)
+ggsave(dip, file='NZAC-collection-dates.eps', width=5, height=5)
 
 
 
