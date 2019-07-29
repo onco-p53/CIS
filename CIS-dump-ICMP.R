@@ -241,7 +241,7 @@ ggsave(print_bars, file='ICMP_fungal-family.png', width=20, height=10)
 
 #============Other names================
 
-#ggplot code for bacterial Phylum
+#ggplot code for yeast Phylum
 attach(ICMP.yeast) 
 require(ggplot2)
 p <- ggplot(ICMP.yeast, aes(Phylum)) + labs(title = "ICMP by yeast phylum") + labs(x = "Taxon", y = "number of isolates")
@@ -264,9 +264,9 @@ ggsave(print_bars, file='ICMP_chromist-phylum.png', width=10, height=10)
 
 
 
-# error Kingdom is missing
-names.present.fungi <- subset(ICMP.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
-summary(names.present.fungi, maxsum=40)
+# fungi present in NZ
+#names.present.fungi <- subset(ICMP.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+#summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum
 require(ggplot2)
@@ -392,24 +392,9 @@ dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-recieved-dates.png', width=5, height=5)
-
-attach(ICMP.dump) 
-require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_line()  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
+ggsave(drp, file='ICMP-recieved-dates.png', width=5, height=5)
 
 
-attach(ICMP.dump) 
-require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_point
-drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
 
 
 ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
@@ -540,8 +525,6 @@ mp
 
 # subset out kiwifruit
 ICMP.dump.kiwifruit <- subset(ICMP.dump,(TaxonName_C2 == "Actinidia deliciosa"))
-
-#ggplot code for bacterial Class
 attach(b) 
 require(ggplot2)
 p <- ggplot(ICMP.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the ICMP") + labs(x = "Taxon", y = "number of isolates")
