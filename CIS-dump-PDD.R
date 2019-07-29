@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-6-feb-2019.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-28-jul-2019.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -20,6 +20,22 @@ summary(PDD.dump, maxsum=25) #data after subsetting
 
 s <- summary(PDD.dump, maxsum=25)
 capture.output(s, file = "PDD-summary.txt")
+
+#============Bevan's Specimens================
+
+#ggplot code for type Specimens factored by Specimen type
+bsw <- subset(PDD.dump,(StandardCollector == "Weir, BS"))
+attach(bsw) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(bsw, aes(Images, fill=GenBank)) + labs(title = "Bevan's specimens in PDD") + labs(x = "with images", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='Bevans.with.images.png', width=5, height=5)
+
+bsws <- summary(bsw, maxsum=25)
+bsws
+
 
 #============Type Specimens================
 
@@ -39,11 +55,11 @@ ggsave(print_bars, file='PDD_types.png', width=5, height=5)
 d <- subset(PDD.dump,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
-p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the PDD") + labs(x = "'Kind' of type", y = "number of isolates")
+p <- ggplot(d, aes(TypeStatus, fill=Images)) + labs(title = "Types in the PDD Fungarium with images") + labs(x = "'Kind' of type", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD.types.by.kind.png', width=5, height=5)
+ggsave(print_bars, file='PDD.types.with.images.png', width=5, height=5)
 
 #============Kingdom Level barcharts================
 

@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-export-6-feb-2019.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-27-jul-2019.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 
 
@@ -63,6 +63,26 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP.types.by.kind.png', width=10, height=10)
+
+#ggplot code for type cultures factored by Specimen type
+d <- subset(ICMP.dump,!(TypeStatus == ""))
+attach(d) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(d, aes(TypeStatus, fill=Images)) + labs(title = "Types in the ICMP") + labs(x = "'Kind' of type", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP.types.with.iamges.png', width=10, height=10)
+
+#ggplot code for type cultures factored by Specimen type
+d <- subset(ICMP.dump,!(TypeStatus == ""))
+attach(d) #this means we don't need the $ sign
+require(ggplot2)
+p <- ggplot(d, aes(TypeStatus, fill=GenBank)) + labs(title = "Types in ICMP with sequences in GenBank") + labs(x = "'Kind' of type", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='ICMP.types.with.sequence.png', width=10, height=10)
 
 #============Kingdom Level barcharts================
 
