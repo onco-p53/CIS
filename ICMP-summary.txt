@@ -1,307 +1,528 @@
-   AccessionNumber             SpecimenType                                     FilingNumber  SpecimenSecurityLevel
- ICMP 20110:    2   Bacterial Culture: 9822                                           :9488   Min.   : 1.00        
- ICMP 21100:    2   Chromist Culture :  708   Pseudomonadaceae                        :3023   1st Qu.:40.00        
- ICMP 1    :    1   Fungal Culture   :10688   Xanthomonadaceae                        :1636   Median :40.00        
- ICMP 10   :    1   Virus            :    0   Enterobacteriaceae                      : 997   Mean   :37.14        
- ICMP 100  :    1   Yeast Culture    :  270   Rhizobiaceae                            : 933   3rd Qu.:40.00        
- ICMP 1000 :    1                             Burkholderiaceae                        : 561   Max.   :40.00        
- ICMP 10000:    1                             Nectriaceae Tul. & C. Tul.              : 554                        
- ICMP 10001:    1                             Pythiaceae J. Schröt.                  : 492                        
- ICMP 10002:    1                             Bacillacceae                            : 282                        
- ICMP 10003:    1                             Rhytismataceae Chevall.                 : 241                        
- ICMP 10004:    1                             Streptomycetaceae Waksman & Henrici 1943: 234                        
- ICMP 10006:    1                             Pleosporaceae Nitschke                  : 230                        
- ICMP 10007:    1                             Glomerellaceae Locq.                    : 228                        
- ICMP 10008:    1                             Bradyrhizobiaceae                       : 162                        
- ICMP 10009:    1                             Sclerotiniaceae Whetzel                 : 159                        
- ICMP 10010:    1                             Botryosphaeriaceae Theiss. & Syd.       : 119                        
-           SpecimenSecurityLevelText Deaccessioned IsMissing         LoanStatus                  CreatedBy     
- Collection Staff Only  :  343       false:21488   false:21488            :20678   LANDCARE\\fletcherm :  919  
- Confidential           :  264       true :    0   true :    0   Active   :  514   LANDCARE\\gattom    :   27  
- Public                 :18830                                   Initiated:  296   LANDCARE\\leed      :  109  
- Registered Users       :    8                                                     LANDCARE\\LeeD      :   65  
- Systematics Researchers: 2043                                                     LANDCARE\\paderese  : 1149  
-                                                                                   LANDCARE\\paderesE  :  518  
-                                                                                   LANDCARE\\PaderesE  :  421  
-                                                                                   LANDCARE\\pettersonm:  292  
-                                                                                   LANDCARE\\PettersonM:   12  
-                                                                                   LANDCARE\\weirb     :   87  
-                                                                                   LANDCARE\\WeirB     :   54  
-                                                                                   LANDCARE\\williamsr :  502  
-                                                                                   LANDCARE\\WilliamsR :    8  
-                                                                                   Migration           :17325  
-                                                                                                               
-                                                                                                               
-                CreatedDate                 UpdatedBy                     UpdatedDate       Quantity    
- 25/01/2002 9:24:12 AM:3348   LANDCARE\\cooperj   :  53   28/03/2011 12:30:47 PM: 4304   Min.   :1      
- 25/01/2002 9:24:11 AM:3301   LANDCARE\\CooperJ   :   9   6/08/2013 12:54:14 PM :    5   1st Qu.:1      
- 25/01/2002 9:24:10 AM:3047   LANDCARE\\fletcherm :4488   11/07/2014 6:15:20 PM :    4   Median :1      
- 25/01/2002 9:24:13 AM:2544   LANDCARE\\johnstonp : 712   10/10/2013 11:32:22 AM:    3   Mean   :1      
- 25/01/2002 9:24:09 AM: 766   LANDCARE\\JohnstonP : 891   11/09/2013 10:49:18 AM:    3   3rd Qu.:1      
- 15/01/2014 7:46:26 AM:   2   LANDCARE\\leed      : 523   24/07/2014 6:20:46 PM :    3   Max.   :1      
- 18/09/2015 8:11:04 AM:   2   LANDCARE\\LeeD      : 168   5/08/2013 1:02:53 PM  :    3   NA's   :10175  
- 1/02/2006 10:49:58 AM:   1   LANDCARE\\morsen    : 147   10/10/2014 11:32:15 AM:    2                  
- 1/02/2006 10:54:28 AM:   1   LANDCARE\\paderese  :1131   11/07/2018 2:14:38 PM :    2                  
- 1/02/2006 10:56:02 AM:   1   LANDCARE\\paderesE  : 442   16/09/2013 2:44:06 PM :    2                  
- 1/02/2006 2:41:44 PM :   1   LANDCARE\\PaderesE  : 446   18/10/2018 11:05:17 AM:    2                  
- 1/02/2006 2:44:32 PM :   1   LANDCARE\\pettersonm: 459   19/04/2018 12:28:29 PM:    2                  
- 1/02/2011 1:50:42 PM :   1   LANDCARE\\PettersonM: 167   20/09/2013 3:59:28 PM :    2                  
- 1/02/2011 1:52:32 PM :   1   LANDCARE\\stewarts  :   1   20/09/2013 4:00:46 PM :    2                  
- 1/02/2011 1:53:46 PM :   1   LANDCARE\\vandepasS :  20   21/10/2013 12:53:29 PM:    2                  
- 1/02/2011 1:54:42 PM :   1   LANDCARE\\weirb     :1577   22/01/2015 2:54:08 PM :    2                  
-               TypeStatus                                                                          VerbatimName  
-                    :20564   Pseudomonas syringae pv. syringae van Hall 1902                             :  509  
- Epitype            :   10   Burkholderia solanacearum (Smith 1896) Yabuuchi et al. 1993                 :  404  
- ex Epitype         :   15   Pseudomonas Migula 1894                                                     :  365  
- ex Holotype        :  112   Botrytis cinerea Pers.                                                      :  363  
- ex Neotype         :    2   Pseudomonas syringae van Hall 1902                                          :  336  
- ex Paratype        :   10   Rhizobium Frank 1889                                                        :  296  
- ex Type            :  112   Fusarium oxysporum Schltdl.                                                 :  286  
- Holotype           :   30   Bacillus thuringiensis Berliner 1915                                        :  241  
- Isotype            :    4   Rhizobium leguminosarum biovar. trifolii (Frank 1879) Frank 1889            :  203  
- Neopathotype strain:    3   Pseudomonas viridiflava (Burkholder 1930) Dowson 1939                       :  175  
- Neotype            :    3   Bacteria                                                                    :  161  
- Paratype           :    2   Erwinia carotovora subsp. carotovora (Jones 1901) Bergey et al. 1923        :  157  
- Pathotype strain   :  229   Colletotrichum Corda                                                        :  150  
- Reference strain   :    2   Xanthomonas Dowson 1939                                                     :  131  
- Syntype            :    1   Colletotrichum acutatum J.H. Simmonds                                       :  126  
- Type               :   26   Bradyrhizobium Jordan 1982                                                  :  122  
-                                   TaxonName                                            CurrentName   
- Pseudomonas syringae pv. syringae      :  515   Pseudomonas syringae pv. syringae            :  515  
- Burkholderia solanacearum              :  404   Botrytis cinerea                             :  425  
- Botrytis cinerea                       :  378   Ralstonia solanacearum                       :  423  
- Pseudomonas                            :  376   Pseudomonas                                  :  376  
- Pseudomonas syringae                   :  337   Pseudomonas syringae                         :  337  
- Rhizobium                              :  306   Rhizobium                                    :  307  
- Fusarium oxysporum                     :  290   Fusarium oxysporum                           :  290  
- Bacillus thuringiensis                 :  241   Bacillus thuringiensis                       :  241  
- Rhizobium leguminosarum biovar trifolii:  211   Colletotrichum                               :  214  
- Colletotrichum                         :  176   Rhizobium leguminosarum biovar trifolii      :  211  
- Pseudomonas viridiflava                :  175   Colletotrichum gloeosporioides               :  189  
- Bacteria                               :  161   Pectobacterium carotovorum subsp. carotovorum:  180  
- Erwinia carotovora subsp. carotovora   :  157   Pseudomonas viridiflava                      :  175  
- Bradyrhizobium                         :  149   Bradyrhizobium                               :  166  
- Xanthomonas                            :  138   Bacteria                                     :  161  
- Fusarium                               :  134   Colletotrichum acutatum                      :  161  
-                               SourceNameId                VerbatimDeterminer              StandardDeterminer
- 96A607B1-A56D-4C7F-A82A-60181580B8A6:  515                         :13458                          :15979   
- 1C7228CC-B875-4D3B-AA67-673F177BE885:  404   P.R. Johnston         : 1230    Johnston, PR          : 1153   
- 1CB17FC2-36B9-11D5-9548-00D0592D548C:  378   B.S. Weir             : 1213    Weir, BS              :  828   
- 1CB19D63-36B9-11D5-9548-00D0592D548C:  376   J.A. Cooper           :  224    Weir, B.S.            :  751   
- 1CB19D6E-36B9-11D5-9548-00D0592D548C:  337   C.F. Hill             :  215    Cooper, JA            :  141   
- C595B44D-516B-45AA-9073-97E41A052A46:  306   B. Weir               :  186    Probst, C             :  127   
- 1CB18916-36B9-11D5-9548-00D0592D548C:  290   R. Thangavel          :  185    Thambugala, KM        :  109   
- DF0A0BB8-0641-4EE4-A25E-3BC4EB5B236E:  241   P.K. Buchanan         :  170    Thangavel, R          :   98   
- E0D3E1D8-F995-49A5-94F5-6900885A2011:  211   B. S. Weir            :  159    Chanintorn Doungsa-ard:   95   
- 1CB1841E-36B9-11D5-9548-00D0592D548C:  176   J.M. Young            :  135    Jackson, LW           :   88   
- DB047C7E-5E5E-4DFD-9BC4-A15071FA51EE:  175   C. Probst             :  127    Braithwaite, M        :   84   
- 1CB1CE08-36B9-11D5-9548-00D0592D548C:  161   D. Wright             :  126    Shirouzu, T           :   74   
- DD9A3D59-638F-4469-8AA2-7C23FC946BEC:  157   B. Paulus             :  122    Khonesavanh Chittarath:   73   
- 3A008A40-F048-41EE-B27D-517128FD4FA7:  149   P. R. Johnston        :  110    Padamsee, M           :   72   
- 1CB1ABB2-36B9-11D5-9548-00D0592D548C:  138   M. Braithwaite        :   99    Tan, HW               :   62   
- 1CB188FE-36B9-11D5-9548-00D0592D548C:  134   Chanintorn Doungsa-ard:   95    Rahimian, H           :   59   
- DeterminersRefNumber                   Phylum                     Class                    Order     
-           :20169                          : 286   Gammaproteobacteria:6213   Pseudomonadales  :3233  
- 1         :    5     "Acidobacteria"      :   1   Sordariomycetes    :4370   Hypocreales      :2032  
- S093      :    4     "Actinobacteria"     : 792   Dothideomycetes    :2841   Xanthomonadales  :1761  
- C7        :    3     "Armatimonadetes"    :   1   Leotiomycetes      :1539   Pleosporales     :1673  
- 191       :    2     "Bacteroidetes"      :  30   Alphaproteobacteria:1454   Rhizobiales      :1356  
- A1        :    2     "Chloroflexi"        :   2   Agaricomycetes     :1108   Helotiales       :1269  
- B1        :    2     "Deinococcus-Thermus":   1   Actinobacteria     : 792   Enterobacteriales:1161  
- C1        :    2     "Euryarchaeota"      :   1   Betaproteobacteria : 751   Glomerellales    :1060  
- H3        :    2     "Firmicutes"         : 415   Oomycetes          : 705   Actinomycetales  : 792  
- JAC12639  :    2     "Proteobacteria"     :8418                      : 412   Burkholderiales  : 745  
- N260      :    2     "Verrucomicrobia"    :   1   Bacilli            : 403   Peronosporales   : 692  
- N408      :    2     Amoebozoa            :   1   Eurotiomycetes     : 399                    : 660  
- NZFS 4616 :    2     Ascomycota           :9397   Dacrymycetes       : 109   Capnodiales      : 604  
- P2        :    2     Basidiomycota        :1384   Saccharomycetes    : 105   Xylariales       : 414  
- SD        :    2     Chlorophyta          :   0   Tremellomycetes    :  87   Agaricales       : 398  
- T10-05337D:    2     Chytridiomycota      :   2   Microbotryomycetes :  51   Bacillales       : 382  
-                Family                 PartAffected                                     Substrate    
- Pseudomonadaceae  :3216                     :9445                                           :18531  
- Xanthomonadaceae  :1760   leaf              :1045   Soil                                    :  530  
- Nectriaceae       :1456   leaf spot         : 373   Water                                   :   89  
- Enterobacteriaceae:1161   nodule            : 359   Decaying wood                           :   73  
- Glomerellaceae    :1053   fruit             : 317   Seawater                                :   71  
- Rhizobiaceae      : 937   Leaf              : 311   Submerged Decaying Wood                 :   60  
-                   : 874   Stem              : 246   Pasture                                 :   51  
- Pleosporaceae     : 756   root              : 240   soil                                    :   50  
- Sclerotiniaceae   : 604   stem              : 230   Laboratory derived strain               :   45  
- Peronosporaceae   : 573   Leaves            : 187   Wood                                    :   44  
- Mycosphaerellaceae: 447   leaves            : 167   Woody tree                              :   41  
- Didymellaceae     : 444   seed              : 162   Stream water                            :   39  
- Ralstoniaceae     : 440   Root              : 150   Wool                                    :   35  
- Microbacteriaceae : 399   roots             : 135   Air                                     :   33  
- Bacillaceae       : 340   leafspot          : 122   Fallen wood                             :   32  
- Aspergillaceae    : 300   fallen leaves     : 104   Decorticated wood                       :   21  
-               BiostatusDescription                              OccurrenceDescription
-                         :11687                                             :  142    
- Endemic                 :  430     Absent                                  : 2553    
- Exotic                  : 6896     Border intercept                        :   56    
- Exotic Fully Naturalised:    5     Eradicated                              :  116    
- Indigenous              :  187     Present                                 :18269    
- Non-endemic             : 1018     Present in captivity/cultivation/culture:   27    
- Uncertain               : 1265     Recorded in error                       :  118    
-                                    Uncertain                               :  207    
-                                                                                      
-                                                                                      
-                                                                                      
-                                                                                      
-                                                                                      
-                                                                                      
-                                                                                      
-                                                                                      
-                                   VerbatimTaxonName_C2                  TaxonName_C2                 Vernacular_C2 
-                                             : 4277                            : 4324                        :8887  
- Lycopersicon esculentum Mill.               :  605     Lycopersicon esculentum:  635   tomato               : 494  
- Solanum tuberosum L.                        :  419     Solanum tuberosum      :  507   potato               : 348  
- Actinidia deliciosa (Chev.) Liang & Ferguson:  294     Actinidia deliciosa    :  377   lucerne, alfalfa     : 199  
- Malus X domestica Borkh.                    :  282     Malus ×domestica      :  329   kiwifruit            : 195  
- Phaseolus vulgaris L.                       :  264     Phaseolus vulgaris     :  310   bean                 : 153  
- Vitis vinifera L.                           :  242     Vitis vinifera         :  288   apple                : 131  
- Medicago sativa L.                          :  226     Medicago sativa        :  234   soybean              : 127  
- Pisum sativum L.                            :  188     Zea mays               :  220   maize                : 126  
- Glycine max (L.) Merr.                      :  171     Triticum aestivum      :  203   kiwifruit cv. Hayward: 125  
- Prunus armeniaca L.                         :  166     Pisum sativum          :  193   white clover         : 113  
- Prunus persica (L.) Batsch                  :  163     Cytisus scoparius      :  183   passionfruit         : 108  
- Zea mays L.                                 :  161     Glycine max            :  176   gorse                : 104  
- Cytisus scoparius (L.) Link                 :  151     Allium cepa            :  174   Kiwifruit            : 100  
- Allium cepa L.                              :  144     Prunus armeniaca       :  173   peach                :  98  
- Trifolium repens L.                         :  130     Prunus persica         :  169   Beech                :  93  
-                                  HostId               Family_C2              PartAffected_C2
-                                     : 4434                 :4382                     :9445  
- 6440D173-FBBB-4CFC-BFCC-0A7BFC72979A:  635   Leguminosae   :2543   leaf              :1045  
- F05215BE-E000-4E57-9FA8-129D29D77EA2:  507   Solanaceae    :1533   leaf spot         : 373  
- BE8F5E98-2AB3-4697-B146-6082AB1D77B9:  377   Rosaceae      :1491   nodule            : 359  
- 156CC4FC-B006-4507-B029-8FC80F4A4BA2:  329   Gramineae     :1482   fruit             : 317  
- BD705CE2-AB56-4570-BFC8-3EA575E2D863:  310   Actinidiaceae : 684   Leaf              : 311  
- DC4E23A3-F0AB-40E9-9297-EAE4D6F6CB5B:  288   Vitaceae      : 460   Stem              : 246  
- 1E239480-9B2F-45E3-852C-EF04A97BC02F:  234   Myrtaceae     : 457   root              : 240  
- 8D47DA9C-DF11-48CE-890C-0646D1BDBFF6:  220   Compositae    : 453   stem              : 230  
- 1B6D9304-026F-45ED-80D9-6494A020B00B:  203   Nothofagaceae : 430   Leaves            : 187  
- 0D9F8015-9625-441F-8CCB-4DD7AA2ED822:  193   Cucurbitaceae : 382   leaves            : 167  
- D07605D8-4652-4E8A-A6D1-BE5CF653F91D:  183   Rutaceae      : 320   seed              : 162  
- 1C829C43-F7AE-4023-9FD3-4D1D3935E84F:  176   Cruciferae    : 314   Root              : 150  
- 74BCE1C8-3A18-4C98-B4B0-BCCBC927E9B6:  174   Amaryllidaceae: 266   roots             : 135  
- ECEBCC65-AD1C-4D38-8195-2A0DA433FA58:  173   Pinaceae      : 254   leafspot          : 122  
- 63831A0E-8D33-4B6F-B3C1-40FC06C830B3:  169   Asparagaceae  : 249   fallen leaves     : 104  
-                                              Substrate_C2                StandardCollector  CollectionDateISO
-                                                    :21289                         :14803             :15358  
- dead leaf                                          :   29   Johnston, PR          :  533   2017-09-28:   86  
- Soil around roots                                  :   14   Cooper, JA            :  234   2018-11-12:   70  
- dead frond                                         :   12   Watson, DRW           :  196   2012      :   52  
- Dead frond                                         :   10   Camporesi, E          :  150   2005-01   :   44  
- Soil                                               :   10   Petterson, ME         :  125   2011-09-05:   35  
- Fallen leaf                                        :    7   Weir, BS              :  109   2016-03-02:   34  
- Decayed wood                                       :    6   Shirouzu, T           :  106   2015-02-19:   33  
- Soil from root zone                                :    6   Dingley, JM           :  103   2018-01-30:   33  
- litter                                             :    5   Hill, CF              :   99   2016-02-12:   31  
- dead wood                                          :    4   McKenzie, EHC         :   93   2009      :   29  
- Decaying wood                                      :    4   Jackson, LW           :   89   2011-10-31:   27  
- Soil ex Clianthus puniceus                         :    4   Kiwifruit Vine Health :   78   1968      :   26  
- Bark on fallen wood                                :    3   Buchanan, PK          :   68   1972      :   26  
- Dead leaf                                          :    3   Beever, RE            :   66   1999      :   25  
- Decaying wood                                      :    3   Gourlay, H            :   64   2013-11-19:   25  
-                CollectorsRefNumber                         VerbatimCountry                              Country     
-                          :18317    New Zealand                     :12458   New Zealand                     :12591  
- JMD 68131-68134          :   12                                    : 1048   United States                   : 1406  
- KM 140111                :   11    USA                             :  962                                   : 1028  
- KM140111                 :    9    Australia                       :  600   Australia                       :  611  
- Gibbons Stream water     :    8    United States                   :  408   United Kingdom                  :  468  
- Amphlett Stream water    :    7    Brazil                          :  388   Brazil                          :  388  
- Pond (beach/sea)         :    7    Thailand                        :  358   Thailand                        :  358  
- Stagnant water           :    7    China                           :  349   China                           :  350  
- Whau flower              :    7    Japan                           :  343   Japan                           :  343  
- Beneath Lemonwood        :    6    UK                              :  319   India                           :  303  
- Beneath raupo            :    6    India                           :  302   Italy                           :  289  
- Frog pond lodge end      :    6    Italy                           :  285   Iran, Islamic Republic Of       :  269  
- Frog pond sea end        :    6    France                          :  250   France                          :  250  
- Horse Faeces             :    6    Lao People's Democratic Republic:  205   Lao People's Democratic Republic:  205  
- Muddy bog water          :    6    Canada                          :  200   Canada                          :  200  
- Pond (Beach)             :    6    Hungary                         :  188   Hungary                         :  188  
-            NZAreaCode               StandardLocality         VerbatimLocality                            MapSheet    
-                 :10523                      : 5196   [Unknown]       : 2999                                  :20491  
- Auckland        : 4129   [Unknown]          :  944                   : 2861   New Zealand Geodetic Datum 1949:  156  
- Bay of Plenty   :  956   Auckland           :  768   Auckland        :  713   New Zealand Geodetic Datum 2000:  213  
- Mid Canterbury  :  859   Mount Albert       :  447   Mt Albert       :  432   World Geodetic System 1984     :  628  
- Northland       :  596   Te Puke            :  359   Pukekohe        :  353                                          
- Waikato         :  553   Pukekohe           :  355   Te Puke         :  352                                          
- Nelson          :  394   Palmerston North   :  291   Palmerston North:  272                                          
- Wanganui        :  377   Levin              :  167   Levin           :  167                                          
- Hawkes Bay      :  362   Hastings           :  160   Hastings        :  160                                          
- Wellington      :  353   Kumeu              :  156   Kumeu           :  156                                          
- Taupo           :  344   Lincoln            :  156   Lincoln         :  147                                          
- Central Otago   :  239   Waitakere Ranges   :  140   Waitakere Ranges:  137                                          
- Westland        :  201   Christchurch       :  132   Christchurch    :  127                                          
- Buller          :  195   Taupo              :  125   Taupo           :  121                                          
- Marlborough     :  154   Henderson, Auckland:  120   Florida         :  104                                          
- Gisborne        :  147   Florida            :  105   Henderson       :  103                                          
- MapSheet1      Easting               Northing       DecimalLat      DecimalLong         Altitude     AltitudeInMeters
-    :21477   Min.   :    154.6            :20532   Min.   :-79.92   Min.   :-178.5           :21456   Min.   :-114.0  
- D43:    1   1st Qu.:2467910.0   6465680  :   38   1st Qu.:-42.80   1st Qu.: 106.3   -102.01 :    1   1st Qu.:  11.9  
- R10:    1   Median :2615283.5   6378320  :   18   Median :-38.88   Median : 172.6   -106.82 :    2   Median : 156.2  
- R17:    3   Mean   :2473238.0   6477870  :   16   Mean   :-26.24   Mean   : 125.9   -114.03 :    1   Mean   : 286.4  
- V19:    6   3rd Qu.:2675986.0   5739595  :   13   3rd Qu.:-29.24   3rd Qu.: 174.6   -58.99  :    1   3rd Qu.: 489.4  
-             Max.   :2977021.3   6490400  :   13   Max.   : 61.00   Max.   : 179.0   1015 m  :    1   Max.   :1418.0  
-             NA's   :20532       5932838  :   10   NA's   :20418    NA's   :20418    11.9    :    4   NA's   :21458   
-                                 5790370  :    9                                     1418    :    1                   
-                                 5915422  :    9                                     146.49  :    3                   
-                                 5746750  :    8                                     165.95  :    1                   
-                                 6006167  :    8                                     201.28  :    1                   
-                                 6031295  :    8                                     214.5   :    1                   
-                                 6206017  :    8                                     299.57  :    1                   
-                                 6280075  :    8                                     396.43  :    2                   
-                                 6460395  :    8                                     489.43  :    2                   
-                                 6494179.6:    8                                     50      :    1                   
- MicroHabitat                                                                Habitat     
- Mode:logical                                                                    :21298  
- NA's:21488     Wetland communities                                              :   35  
-                Broadleaved forest                                               :   20  
-                Beech-broadleaved forest                                         :   15  
-                Urban park                                                       :   10  
-                Mixed indigenous scrub                                           :    9  
-                Lowland podocarp-broadleaved forest                              :    7  
-                Podocarp forest bog                                              :    7  
-                Garden                                                           :    6  
-                Isolated from Seresin estate #9712001 plants came from quarantine:    6  
-                pasture                                                          :    6  
-                Podocarp forest                                                  :    6  
-                Sand dunes                                                       :    5  
-                Sea water                                                        :    5  
-                Beech forest                                                     :    4  
-                Dracophyllum scrub                                               :    3  
-                               CollectionEventNotes   IsolationDateISO   DepositedDateISO         DepositorName 
-                                         :21153               : 4504             :  269   D.W. Dye       :1311  
- Mountain Road                           :   23     2011      :  183   2019-03-18:  186   P.R. Johnston  :1271  
- Kereru Street                           :   12     1982-01-01:  182   1996-04-01:  184   D.R.W. Watson  :1212  
- Saints Vineyard                         :    9     2004-02-01:  138   1977-01-01:  176   J.M. Young     : 966  
- Camshorn Vineyard                       :    8     1976-01-01:  128   2012-01-16:  167   C.F. Hill      : 773  
- 78 Opawa Road                           :    7     1978-01-01:  128   1992-05-01:  163   J.M. Dingley   : 694  
- 53 Ravensdale Rise                      :    6     2010-12   :  122   1981-07-01:  144   R.E. Beever    : 632  
- Plant and Food Pukekohe Research Orchard:    6     1981-01-01:  108   1975-10-01:  128   NCPPB          : 510  
- Oratia Nursery                          :    5     1995-01-01:  105   1976-12-01:  126   P.K. Buchanan  : 448  
- Pukekohe Plant and Food Research Orchard:    5     1967-01-01:  103   1976-11-01:  123   E.H.C. McKenzie: 418  
- West Coast Road (Highway 73)            :    5     1962-01-01:   95   1980-03-01:  123   G. Laundon     : 407  
- 78 Opawa Rd                             :    4     1980-01-01:   95   1986-05-01:  117   NZP            : 364  
- Claudelands Road                        :    4     1985-01-01:   93   1978-04-01:  112   B. Weir        : 325  
- West Melton Gun Club grasslands         :    4     1957-01-01:   91   1986-02-01:  111   IBSBF          : 259  
- 19 Kereru st, Henderson                 :    3     1968-01-01:   89   1990-02-01:  105   A. Hastings    : 247  
- 31 Major Aitken Drive                   :    3     2005-01-01:   89   1968-12-01:  102   J.A. Cooper    : 239  
- DepositorRefNumber  GenBank      Literature      Images     
-        : 3214      false:17015   false:18046   false:17613  
- 1      :   30      true : 4473   true : 3442   true : 3875  
- 2      :   28                                               
- 3      :   23                                               
- 5      :   19                                               
- B      :   17                                               
- 4      :   16                                               
- 6      :   14                                               
- 21     :   13                                               
- 12     :   12                                               
- 7      :   12                                               
- A      :   12                                               
- 15     :   11                                               
- 25     :   11                                               
- 8      :   11                                               
- 23     :   10                                               
+   AccessionNumber             SpecimenType  
+ ICMP 20110:    2   Bacterial Culture: 9822  
+ ICMP 21100:    2   Chromist Culture :  708  
+ ICMP 1    :    1   Fungal Culture   :10688  
+ ICMP 10   :    1   Virus            :    0  
+ ICMP 100  :    1   Yeast Culture    :  270  
+ ICMP 1000 :    1                            
+ ICMP 10000:    1                            
+ ICMP 10001:    1                            
+ ICMP 10002:    1                            
+ ICMP 10003:    1                            
+ ICMP 10004:    1                            
+ ICMP 10006:    1                            
+ ICMP 10007:    1                            
+ ICMP 10008:    1                            
+ ICMP 10009:    1                            
+ ICMP 10010:    1                            
+                                   FilingNumber  SpecimenSecurityLevel
+                                         :9488   Min.   : 1.00        
+ Pseudomonadaceae                        :3023   1st Qu.:40.00        
+ Xanthomonadaceae                        :1636   Median :40.00        
+ Enterobacteriaceae                      : 997   Mean   :37.14        
+ Rhizobiaceae                            : 933   3rd Qu.:40.00        
+ Burkholderiaceae                        : 561   Max.   :40.00        
+ Nectriaceae Tul. & C. Tul.              : 554                        
+ Pythiaceae J. Schröt.                  : 492                        
+ Bacillacceae                            : 282                        
+ Rhytismataceae Chevall.                 : 241                        
+ Streptomycetaceae Waksman & Henrici 1943: 234                        
+ Pleosporaceae Nitschke                  : 230                        
+ Glomerellaceae Locq.                    : 228                        
+ Bradyrhizobiaceae                       : 162                        
+ Sclerotiniaceae Whetzel                 : 159                        
+ Botryosphaeriaceae Theiss. & Syd.       : 119                        
+           SpecimenSecurityLevelText Deaccessioned IsMissing         LoanStatus   
+ Collection Staff Only  :  339       false:21488   false:21488            :20677  
+ Confidential           :  264       true :    0   true :    0   Active   :  514  
+ Public                 :18834                                   Initiated:  297  
+ Registered Users       :    8                                                    
+ Systematics Researchers: 2043                                                    
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+                                                                                  
+               CreatedBy                     CreatedDate  
+ LANDCARE\\fletcherm :  919   25/01/2002 9:24:12 AM:3348  
+ LANDCARE\\gattom    :   27   25/01/2002 9:24:11 AM:3301  
+ LANDCARE\\leed      :  109   25/01/2002 9:24:10 AM:3047  
+ LANDCARE\\LeeD      :   65   25/01/2002 9:24:13 AM:2544  
+ LANDCARE\\paderese  : 1149   25/01/2002 9:24:09 AM: 766  
+ LANDCARE\\paderesE  :  518   15/01/2014 7:46:26 AM:   2  
+ LANDCARE\\PaderesE  :  421   18/09/2015 8:11:04 AM:   2  
+ LANDCARE\\pettersonm:  292   1/02/2006 10:49:58 AM:   1  
+ LANDCARE\\PettersonM:   12   1/02/2006 10:54:28 AM:   1  
+ LANDCARE\\weirb     :   87   1/02/2006 10:56:02 AM:   1  
+ LANDCARE\\WeirB     :   54   1/02/2006 2:41:44 PM :   1  
+ LANDCARE\\williamsr :  502   1/02/2006 2:44:32 PM :   1  
+ LANDCARE\\WilliamsR :    8   1/02/2011 1:50:42 PM :   1  
+ Migration           :17325   1/02/2011 1:52:32 PM :   1  
+                              1/02/2011 1:53:46 PM :   1  
+                              1/02/2011 1:54:42 PM :   1  
+               UpdatedBy                     UpdatedDate       Quantity    
+ LANDCARE\\cooperj   :  53   28/03/2011 12:30:47 PM: 4304   Min.   :1      
+ LANDCARE\\CooperJ   :   9   6/08/2013 12:54:14 PM :    5   1st Qu.:1      
+ LANDCARE\\fletcherm :4488   11/07/2014 6:15:20 PM :    4   Median :1      
+ LANDCARE\\johnstonp : 712   10/10/2013 11:32:22 AM:    3   Mean   :1      
+ LANDCARE\\JohnstonP : 892   11/09/2013 10:49:18 AM:    3   3rd Qu.:1      
+ LANDCARE\\leed      : 520   24/07/2014 6:20:46 PM :    3   Max.   :1      
+ LANDCARE\\LeeD      : 174   5/08/2013 1:02:53 PM  :    3   NA's   :10175  
+ LANDCARE\\morsen    : 147   10/10/2014 11:32:15 AM:    2                  
+ LANDCARE\\paderese  :1151   11/07/2018 2:14:38 PM :    2                  
+ LANDCARE\\paderesE  : 442   16/09/2013 2:44:06 PM :    2                  
+ LANDCARE\\PaderesE  : 446   18/10/2018 11:05:17 AM:    2                  
+ LANDCARE\\pettersonm: 459   19/04/2018 12:28:29 PM:    2                  
+ LANDCARE\\PettersonM: 151   20/09/2013 3:59:28 PM :    2                  
+ LANDCARE\\stewarts  :   1   20/09/2013 4:00:46 PM :    2                  
+ LANDCARE\\vandepasS :  20   21/10/2013 12:53:29 PM:    2                  
+ LANDCARE\\weirb     :1577   22/01/2015 2:54:08 PM :    2                  
+               TypeStatus   
+                    :20564  
+ Epitype            :   10  
+ ex Epitype         :   15  
+ ex Holotype        :  112  
+ ex Neotype         :    2  
+ ex Paratype        :   10  
+ ex Type            :  112  
+ Holotype           :   30  
+ Isotype            :    4  
+ Neopathotype strain:    3  
+ Neotype            :    3  
+ Paratype           :    2  
+ Pathotype strain   :  229  
+ Reference strain   :    2  
+ Syntype            :    1  
+ Type               :   26  
+                                                                       VerbatimName  
+ Pseudomonas syringae pv. syringae van Hall 1902                             :  509  
+ Burkholderia solanacearum (Smith 1896) Yabuuchi et al. 1993                 :  404  
+ Pseudomonas Migula 1894                                                     :  365  
+ Botrytis cinerea Pers.                                                      :  363  
+ Pseudomonas syringae van Hall 1902                                          :  336  
+ Rhizobium Frank 1889                                                        :  296  
+ Fusarium oxysporum Schltdl.                                                 :  286  
+ Bacillus thuringiensis Berliner 1915                                        :  241  
+ Rhizobium leguminosarum biovar. trifolii (Frank 1879) Frank 1889            :  203  
+ Pseudomonas viridiflava (Burkholder 1930) Dowson 1939                       :  175  
+ Bacteria                                                                    :  161  
+ Erwinia carotovora subsp. carotovora (Jones 1901) Bergey et al. 1923        :  157  
+ Colletotrichum Corda                                                        :  150  
+ Xanthomonas Dowson 1939                                                     :  131  
+ Colletotrichum acutatum J.H. Simmonds                                       :  126  
+ Bradyrhizobium Jordan 1982                                                  :  122  
+                                   TaxonName    
+ Pseudomonas syringae pv. syringae      :  515  
+ Burkholderia solanacearum              :  404  
+ Botrytis cinerea                       :  378  
+ Pseudomonas                            :  376  
+ Pseudomonas syringae                   :  337  
+ Rhizobium                              :  306  
+ Fusarium oxysporum                     :  290  
+ Bacillus thuringiensis                 :  241  
+ Rhizobium leguminosarum biovar trifolii:  211  
+ Colletotrichum                         :  176  
+ Pseudomonas viridiflava                :  175  
+ Bacteria                               :  161  
+ Erwinia carotovora subsp. carotovora   :  157  
+ Bradyrhizobium                         :  149  
+ Xanthomonas                            :  138  
+ Fusarium                               :  134  
+                                        CurrentName   
+ Pseudomonas syringae pv. syringae            :  515  
+ Botrytis cinerea                             :  425  
+ Ralstonia solanacearum                       :  423  
+ Pseudomonas                                  :  376  
+ Pseudomonas syringae                         :  337  
+ Rhizobium                                    :  307  
+ Fusarium oxysporum                           :  290  
+ Bacillus thuringiensis                       :  241  
+ Colletotrichum                               :  214  
+ Rhizobium leguminosarum biovar trifolii      :  211  
+ Colletotrichum gloeosporioides               :  189  
+ Pectobacterium carotovorum subsp. carotovorum:  180  
+ Pseudomonas viridiflava                      :  175  
+ Bradyrhizobium                               :  166  
+ Bacteria                                     :  161  
+ Colletotrichum acutatum                      :  161  
+                               SourceNameId                VerbatimDeterminer
+ 96A607B1-A56D-4C7F-A82A-60181580B8A6:  515                         :13458   
+ 1C7228CC-B875-4D3B-AA67-673F177BE885:  404   P.R. Johnston         : 1230   
+ 1CB17FC2-36B9-11D5-9548-00D0592D548C:  378   B.S. Weir             : 1213   
+ 1CB19D63-36B9-11D5-9548-00D0592D548C:  376   J.A. Cooper           :  224   
+ 1CB19D6E-36B9-11D5-9548-00D0592D548C:  337   C.F. Hill             :  215   
+ C595B44D-516B-45AA-9073-97E41A052A46:  306   B. Weir               :  186   
+ 1CB18916-36B9-11D5-9548-00D0592D548C:  290   R. Thangavel          :  185   
+ DF0A0BB8-0641-4EE4-A25E-3BC4EB5B236E:  241   P.K. Buchanan         :  170   
+ E0D3E1D8-F995-49A5-94F5-6900885A2011:  211   B. S. Weir            :  159   
+ 1CB1841E-36B9-11D5-9548-00D0592D548C:  176   J.M. Young            :  135   
+ DB047C7E-5E5E-4DFD-9BC4-A15071FA51EE:  175   C. Probst             :  127   
+ 1CB1CE08-36B9-11D5-9548-00D0592D548C:  161   D. Wright             :  126   
+ DD9A3D59-638F-4469-8AA2-7C23FC946BEC:  157   B. Paulus             :  122   
+ 3A008A40-F048-41EE-B27D-517128FD4FA7:  149   P. R. Johnston        :  110   
+ 1CB1ABB2-36B9-11D5-9548-00D0592D548C:  138   M. Braithwaite        :   99   
+ 1CB188FE-36B9-11D5-9548-00D0592D548C:  134   Chanintorn Doungsa-ard:   95   
+              StandardDeterminer DeterminersRefNumber                   Phylum    
+                       :15979              :20169                          : 286  
+ Johnston, PR          : 1153    1         :    5     "Acidobacteria"      :   1  
+ Weir, BS              :  828    S093      :    4     "Actinobacteria"     : 792  
+ Weir, B.S.            :  751    C7        :    3     "Armatimonadetes"    :   1  
+ Cooper, JA            :  141    191       :    2     "Bacteroidetes"      :  30  
+ Probst, C             :  127    A1        :    2     "Chloroflexi"        :   2  
+ Thambugala, KM        :  109    B1        :    2     "Deinococcus-Thermus":   1  
+ Thangavel, R          :   98    C1        :    2     "Euryarchaeota"      :   1  
+ Chanintorn Doungsa-ard:   95    H3        :    2     "Firmicutes"         : 415  
+ Jackson, LW           :   88    JAC12639  :    2     "Proteobacteria"     :8418  
+ Braithwaite, M        :   84    N260      :    2     "Verrucomicrobia"    :   1  
+ Shirouzu, T           :   74    N408      :    2     Amoebozoa            :   1  
+ Khonesavanh Chittarath:   73    NZFS 4616 :    2     Ascomycota           :9397  
+ Padamsee, M           :   72    P2        :    2     Basidiomycota        :1384  
+ Tan, HW               :   62    SD        :    2     Chlorophyta          :   0  
+ Rahimian, H           :   59    T10-05337D:    2     Chytridiomycota      :   2  
+                 Class                    Order                     Family    
+ Gammaproteobacteria:6213   Pseudomonadales  :3233   Pseudomonadaceae  :3216  
+ Sordariomycetes    :4370   Hypocreales      :2032   Xanthomonadaceae  :1760  
+ Dothideomycetes    :2841   Xanthomonadales  :1761   Nectriaceae       :1456  
+ Leotiomycetes      :1539   Pleosporales     :1673   Enterobacteriaceae:1161  
+ Alphaproteobacteria:1454   Rhizobiales      :1356   Glomerellaceae    :1053  
+ Agaricomycetes     :1108   Helotiales       :1269   Rhizobiaceae      : 937  
+ Actinobacteria     : 792   Enterobacteriales:1161                     : 874  
+ Betaproteobacteria : 751   Glomerellales    :1060   Pleosporaceae     : 756  
+ Oomycetes          : 705   Actinomycetales  : 792   Sclerotiniaceae   : 604  
+                    : 412   Burkholderiales  : 745   Peronosporaceae   : 573  
+ Bacilli            : 403   Peronosporales   : 692   Mycosphaerellaceae: 447  
+ Eurotiomycetes     : 399                    : 660   Didymellaceae     : 444  
+ Dacrymycetes       : 109   Capnodiales      : 604   Ralstoniaceae     : 440  
+ Saccharomycetes    : 105   Xylariales       : 414   Microbacteriaceae : 399  
+ Tremellomycetes    :  87   Agaricales       : 398   Bacillaceae       : 340  
+ Microbotryomycetes :  51   Bacillales       : 382   Aspergillaceae    : 300  
+             PartAffected                                     Substrate    
+                   :9445                                           :18531  
+ leaf              :1045   Soil                                    :  530  
+ leaf spot         : 373   Water                                   :   89  
+ nodule            : 359   Decaying wood                           :   73  
+ fruit             : 317   Seawater                                :   71  
+ Leaf              : 311   Submerged Decaying Wood                 :   60  
+ Stem              : 246   Pasture                                 :   51  
+ root              : 240   soil                                    :   50  
+ stem              : 230   Laboratory derived strain               :   45  
+ Leaves            : 187   Wood                                    :   44  
+ leaves            : 167   Woody tree                              :   41  
+ seed              : 162   Stream water                            :   39  
+ Root              : 150   Wool                                    :   35  
+ roots             : 135   Air                                     :   33  
+ leafspot          : 122   Fallen wood                             :   32  
+ fallen leaves     : 104   Decorticated wood                       :   21  
+               BiostatusDescription
+                         :11687    
+ Endemic                 :  430    
+ Exotic                  : 6896    
+ Exotic Fully Naturalised:    5    
+ Indigenous              :  187    
+ Non-endemic             : 1018    
+ Uncertain               : 1265    
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                                   
+                              OccurrenceDescription
+                                         :  142    
+ Absent                                  : 2554    
+ Border intercept                        :   56    
+ Eradicated                              :  116    
+ Present                                 :18268    
+ Present in captivity/cultivation/culture:   27    
+ Recorded in error                       :  118    
+ Uncertain                               :  207    
+                                                   
+                                                   
+                                                   
+                                                   
+                                                   
+                                                   
+                                                   
+                                                   
+                                   VerbatimTaxonName_C2
+                                             : 4277    
+ Lycopersicon esculentum Mill.               :  605    
+ Solanum tuberosum L.                        :  419    
+ Actinidia deliciosa (Chev.) Liang & Ferguson:  294    
+ Malus X domestica Borkh.                    :  282    
+ Phaseolus vulgaris L.                       :  264    
+ Vitis vinifera L.                           :  242    
+ Medicago sativa L.                          :  226    
+ Pisum sativum L.                            :  188    
+ Glycine max (L.) Merr.                      :  171    
+ Prunus armeniaca L.                         :  166    
+ Prunus persica (L.) Batsch                  :  163    
+ Zea mays L.                                 :  161    
+ Cytisus scoparius (L.) Link                 :  151    
+ Allium cepa L.                              :  144    
+ Trifolium repens L.                         :  130    
+                  TaxonName_C2                 Vernacular_C2 
+                        : 4324                        :8887  
+ Lycopersicon esculentum:  635   tomato               : 494  
+ Solanum tuberosum      :  507   potato               : 348  
+ Actinidia deliciosa    :  377   lucerne, alfalfa     : 199  
+ Malus ×domestica      :  329   kiwifruit            : 195  
+ Phaseolus vulgaris     :  310   bean                 : 153  
+ Vitis vinifera         :  288   apple                : 131  
+ Medicago sativa        :  234   soybean              : 127  
+ Zea mays               :  220   maize                : 126  
+ Triticum aestivum      :  203   kiwifruit cv. Hayward: 125  
+ Pisum sativum          :  193   white clover         : 113  
+ Cytisus scoparius      :  183   passionfruit         : 108  
+ Glycine max            :  176   gorse                : 104  
+ Allium cepa            :  174   Kiwifruit            : 100  
+ Prunus armeniaca       :  173   peach                :  98  
+ Prunus persica         :  169   Beech                :  93  
+                                  HostId               Family_C2   
+                                     : 4434                 :4382  
+ 6440D173-FBBB-4CFC-BFCC-0A7BFC72979A:  635   Leguminosae   :2543  
+ F05215BE-E000-4E57-9FA8-129D29D77EA2:  507   Solanaceae    :1533  
+ BE8F5E98-2AB3-4697-B146-6082AB1D77B9:  377   Rosaceae      :1491  
+ 156CC4FC-B006-4507-B029-8FC80F4A4BA2:  329   Gramineae     :1482  
+ BD705CE2-AB56-4570-BFC8-3EA575E2D863:  310   Actinidiaceae : 684  
+ DC4E23A3-F0AB-40E9-9297-EAE4D6F6CB5B:  288   Vitaceae      : 460  
+ 1E239480-9B2F-45E3-852C-EF04A97BC02F:  234   Myrtaceae     : 457  
+ 8D47DA9C-DF11-48CE-890C-0646D1BDBFF6:  220   Compositae    : 453  
+ 1B6D9304-026F-45ED-80D9-6494A020B00B:  203   Nothofagaceae : 430  
+ 0D9F8015-9625-441F-8CCB-4DD7AA2ED822:  193   Cucurbitaceae : 382  
+ D07605D8-4652-4E8A-A6D1-BE5CF653F91D:  183   Rutaceae      : 320  
+ 1C829C43-F7AE-4023-9FD3-4D1D3935E84F:  176   Cruciferae    : 314  
+ 74BCE1C8-3A18-4C98-B4B0-BCCBC927E9B6:  174   Amaryllidaceae: 266  
+ ECEBCC65-AD1C-4D38-8195-2A0DA433FA58:  173   Pinaceae      : 254  
+ 63831A0E-8D33-4B6F-B3C1-40FC06C830B3:  169   Asparagaceae  : 249  
+           PartAffected_C2
+                   :9445  
+ leaf              :1045  
+ leaf spot         : 373  
+ nodule            : 359  
+ fruit             : 317  
+ Leaf              : 311  
+ Stem              : 246  
+ root              : 240  
+ stem              : 230  
+ Leaves            : 187  
+ leaves            : 167  
+ seed              : 162  
+ Root              : 150  
+ roots             : 135  
+ leafspot          : 122  
+ fallen leaves     : 104  
+                                              Substrate_C2  
+                                                    :21289  
+ dead leaf                                          :   29  
+ Soil around roots                                  :   14  
+ dead frond                                         :   12  
+ Dead frond                                         :   10  
+ Soil                                               :   10  
+ Fallen leaf                                        :    7  
+ Decayed wood                                       :    6  
+ Soil from root zone                                :    6  
+ litter                                             :    5  
+ dead wood                                          :    4  
+ Decaying wood                                      :    4  
+ Soil ex Clianthus puniceus                         :    4  
+ Bark on fallen wood                                :    3  
+ Dead leaf                                          :    3  
+ Decaying wood                                      :    3  
+              StandardCollector  CollectionDateISO
+                       :14803             :15358  
+ Johnston, PR          :  533   2017-09-28:   86  
+ Cooper, JA            :  234   2018-11-12:   70  
+ Watson, DRW           :  196   2012      :   52  
+ Camporesi, E          :  150   2005-01   :   44  
+ Petterson, ME         :  125   2011-09-05:   35  
+ Weir, BS              :  109   2016-03-02:   34  
+ Shirouzu, T           :  106   2015-02-19:   33  
+ Dingley, JM           :  103   2018-01-30:   33  
+ Hill, CF              :   99   2016-02-12:   31  
+ McKenzie, EHC         :   93   2009      :   29  
+ Jackson, LW           :   89   2011-10-31:   27  
+ Kiwifruit Vine Health :   78   1968      :   26  
+ Buchanan, PK          :   68   1972      :   26  
+ Beever, RE            :   66   1999      :   25  
+ Gourlay, H            :   64   2013-11-19:   25  
+                CollectorsRefNumber                         VerbatimCountry 
+                          :18317    New Zealand                     :12458  
+ JMD 68131-68134          :   12                                    : 1048  
+ KM 140111                :   11    USA                             :  962  
+ KM140111                 :    9    Australia                       :  600  
+ Gibbons Stream water     :    8    United States                   :  408  
+ Amphlett Stream water    :    7    Brazil                          :  388  
+ Pond (beach/sea)         :    7    Thailand                        :  358  
+ Stagnant water           :    7    China                           :  349  
+ Whau flower              :    7    Japan                           :  343  
+ Beneath Lemonwood        :    6    UK                              :  319  
+ Beneath raupo            :    6    India                           :  302  
+ Frog pond lodge end      :    6    Italy                           :  285  
+ Frog pond sea end        :    6    France                          :  250  
+ Horse Faeces             :    6    Lao People's Democratic Republic:  205  
+ Muddy bog water          :    6    Canada                          :  200  
+ Pond (Beach)             :    6    Hungary                         :  188  
+                             Country                 NZAreaCode   
+ New Zealand                     :12591                   :10523  
+ United States                   : 1406   Auckland        : 4129  
+                                 : 1028   Bay of Plenty   :  956  
+ Australia                       :  611   Mid Canterbury  :  859  
+ United Kingdom                  :  468   Northland       :  596  
+ Brazil                          :  388   Waikato         :  553  
+ Thailand                        :  358   Nelson          :  394  
+ China                           :  350   Wanganui        :  377  
+ Japan                           :  343   Hawkes Bay      :  362  
+ India                           :  303   Wellington      :  353  
+ Italy                           :  289   Taupo           :  344  
+ Iran, Islamic Republic Of       :  269   Central Otago   :  239  
+ France                          :  250   Westland        :  201  
+ Lao People's Democratic Republic:  205   Buller          :  195  
+ Canada                          :  200   Marlborough     :  154  
+ Hungary                         :  188   Gisborne        :  147  
+            StandardLocality         VerbatimLocality
+                    : 5196   [Unknown]       : 2999  
+ [Unknown]          :  944                   : 2861  
+ Auckland           :  768   Auckland        :  713  
+ Mount Albert       :  447   Mt Albert       :  432  
+ Te Puke            :  359   Pukekohe        :  353  
+ Pukekohe           :  355   Te Puke         :  352  
+ Palmerston North   :  291   Palmerston North:  272  
+ Levin              :  167   Levin           :  167  
+ Hastings           :  160   Hastings        :  160  
+ Kumeu              :  156   Kumeu           :  156  
+ Lincoln            :  156   Lincoln         :  147  
+ Waitakere Ranges   :  140   Waitakere Ranges:  137  
+ Christchurch       :  132   Christchurch    :  127  
+ Taupo              :  125   Taupo           :  121  
+ Henderson, Auckland:  120   Florida         :  104  
+ Florida            :  105   Henderson       :  103  
+                            MapSheet     MapSheet1      Easting         
+                                :20491      :21477   Min.   :    154.6  
+ New Zealand Geodetic Datum 1949:  156   D43:    1   1st Qu.:2467910.0  
+ New Zealand Geodetic Datum 2000:  213   R10:    1   Median :2615283.5  
+ World Geodetic System 1984     :  628   R17:    3   Mean   :2473238.0  
+                                         V19:    6   3rd Qu.:2675986.0  
+                                                     Max.   :2977021.3  
+                                                     NA's   :20532      
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+      Northing       DecimalLat      DecimalLong         Altitude    
+          :20532   Min.   :-79.92   Min.   :-178.5           :21456  
+ 6465680  :   38   1st Qu.:-40.35   1st Qu.: 166.8   -102.01 :    1  
+ 6378320  :   18   Median :-36.97   Median : 174.5   -106.82 :    2  
+ 6477870  :   16   Mean   :-24.79   Mean   : 130.8   -114.03 :    1  
+ 5739595  :   13   3rd Qu.:-35.23   3rd Qu.: 174.9   -58.99  :    1  
+ 6490400  :   13   Max.   : 61.00   Max.   : 179.7   1015 m  :    1  
+ 5932838  :   10   NA's   :7948     NA's   :7948     11.9    :    4  
+ 5790370  :    9                                     1418    :    1  
+ 5915422  :    9                                     146.49  :    3  
+ 5746750  :    8                                     165.95  :    1  
+ 6006167  :    8                                     201.28  :    1  
+ 6031295  :    8                                     214.5   :    1  
+ 6206017  :    8                                     299.57  :    1  
+ 6280075  :    8                                     396.43  :    2  
+ 6460395  :    8                                     489.43  :    2  
+ 6494179.6:    8                                     50      :    1  
+ AltitudeInMeters MicroHabitat  
+ Min.   :-114.0   Mode:logical  
+ 1st Qu.:  11.9   NA's:21488    
+ Median : 156.2                 
+ Mean   : 286.4                 
+ 3rd Qu.: 489.4                 
+ Max.   :1418.0                 
+ NA's   :21458                  
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                                              Habitat     
+                                                                  :21298  
+ Wetland communities                                              :   35  
+ Broadleaved forest                                               :   20  
+ Beech-broadleaved forest                                         :   15  
+ Urban park                                                       :   10  
+ Mixed indigenous scrub                                           :    9  
+ Lowland podocarp-broadleaved forest                              :    7  
+ Podocarp forest bog                                              :    7  
+ Garden                                                           :    6  
+ Isolated from Seresin estate #9712001 plants came from quarantine:    6  
+ pasture                                                          :    6  
+ Podocarp forest                                                  :    6  
+ Sand dunes                                                       :    5  
+ Sea water                                                        :    5  
+ Beech forest                                                     :    4  
+ Dracophyllum scrub                                               :    3  
+                               CollectionEventNotes   IsolationDateISO
+                                         :21153               : 4504  
+ Mountain Road                           :   23     2011      :  183  
+ Kereru Street                           :   12     1982-01-01:  182  
+ Saints Vineyard                         :    9     2004-02-01:  138  
+ Camshorn Vineyard                       :    8     1976-01-01:  128  
+ 78 Opawa Road                           :    7     1978-01-01:  128  
+ 53 Ravensdale Rise                      :    6     2010-12   :  122  
+ Plant and Food Pukekohe Research Orchard:    6     1981-01-01:  108  
+ Oratia Nursery                          :    5     1995-01-01:  105  
+ Pukekohe Plant and Food Research Orchard:    5     1967-01-01:  103  
+ West Coast Road (Highway 73)            :    5     1962-01-01:   95  
+ 78 Opawa Rd                             :    4     1980-01-01:   95  
+ Claudelands Road                        :    4     1985-01-01:   93  
+ West Melton Gun Club grasslands         :    4     1957-01-01:   91  
+ 19 Kereru st, Henderson                 :    3     1968-01-01:   89  
+ 31 Major Aitken Drive                   :    3     2005-01-01:   89  
+   DepositedDateISO         DepositorName  DepositorRefNumber  GenBank     
+           :  269   D.W. Dye       :1311          : 3214      false:17015  
+ 2019-03-18:  186   P.R. Johnston  :1271   1      :   30      true : 4473  
+ 1996-04-01:  184   D.R.W. Watson  :1212   2      :   28                   
+ 1977-01-01:  176   J.M. Young     : 966   3      :   23                   
+ 2012-01-16:  167   C.F. Hill      : 773   5      :   19                   
+ 1992-05-01:  163   J.M. Dingley   : 694   B      :   17                   
+ 1981-07-01:  144   R.E. Beever    : 632   4      :   16                   
+ 1975-10-01:  128   NCPPB          : 510   6      :   14                   
+ 1976-12-01:  126   P.K. Buchanan  : 448   21     :   13                   
+ 1976-11-01:  123   E.H.C. McKenzie: 418   12     :   12                   
+ 1980-03-01:  123   G. Laundon     : 407   7      :   12                   
+ 1986-05-01:  117   NZP            : 364   A      :   12                   
+ 1978-04-01:  112   B. Weir        : 325   15     :   11                   
+ 1986-02-01:  111   IBSBF          : 259   25     :   11                   
+ 1990-02-01:  105   A. Hastings    : 247   8      :   11                   
+ 1968-12-01:  102   J.A. Cooper    : 239   23     :   10                   
+ Literature      Images     
+ false:18046   false:17606  
+ true : 3442   true : 3882  
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
  [ reached getOption("max.print") -- omitted 9 rows ]

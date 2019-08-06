@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-export-27-jul-2019.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-6-aug-2019.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 
 
@@ -37,7 +37,6 @@ capture.output(h, file = "ICMP-head.txt")
 
 summary(ICMP.dump.initial, maxsum=25) #data before subsetting
 summary(ICMP.dump, maxsum=20) #data after subsetting
-
 s <- summary(ICMP.dump, maxsum=25)
 capture.output(s, file = "ICMP-summary.txt")
 
