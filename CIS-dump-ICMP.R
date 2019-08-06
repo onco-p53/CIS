@@ -32,12 +32,16 @@ summary(ICMP.yeast, maxsum=40)
 #============Quick data check================
 #have a quick look at the data
 head(ICMP.dump)
+h <- head(ICMP.dump)
+capture.output(h, file = "ICMP-head.txt")
 
-summary(ICMP.dump.initial, maxsum=20) #data before subsetting
+summary(ICMP.dump.initial, maxsum=25) #data before subsetting
 summary(ICMP.dump, maxsum=20) #data after subsetting
 
-s <- summary(ICMP.dump, maxsum=20)
+s <- summary(ICMP.dump, maxsum=25)
 capture.output(s, file = "ICMP-summary.txt")
+
+
 
 
 #============Type cultures================
