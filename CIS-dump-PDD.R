@@ -11,6 +11,10 @@ PDD.dump <- read.csv("PDD-export-28-jul-2019.csv", header=TRUE, sep=",")
 PDD.alcohol <- subset(PDD.dump,(SpecimenType == "Alcohol"))
 summary(PDD.alcohol, maxsum=40)
 
+#subset New Zealand specimens
+PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
+summary(PDD.dump.NZ, maxsum=40)
+
 #============Quick data check================
 #have a quick look at the data
 head(PDD.dump)
@@ -20,6 +24,12 @@ summary(PDD.dump, maxsum=25) #data after subsetting
 
 s <- summary(PDD.dump, maxsum=25)
 capture.output(s, file = "PDD-summary.txt")
+
+# counts the number of unique values per collumn
+sapply(PDD.dump, function(x) length(unique(x)))
+
+# counts the number of unique values per collumn for NZ
+sapply(PDD.dump.NZ, function(x) length(unique(x)))
 
 #============Bevan's Specimens================
 

@@ -27,6 +27,11 @@ summary(ICMP.fungi, maxsum=40)
 ICMP.yeast <- subset(ICMP.dump,(SpecimenType == "Yeast Culture"))
 summary(ICMP.yeast, maxsum=40)
 
+#subset New Zealand specimens
+ICMP.dump.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+summary(ICMP.dump.NZ, maxsum=40)
+
+
 
 
 #============Quick data check================
@@ -40,7 +45,13 @@ summary(ICMP.dump, maxsum=20) #data after subsetting
 s <- summary(ICMP.dump, maxsum=25)
 capture.output(s, file = "ICMP-summary.txt")
 
+# counts the number of unique values per collumn for NZ
+sapply(ICMP.dump, function(x) length(unique(x)))
+u <- sapply(ICMP.dump, function(x) length(unique(x)))
+capture.output(u, file = "ICMP-unique-count.txt")
 
+# counts the number of unique values per collumn for NZ
+sapply(ICMP.dump.NZ, function(x) length(unique(x)))
 
 
 #============Type cultures================
@@ -391,11 +402,13 @@ ggsave(dip, file='ICMP-isolation-dates.eps', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'))) + labs(title = "REC dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+dr <- ggplot(ICMP.dump, aes(as.Date(DepositedDateISO, format='%Y-%m-%d'))) + labs(title = "Date cultures were deposited in ICMP") + labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
-ggsave(drp, file='ICMP-recieved-dates.png', width=5, height=5)
+drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+drp
+ggsave(drp, file='ICMP-deposit-dates.png', width=5, height=5)
 
 
 
