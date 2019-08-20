@@ -27,6 +27,8 @@ capture.output(s, file = "PDD-summary.txt")
 
 # counts the number of unique values per collumn
 sapply(PDD.dump, function(x) length(unique(x)))
+up <- sapply(PDD.dump, function(x) length(unique(x)))
+capture.output(up, file = "PDD-unique-count.txt")
 
 # counts the number of unique values per collumn for NZ
 sapply(PDD.dump.NZ, function(x) length(unique(x)))
