@@ -339,10 +339,15 @@ con + geom_bar()+ coord_flip()
 print_bars <- con + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_country.png', width=10, height=10)
 
+ICMP.dump
+sort(table(ICMP.dump$Country),decreasing=TRUE)[1:11] #top 11 countries
+
+sort(table(ICMP.dump$Country),decreasing=TRUE) #top countries
+
 
 #ggplot code for top ten countries by specimen type
-positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "China", "Japan", "India",  "Italy", "Iran, Islamic Republic Of")
-c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy" | Country == "Iran, Islamic Republic Of"  ))
+positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Thailand", "China", "Japan", "India",  "Italy")
+c <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the ICMP") + labs(x = "Country", y = "number of isolates")
