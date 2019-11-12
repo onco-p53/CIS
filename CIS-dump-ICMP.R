@@ -522,12 +522,13 @@ c <- subset(ICMP.dump, (Country == "New Zealand"))
 
 #New Zealand Area codes
 ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
+positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 attach(ICMP.nz) 
 require(ggplot2)
-p <- ggplot(ICMP.nz, aes(NZAreaCode)) + labs(title = "ICMP specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
+p <- ggplot(ICMP.nz, aes(NZAreaCode)) + labs(title = "ICMP cultures by NZ region") + labs(x = "Crosby Region", y = "number of cultures")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
+p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+print_bars <- p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
 ggsave(print_bars, file='ICMP_NZAreaCode.png', width=5, height=5)
 
 #Using GGPLOT, plot the Base World Map

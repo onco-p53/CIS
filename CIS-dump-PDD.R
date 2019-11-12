@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-28-jul-2019.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-11-nov-2019.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -487,13 +487,23 @@ c <- subset(PDD.dump, (Country == "New Zealand"))
 
 #New Zealand Area codes
 nz <- subset(PDD.dump,(Country == "New Zealand"))
+positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 attach(nz) 
 require(ggplot2)
 p <- ggplot(nz, aes(NZAreaCode)) + labs(title = "PDD specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
+p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+print_bars <- p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
 ggsave(print_bars, file='PDD_NZAreaCode.png', width=5, height=5)
+
+
+
+con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+print_bars <- con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
+
+
+
+
 
 
 #Using GGPLOT, plot the Base World Map
@@ -504,6 +514,19 @@ mp <- ggplot() +   mapWorld
 #Now Layer the cities on top
 mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3) 
 mp
+
+#======Habitat========
+
+#New Zealand Area codes
+nz <- subset(PDD.dump,(Country == "New Zealand"))
+attach(nz) 
+require(ggplot2)
+p <- ggplot(nz, aes(Habitat)) + labs(title = "PDD specimens by Habitat") + labs(x = "Habitat", y = "number of specimens")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='PDD_Habitat.png', width=15, height=49)
+
 
 
 #======On Hosts========
