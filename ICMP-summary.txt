@@ -32,57 +32,74 @@
  Bradyrhizobiaceae                       : 162                        
  Sclerotiniaceae Whetzel                 : 159                        
  Botryosphaeriaceae Theiss. & Syd.       : 119                        
-           SpecimenSecurityLevelText Deaccessioned IsMissing         LoanStatus   
- Collection Staff Only  :  339       false:21488   false:21488            :20677  
- Confidential           :  264       true :    0   true :    0   Active   :  514  
- Public                 :18834                                   Initiated:  297  
- Registered Users       :    8                                                    
- Systematics Researchers: 2043                                                    
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-                                                                                  
-               CreatedBy                     CreatedDate  
- LANDCARE\\fletcherm :  919   25/01/2002 9:24:12 AM:3348  
- LANDCARE\\gattom    :   27   25/01/2002 9:24:11 AM:3301  
- LANDCARE\\leed      :  109   25/01/2002 9:24:10 AM:3047  
- LANDCARE\\LeeD      :   65   25/01/2002 9:24:13 AM:2544  
- LANDCARE\\paderese  : 1149   25/01/2002 9:24:09 AM: 766  
- LANDCARE\\paderesE  :  518   15/01/2014 7:46:26 AM:   2  
- LANDCARE\\PaderesE  :  421   18/09/2015 8:11:04 AM:   2  
- LANDCARE\\pettersonm:  292   1/02/2006 10:49:58 AM:   1  
- LANDCARE\\PettersonM:   12   1/02/2006 10:54:28 AM:   1  
- LANDCARE\\weirb     :   87   1/02/2006 10:56:02 AM:   1  
- LANDCARE\\WeirB     :   54   1/02/2006 2:41:44 PM :   1  
- LANDCARE\\williamsr :  502   1/02/2006 2:44:32 PM :   1  
- LANDCARE\\WilliamsR :    8   1/02/2011 1:50:42 PM :   1  
- Migration           :17325   1/02/2011 1:52:32 PM :   1  
-                              1/02/2011 1:53:46 PM :   1  
-                              1/02/2011 1:54:42 PM :   1  
-               UpdatedBy                     UpdatedDate       Quantity    
- LANDCARE\\cooperj   :  53   28/03/2011 12:30:47 PM: 4304   Min.   :1      
- LANDCARE\\CooperJ   :   9   6/08/2013 12:54:14 PM :    5   1st Qu.:1      
- LANDCARE\\fletcherm :4488   11/07/2014 6:15:20 PM :    4   Median :1      
- LANDCARE\\johnstonp : 712   10/10/2013 11:32:22 AM:    3   Mean   :1      
- LANDCARE\\JohnstonP : 892   11/09/2013 10:49:18 AM:    3   3rd Qu.:1      
- LANDCARE\\leed      : 520   24/07/2014 6:20:46 PM :    3   Max.   :1      
- LANDCARE\\LeeD      : 174   5/08/2013 1:02:53 PM  :    3   NA's   :10175  
- LANDCARE\\morsen    : 147   10/10/2014 11:32:15 AM:    2                  
- LANDCARE\\paderese  :1151   11/07/2018 2:14:38 PM :    2                  
- LANDCARE\\paderesE  : 442   16/09/2013 2:44:06 PM :    2                  
- LANDCARE\\PaderesE  : 446   18/10/2018 11:05:17 AM:    2                  
- LANDCARE\\pettersonm: 459   19/04/2018 12:28:29 PM:    2                  
- LANDCARE\\PettersonM: 151   20/09/2013 3:59:28 PM :    2                  
- LANDCARE\\stewarts  :   1   20/09/2013 4:00:46 PM :    2                  
- LANDCARE\\vandepasS :  20   21/10/2013 12:53:29 PM:    2                  
- LANDCARE\\weirb     :1577   22/01/2015 2:54:08 PM :    2                  
+           SpecimenSecurityLevelText Deaccessioned IsMissing    
+ Collection Staff Only  :  339       false:21488   false:21488  
+ Confidential           :  264       true :    0   true :    0  
+ Public                 :18834                                  
+ Registered Users       :    8                                  
+ Systematics Researchers: 2043                                  
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+                                                                
+     LoanStatus                  CreatedBy     
+          :20677   LANDCARE\\fletcherm :  919  
+ Active   :  514   LANDCARE\\gattom    :   27  
+ Initiated:  297   LANDCARE\\leed      :  109  
+                   LANDCARE\\LeeD      :   65  
+                   LANDCARE\\paderese  : 1149  
+                   LANDCARE\\paderesE  :  518  
+                   LANDCARE\\PaderesE  :  421  
+                   LANDCARE\\pettersonm:  292  
+                   LANDCARE\\PettersonM:   12  
+                   LANDCARE\\weirb     :   87  
+                   LANDCARE\\WeirB     :   54  
+                   LANDCARE\\williamsr :  502  
+                   LANDCARE\\WilliamsR :    8  
+                   Migration           :17325  
+                                               
+                                               
+                CreatedDate                 UpdatedBy    
+ 25/01/2002 9:24:12 AM:3348   LANDCARE\\cooperj   :  53  
+ 25/01/2002 9:24:11 AM:3301   LANDCARE\\CooperJ   :   9  
+ 25/01/2002 9:24:10 AM:3047   LANDCARE\\fletcherm :4488  
+ 25/01/2002 9:24:13 AM:2544   LANDCARE\\johnstonp : 712  
+ 25/01/2002 9:24:09 AM: 766   LANDCARE\\JohnstonP : 892  
+ 15/01/2014 7:46:26 AM:   2   LANDCARE\\leed      : 520  
+ 18/09/2015 8:11:04 AM:   2   LANDCARE\\LeeD      : 174  
+ 1/02/2006 10:49:58 AM:   1   LANDCARE\\morsen    : 147  
+ 1/02/2006 10:54:28 AM:   1   LANDCARE\\paderese  :1151  
+ 1/02/2006 10:56:02 AM:   1   LANDCARE\\paderesE  : 442  
+ 1/02/2006 2:41:44 PM :   1   LANDCARE\\PaderesE  : 446  
+ 1/02/2006 2:44:32 PM :   1   LANDCARE\\pettersonm: 459  
+ 1/02/2011 1:50:42 PM :   1   LANDCARE\\PettersonM: 151  
+ 1/02/2011 1:52:32 PM :   1   LANDCARE\\stewarts  :   1  
+ 1/02/2011 1:53:46 PM :   1   LANDCARE\\vandepasS :  20  
+ 1/02/2011 1:54:42 PM :   1   LANDCARE\\weirb     :1577  
+                 UpdatedDate       Quantity    
+ 28/03/2011 12:30:47 PM: 4304   Min.   :1      
+ 6/08/2013 12:54:14 PM :    5   1st Qu.:1      
+ 11/07/2014 6:15:20 PM :    4   Median :1      
+ 10/10/2013 11:32:22 AM:    3   Mean   :1      
+ 11/09/2013 10:49:18 AM:    3   3rd Qu.:1      
+ 24/07/2014 6:20:46 PM :    3   Max.   :1      
+ 5/08/2013 1:02:53 PM  :    3   NA's   :10175  
+ 10/10/2014 11:32:15 AM:    2                  
+ 11/07/2018 2:14:38 PM :    2                  
+ 16/09/2013 2:44:06 PM :    2                  
+ 18/10/2018 11:05:17 AM:    2                  
+ 19/04/2018 12:28:29 PM:    2                  
+ 20/09/2013 3:59:28 PM :    2                  
+ 20/09/2013 4:00:46 PM :    2                  
+ 21/10/2013 12:53:29 PM:    2                  
+ 22/01/2015 2:54:08 PM :    2                  
                TypeStatus   
                     :20564  
  Epitype            :   10  
@@ -151,74 +168,108 @@
  Bradyrhizobium                               :  166  
  Bacteria                                     :  161  
  Colletotrichum acutatum                      :  161  
-                               SourceNameId                VerbatimDeterminer
- 96A607B1-A56D-4C7F-A82A-60181580B8A6:  515                         :13458   
- 1C7228CC-B875-4D3B-AA67-673F177BE885:  404   P.R. Johnston         : 1230   
- 1CB17FC2-36B9-11D5-9548-00D0592D548C:  378   B.S. Weir             : 1213   
- 1CB19D63-36B9-11D5-9548-00D0592D548C:  376   J.A. Cooper           :  224   
- 1CB19D6E-36B9-11D5-9548-00D0592D548C:  337   C.F. Hill             :  215   
- C595B44D-516B-45AA-9073-97E41A052A46:  306   B. Weir               :  186   
- 1CB18916-36B9-11D5-9548-00D0592D548C:  290   R. Thangavel          :  185   
- DF0A0BB8-0641-4EE4-A25E-3BC4EB5B236E:  241   P.K. Buchanan         :  170   
- E0D3E1D8-F995-49A5-94F5-6900885A2011:  211   B. S. Weir            :  159   
- 1CB1841E-36B9-11D5-9548-00D0592D548C:  176   J.M. Young            :  135   
- DB047C7E-5E5E-4DFD-9BC4-A15071FA51EE:  175   C. Probst             :  127   
- 1CB1CE08-36B9-11D5-9548-00D0592D548C:  161   D. Wright             :  126   
- DD9A3D59-638F-4469-8AA2-7C23FC946BEC:  157   B. Paulus             :  122   
- 3A008A40-F048-41EE-B27D-517128FD4FA7:  149   P. R. Johnston        :  110   
- 1CB1ABB2-36B9-11D5-9548-00D0592D548C:  138   M. Braithwaite        :   99   
- 1CB188FE-36B9-11D5-9548-00D0592D548C:  134   Chanintorn Doungsa-ard:   95   
-              StandardDeterminer DeterminersRefNumber                   Phylum    
-                       :15979              :20169                          : 286  
- Johnston, PR          : 1153    1         :    5     "Acidobacteria"      :   1  
- Weir, BS              :  828    S093      :    4     "Actinobacteria"     : 792  
- Weir, B.S.            :  751    C7        :    3     "Armatimonadetes"    :   1  
- Cooper, JA            :  141    191       :    2     "Bacteroidetes"      :  30  
- Probst, C             :  127    A1        :    2     "Chloroflexi"        :   2  
- Thambugala, KM        :  109    B1        :    2     "Deinococcus-Thermus":   1  
- Thangavel, R          :   98    C1        :    2     "Euryarchaeota"      :   1  
- Chanintorn Doungsa-ard:   95    H3        :    2     "Firmicutes"         : 415  
- Jackson, LW           :   88    JAC12639  :    2     "Proteobacteria"     :8418  
- Braithwaite, M        :   84    N260      :    2     "Verrucomicrobia"    :   1  
- Shirouzu, T           :   74    N408      :    2     Amoebozoa            :   1  
- Khonesavanh Chittarath:   73    NZFS 4616 :    2     Ascomycota           :9397  
- Padamsee, M           :   72    P2        :    2     Basidiomycota        :1384  
- Tan, HW               :   62    SD        :    2     Chlorophyta          :   0  
- Rahimian, H           :   59    T10-05337D:    2     Chytridiomycota      :   2  
-                 Class                    Order                     Family    
- Gammaproteobacteria:6213   Pseudomonadales  :3233   Pseudomonadaceae  :3216  
- Sordariomycetes    :4370   Hypocreales      :2032   Xanthomonadaceae  :1760  
- Dothideomycetes    :2841   Xanthomonadales  :1761   Nectriaceae       :1456  
- Leotiomycetes      :1539   Pleosporales     :1673   Enterobacteriaceae:1161  
- Alphaproteobacteria:1454   Rhizobiales      :1356   Glomerellaceae    :1053  
- Agaricomycetes     :1108   Helotiales       :1269   Rhizobiaceae      : 937  
- Actinobacteria     : 792   Enterobacteriales:1161                     : 874  
- Betaproteobacteria : 751   Glomerellales    :1060   Pleosporaceae     : 756  
- Oomycetes          : 705   Actinomycetales  : 792   Sclerotiniaceae   : 604  
-                    : 412   Burkholderiales  : 745   Peronosporaceae   : 573  
- Bacilli            : 403   Peronosporales   : 692   Mycosphaerellaceae: 447  
- Eurotiomycetes     : 399                    : 660   Didymellaceae     : 444  
- Dacrymycetes       : 109   Capnodiales      : 604   Ralstoniaceae     : 440  
- Saccharomycetes    : 105   Xylariales       : 414   Microbacteriaceae : 399  
- Tremellomycetes    :  87   Agaricales       : 398   Bacillaceae       : 340  
- Microbotryomycetes :  51   Bacillales       : 382   Aspergillaceae    : 300  
-             PartAffected                                     Substrate    
-                   :9445                                           :18531  
- leaf              :1045   Soil                                    :  530  
- leaf spot         : 373   Water                                   :   89  
- nodule            : 359   Decaying wood                           :   73  
- fruit             : 317   Seawater                                :   71  
- Leaf              : 311   Submerged Decaying Wood                 :   60  
- Stem              : 246   Pasture                                 :   51  
- root              : 240   soil                                    :   50  
- stem              : 230   Laboratory derived strain               :   45  
- Leaves            : 187   Wood                                    :   44  
- leaves            : 167   Woody tree                              :   41  
- seed              : 162   Stream water                            :   39  
- Root              : 150   Wool                                    :   35  
- roots             : 135   Air                                     :   33  
- leafspot          : 122   Fallen wood                             :   32  
- fallen leaves     : 104   Decorticated wood                       :   21  
+                               SourceNameId  
+ 96A607B1-A56D-4C7F-A82A-60181580B8A6:  515  
+ 1C7228CC-B875-4D3B-AA67-673F177BE885:  404  
+ 1CB17FC2-36B9-11D5-9548-00D0592D548C:  378  
+ 1CB19D63-36B9-11D5-9548-00D0592D548C:  376  
+ 1CB19D6E-36B9-11D5-9548-00D0592D548C:  337  
+ C595B44D-516B-45AA-9073-97E41A052A46:  306  
+ 1CB18916-36B9-11D5-9548-00D0592D548C:  290  
+ DF0A0BB8-0641-4EE4-A25E-3BC4EB5B236E:  241  
+ E0D3E1D8-F995-49A5-94F5-6900885A2011:  211  
+ 1CB1841E-36B9-11D5-9548-00D0592D548C:  176  
+ DB047C7E-5E5E-4DFD-9BC4-A15071FA51EE:  175  
+ 1CB1CE08-36B9-11D5-9548-00D0592D548C:  161  
+ DD9A3D59-638F-4469-8AA2-7C23FC946BEC:  157  
+ 3A008A40-F048-41EE-B27D-517128FD4FA7:  149  
+ 1CB1ABB2-36B9-11D5-9548-00D0592D548C:  138  
+ 1CB188FE-36B9-11D5-9548-00D0592D548C:  134  
+              VerbatimDeterminer              StandardDeterminer
+                       :13458                          :15979   
+ P.R. Johnston         : 1230    Johnston, PR          : 1153   
+ B.S. Weir             : 1213    Weir, BS              :  828   
+ J.A. Cooper           :  224    Weir, B.S.            :  751   
+ C.F. Hill             :  215    Cooper, JA            :  141   
+ B. Weir               :  186    Probst, C             :  127   
+ R. Thangavel          :  185    Thambugala, KM        :  109   
+ P.K. Buchanan         :  170    Thangavel, R          :   98   
+ B. S. Weir            :  159    Chanintorn Doungsa-ard:   95   
+ J.M. Young            :  135    Jackson, LW           :   88   
+ C. Probst             :  127    Braithwaite, M        :   84   
+ D. Wright             :  126    Shirouzu, T           :   74   
+ B. Paulus             :  122    Khonesavanh Chittarath:   73   
+ P. R. Johnston        :  110    Padamsee, M           :   72   
+ M. Braithwaite        :   99    Tan, HW               :   62   
+ Chanintorn Doungsa-ard:   95    Rahimian, H           :   59   
+ DeterminersRefNumber                   Phylum    
+           :20169                          : 286  
+ 1         :    5     "Acidobacteria"      :   1  
+ S093      :    4     "Actinobacteria"     : 792  
+ C7        :    3     "Armatimonadetes"    :   1  
+ 191       :    2     "Bacteroidetes"      :  30  
+ A1        :    2     "Chloroflexi"        :   2  
+ B1        :    2     "Deinococcus-Thermus":   1  
+ C1        :    2     "Euryarchaeota"      :   1  
+ H3        :    2     "Firmicutes"         : 415  
+ JAC12639  :    2     "Proteobacteria"     :8418  
+ N260      :    2     "Verrucomicrobia"    :   1  
+ N408      :    2     Amoebozoa            :   1  
+ NZFS 4616 :    2     Ascomycota           :9397  
+ P2        :    2     Basidiomycota        :1384  
+ SD        :    2     Chlorophyta          :   0  
+ T10-05337D:    2     Chytridiomycota      :   2  
+                 Class                    Order     
+ Gammaproteobacteria:6213   Pseudomonadales  :3233  
+ Sordariomycetes    :4370   Hypocreales      :2032  
+ Dothideomycetes    :2841   Xanthomonadales  :1761  
+ Leotiomycetes      :1539   Pleosporales     :1673  
+ Alphaproteobacteria:1454   Rhizobiales      :1356  
+ Agaricomycetes     :1108   Helotiales       :1269  
+ Actinobacteria     : 792   Enterobacteriales:1161  
+ Betaproteobacteria : 751   Glomerellales    :1060  
+ Oomycetes          : 705   Actinomycetales  : 792  
+                    : 412   Burkholderiales  : 745  
+ Bacilli            : 403   Peronosporales   : 692  
+ Eurotiomycetes     : 399                    : 660  
+ Dacrymycetes       : 109   Capnodiales      : 604  
+ Saccharomycetes    : 105   Xylariales       : 414  
+ Tremellomycetes    :  87   Agaricales       : 398  
+ Microbotryomycetes :  51   Bacillales       : 382  
+                Family                 PartAffected 
+ Pseudomonadaceae  :3216                     :9445  
+ Xanthomonadaceae  :1760   leaf              :1045  
+ Nectriaceae       :1456   leaf spot         : 373  
+ Enterobacteriaceae:1161   nodule            : 359  
+ Glomerellaceae    :1053   fruit             : 317  
+ Rhizobiaceae      : 937   Leaf              : 311  
+                   : 874   Stem              : 246  
+ Pleosporaceae     : 756   root              : 240  
+ Sclerotiniaceae   : 604   stem              : 230  
+ Peronosporaceae   : 573   Leaves            : 187  
+ Mycosphaerellaceae: 447   leaves            : 167  
+ Didymellaceae     : 444   seed              : 162  
+ Ralstoniaceae     : 440   Root              : 150  
+ Microbacteriaceae : 399   roots             : 135  
+ Bacillaceae       : 340   leafspot          : 122  
+ Aspergillaceae    : 300   fallen leaves     : 104  
+                                    Substrate    
+                                         :18531  
+ Soil                                    :  530  
+ Water                                   :   89  
+ Decaying wood                           :   73  
+ Seawater                                :   71  
+ Submerged Decaying Wood                 :   60  
+ Pasture                                 :   51  
+ soil                                    :   50  
+ Laboratory derived strain               :   45  
+ Wood                                    :   44  
+ Woody tree                              :   41  
+ Stream water                            :   39  
+ Wool                                    :   35  
+ Air                                     :   33  
+ Fallen wood                             :   32  
+ Decorticated wood                       :   21  
                BiostatusDescription
                          :11687    
  Endemic                 :  430    
@@ -355,23 +406,40 @@
  Buchanan, PK          :   68   1972      :   26  
  Beever, RE            :   66   1999      :   25  
  Gourlay, H            :   64   2013-11-19:   25  
-                CollectorsRefNumber                         VerbatimCountry 
-                          :18317    New Zealand                     :12458  
- JMD 68131-68134          :   12                                    : 1048  
- KM 140111                :   11    USA                             :  962  
- KM140111                 :    9    Australia                       :  600  
- Gibbons Stream water     :    8    United States                   :  408  
- Amphlett Stream water    :    7    Brazil                          :  388  
- Pond (beach/sea)         :    7    Thailand                        :  358  
- Stagnant water           :    7    China                           :  349  
- Whau flower              :    7    Japan                           :  343  
- Beneath Lemonwood        :    6    UK                              :  319  
- Beneath raupo            :    6    India                           :  302  
- Frog pond lodge end      :    6    Italy                           :  285  
- Frog pond sea end        :    6    France                          :  250  
- Horse Faeces             :    6    Lao People's Democratic Republic:  205  
- Muddy bog water          :    6    Canada                          :  200  
- Pond (Beach)             :    6    Hungary                         :  188  
+                CollectorsRefNumber
+                          :18317   
+ JMD 68131-68134          :   12   
+ KM 140111                :   11   
+ KM140111                 :    9   
+ Gibbons Stream water     :    8   
+ Amphlett Stream water    :    7   
+ Pond (beach/sea)         :    7   
+ Stagnant water           :    7   
+ Whau flower              :    7   
+ Beneath Lemonwood        :    6   
+ Beneath raupo            :    6   
+ Frog pond lodge end      :    6   
+ Frog pond sea end        :    6   
+ Horse Faeces             :    6   
+ Muddy bog water          :    6   
+ Pond (Beach)             :    6   
+                         VerbatimCountry 
+ New Zealand                     :12458  
+                                 : 1048  
+ USA                             :  962  
+ Australia                       :  600  
+ United States                   :  408  
+ Brazil                          :  388  
+ Thailand                        :  358  
+ China                           :  349  
+ Japan                           :  343  
+ UK                              :  319  
+ India                           :  302  
+ Italy                           :  285  
+ France                          :  250  
+ Lao People's Democratic Republic:  205  
+ Canada                          :  200  
+ Hungary                         :  188  
                              Country                 NZAreaCode   
  New Zealand                     :12591                   :10523  
  United States                   : 1406   Auckland        : 4129  
@@ -491,38 +559,38 @@
  West Melton Gun Club grasslands         :    4     1957-01-01:   91  
  19 Kereru st, Henderson                 :    3     1968-01-01:   89  
  31 Major Aitken Drive                   :    3     2005-01-01:   89  
-   DepositedDateISO         DepositorName  DepositorRefNumber  GenBank     
-           :  269   D.W. Dye       :1311          : 3214      false:17015  
- 2019-03-18:  186   P.R. Johnston  :1271   1      :   30      true : 4473  
- 1996-04-01:  184   D.R.W. Watson  :1212   2      :   28                   
- 1977-01-01:  176   J.M. Young     : 966   3      :   23                   
- 2012-01-16:  167   C.F. Hill      : 773   5      :   19                   
- 1992-05-01:  163   J.M. Dingley   : 694   B      :   17                   
- 1981-07-01:  144   R.E. Beever    : 632   4      :   16                   
- 1975-10-01:  128   NCPPB          : 510   6      :   14                   
- 1976-12-01:  126   P.K. Buchanan  : 448   21     :   13                   
- 1976-11-01:  123   E.H.C. McKenzie: 418   12     :   12                   
- 1980-03-01:  123   G. Laundon     : 407   7      :   12                   
- 1986-05-01:  117   NZP            : 364   A      :   12                   
- 1978-04-01:  112   B. Weir        : 325   15     :   11                   
- 1986-02-01:  111   IBSBF          : 259   25     :   11                   
- 1990-02-01:  105   A. Hastings    : 247   8      :   11                   
- 1968-12-01:  102   J.A. Cooper    : 239   23     :   10                   
- Literature      Images     
- false:18046   false:17606  
- true : 3442   true : 3882  
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+   DepositedDateISO         DepositorName  DepositorRefNumber
+           :  269   D.W. Dye       :1311          : 3214     
+ 2019-03-18:  186   P.R. Johnston  :1271   1      :   30     
+ 1996-04-01:  184   D.R.W. Watson  :1212   2      :   28     
+ 1977-01-01:  176   J.M. Young     : 966   3      :   23     
+ 2012-01-16:  167   C.F. Hill      : 773   5      :   19     
+ 1992-05-01:  163   J.M. Dingley   : 694   B      :   17     
+ 1981-07-01:  144   R.E. Beever    : 632   4      :   16     
+ 1975-10-01:  128   NCPPB          : 510   6      :   14     
+ 1976-12-01:  126   P.K. Buchanan  : 448   21     :   13     
+ 1976-11-01:  123   E.H.C. McKenzie: 418   12     :   12     
+ 1980-03-01:  123   G. Laundon     : 407   7      :   12     
+ 1986-05-01:  117   NZP            : 364   A      :   12     
+ 1978-04-01:  112   B. Weir        : 325   15     :   11     
+ 1986-02-01:  111   IBSBF          : 259   25     :   11     
+ 1990-02-01:  105   A. Hastings    : 247   8      :   11     
+ 1968-12-01:  102   J.A. Cooper    : 239   23     :   10     
+  GenBank      Literature      Images     
+ false:17015   false:18046   false:17606  
+ true : 4473   true : 3442   true : 3882  
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
+                                          
  [ reached getOption("max.print") -- omitted 9 rows ]

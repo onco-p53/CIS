@@ -1,40 +1,40 @@
           AccessionNumber              SpecimenType              FilingNumber 
-                   103227                         3                        15 
+                   103839                         3                        15 
     SpecimenSecurityLevel SpecimenSecurityLevelText             Deaccessioned 
                         5                         5                         2 
                 IsMissing                LoanStatus                  Quantity 
                         2                         6                         5 
                 CreatedBy               CreatedDate                 UpdatedBy 
-                       32                     42714                        49 
+                       32                     43326                        51 
               UpdatedDate                TypeStatus              VerbatimName 
-                    46781                        13                     24576 
+                    47566                        13                     24768 
                 TaxonName               CurrentName              SourceNameId 
-                    16854                     14123                     16986 
-       VerbatimDeterminer        StandardDeterminer                    Phylum 
-                     2006                       352                        15 
-                    Class                     Order                    Family 
-                       45                       150                       513 
-             PartAffected                 Substrate      BiostatusDescription 
-                       16                      5700                         7 
-    OccurrenceDescription      VerbatimTaxonName_C2              TaxonName_C2 
-                       10                     12005                      8728 
-            Vernacular_C2                    HostId                 Family_C2 
-                       20                      8125                       446 
-          PartAffected_C2              Substrate_C2    CollectionEventContext 
-                       16                        22                         5 
-    CollectionEventMethod         StandardCollector         CollectionDateISO 
-                        1                      8272                     21113 
-      CollectorsRefNumber           VerbatimCountry                   Country 
-                    33626                       193                       154 
-               NZAreaCode          StandardLocality          VerbatimLocality 
-                       39                     26629                     29431 
-                 MapSheet                 MapSheet1                   Easting 
-                        4                       134                     15023 
-                 Northing                DecimalLat               DecimalLong 
-                    15368                      2896                      2861 
-                 Altitude          AltitudeInMeters              MicroHabitat 
-                      987                       521                         6 
-                  Habitat      CollectionEventNotes                   GenBank 
-                     1473                       137                         2 
-               Literature                    Images 
-                        2                         2 
+                    16923                     14172                     17057 
+       VerbatimDeterminer        StandardDeterminer      DeterminersRefNumber 
+                     2038                       381                      5471 
+                   Phylum                     Class                     Order 
+                       15                        45                       150 
+                   Family              PartAffected                 Substrate 
+                      516                        16                      5781 
+     BiostatusDescription     OccurrenceDescription      VerbatimTaxonName_C2 
+                        7                        10                     12120 
+             TaxonName_C2             Vernacular_C2                    HostId 
+                     8748                        20                      8152 
+                Family_C2           PartAffected_C2              Substrate_C2 
+                      447                        16                        22 
+   CollectionEventContext     CollectionEventMethod         StandardCollector 
+                        5                         1                      8321 
+        CollectionDateISO       CollectorsRefNumber           VerbatimCountry 
+                    21152                     33942                       193 
+                  Country                NZAreaCode          StandardLocality 
+                      154                        39                     26634 
+         VerbatimLocality                  MapSheet                 MapSheet1 
+                    29599                         4                       134 
+                  Easting                  Northing                DecimalLat 
+                    15022                     15367                     21162 
+              DecimalLong                  Altitude          AltitudeInMeters 
+                    20997                      1028                       527 
+             MicroHabitat                   Habitat      CollectionEventNotes 
+                        6                      1489                       137 
+                  GenBank                Literature                    Images 
+                        2                         2                         2 

@@ -1,112 +1,140 @@
-  AccessionNumber      SpecimenType     FilingNumber SpecimenSecurityLevel
-1        ICMP 593 Bacterial Culture Xanthomonadaceae                    40
-2        ICMP 594 Bacterial Culture Xanthomonadaceae                    40
-3        ICMP 607 Bacterial Culture Xanthomonadaceae                    40
-4        ICMP 608 Bacterial Culture Xanthomonadaceae                    40
-5        ICMP 609 Bacterial Culture Xanthomonadaceae                    40
-6        ICMP 610 Bacterial Culture Xanthomonadaceae                    40
-  SpecimenSecurityLevelText Deaccessioned IsMissing LoanStatus CreatedBy
-1                    Public         false     false     Active Migration
-2                    Public         false     false            Migration
-3                    Public         false     false            Migration
-4                    Public         false     false            Migration
-5                    Public         false     false            Migration
-6                    Public         false     false            Migration
-            CreatedDate            UpdatedBy           UpdatedDate Quantity
-1 25/01/2002 9:24:09 AM    LANDCARE\\wilsonj 19/04/2018 3:52:03 PM       NA
-2 25/01/2002 9:24:09 AM LANDCARE\\pettersonm  8/05/2017 9:16:05 AM        1
-3 25/01/2002 9:24:09 AM    LANDCARE\\wilsonj 19/04/2018 3:53:21 PM        1
-4 25/01/2002 9:24:09 AM  LANDCARE\\williamsr  5/06/2018 2:05:13 PM       NA
-5 25/01/2002 9:24:09 AM  LANDCARE\\williamsr  5/06/2018 2:07:25 PM       NA
-6 25/01/2002 9:24:09 AM  LANDCARE\\williamsr  5/06/2018 2:08:52 PM       NA
-  TypeStatus                                                    VerbatimName
-1            Xanthomonas campestris pv. campestris (Pammel 1895) Dowson 1939
-2                     Xanthomonas campestris pv. citri (Hasse 1915) Dye 1978
-3                     Xanthomonas campestris pv. citri (Hasse 1915) Dye 1978
-4                     Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
-5                     Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
-6                     Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
-                              TaxonName                           CurrentName
-1 Xanthomonas campestris pv. campestris Xanthomonas campestris pv. campestris
-2      Xanthomonas campestris pv. citri        Xanthomonas citri subsp. citri
-3      Xanthomonas campestris pv. citri        Xanthomonas citri subsp. citri
-4      Xanthomonas campestris pv. pruni      Xanthomonas arboricola pv. pruni
-5      Xanthomonas campestris pv. pruni      Xanthomonas arboricola pv. pruni
-6      Xanthomonas campestris pv. pruni      Xanthomonas arboricola pv. pruni
-                          SourceNameId VerbatimDeterminer StandardDeterminer
-1 7A340EEC-10CE-4CA1-A7A1-561A65C970F3                                      
-2 5AFC580F-3FA1-4638-95D2-DBEAA368B85A                                      
-3 5AFC580F-3FA1-4638-95D2-DBEAA368B85A                                      
-4 06AF8B3E-E455-4A0F-8E9A-5850DD751752                                      
-5 06AF8B3E-E455-4A0F-8E9A-5850DD751752                                      
-6 06AF8B3E-E455-4A0F-8E9A-5850DD751752                                      
-  DeterminersRefNumber           Phylum               Class           Order
-1                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-2                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-3                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-4                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-5                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-6                      "Proteobacteria" Gammaproteobacteria Xanthomonadales
-            Family PartAffected Substrate BiostatusDescription OccurrenceDescription
-1 Xanthomonadaceae    leaf vein                                              Present
-2 Xanthomonadaceae        fruit                         Exotic            Eradicated
-3 Xanthomonadaceae        fruit                         Exotic            Eradicated
-4 Xanthomonadaceae       canker                         Exotic               Present
-5 Xanthomonadaceae       canker                         Exotic               Present
-6 Xanthomonadaceae       canker                         Exotic               Present
-                             VerbatimTaxonName_C2                    TaxonName_C2
-1 Brassica rapa L. subsp. sylvestris (L.) Janchen Brassica rapa subsp. sylvestris
-2                                      Citrus sp.                          Citrus
-3                                      Citrus sp.                          Citrus
-4                            Prunus avium (L.) L.                    Prunus avium
-5                            Prunus avium (L.) L.                    Prunus avium
-6                            Prunus avium (L.) L.                    Prunus avium
-        Vernacular_C2                               HostId  Family_C2
-1         wild turnip BD4F7AB8-F812-47F1-AA5F-324EC8602DFF Cruciferae
-2                     CFDB247B-CCB3-4C3B-B852-297304B78310   Rutaceae
-3                     CFDB247B-CCB3-4C3B-B852-297304B78310   Rutaceae
-4     cherry cv. Bing F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae
-5 cherry cv. Napoleon F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae
-6      cherry cv. Van F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae
-  PartAffected_C2 Substrate_C2 StandardCollector CollectionDateISO
-1       leaf vein                 Shackleton, DA           1962-07
-2           fruit                                          1962-12
-3           fruit                                          1962-12
-4          canker                                                 
-5          canker                                                 
-6          canker                                                 
-  CollectorsRefNumber VerbatimCountry     Country NZAreaCode StandardLocality
-1                         New Zealand New Zealand   Auckland         Auckland
-2                               Japan       Japan                            
-3                               Japan       Japan                            
-4                         New Zealand New Zealand   Auckland     Mount Albert
-5                         New Zealand New Zealand   Auckland     Mount Albert
-6                         New Zealand New Zealand   Auckland     Mount Albert
-  VerbatimLocality MapSheet MapSheet1 Easting Northing DecimalLat DecimalLong
-1         Auckland                         NA           -36.84056     174.740
-2        [Unknown]                         NA                  NA          NA
-3        [Unknown]                         NA                  NA          NA
-4        Mt Albert                         NA           -36.88400     174.716
-5        Mt Albert                         NA           -36.88400     174.716
-6        Mt Albert                         NA           -36.88400     174.716
-  Altitude AltitudeInMeters MicroHabitat Habitat CollectionEventNotes
-1                        NA           NA                             
-2                        NA           NA                             
-3                        NA           NA                             
-4                        NA           NA                             
-5                        NA           NA                             
-6                        NA           NA                             
-  IsolationDateISO DepositedDateISO DepositorName DepositorRefNumber GenBank
-1       1962-07-01       1985-09-01      D.W. Dye                Q27   false
-2       1962-12-01       1963-01-01      D.W. Dye                R16   false
-3       1962-12-01       1985-09-01      D.W. Dye                R17   false
-4       1962-07-01       1985-09-01      D.W. Dye                T19   false
-5       1962-07-01       1986-03-01      D.W. Dye                T20   false
-6       1962-07-01       1985-12-01      D.W. Dye                T21   false
-  Literature Images
-1      false  false
-2      false  false
-3      false  false
-4      false   true
-5      false   true
-6      false   true
+  AccessionNumber      SpecimenType     FilingNumber
+1        ICMP 593 Bacterial Culture Xanthomonadaceae
+2        ICMP 594 Bacterial Culture Xanthomonadaceae
+3        ICMP 607 Bacterial Culture Xanthomonadaceae
+4        ICMP 608 Bacterial Culture Xanthomonadaceae
+5        ICMP 609 Bacterial Culture Xanthomonadaceae
+6        ICMP 610 Bacterial Culture Xanthomonadaceae
+  SpecimenSecurityLevel SpecimenSecurityLevelText Deaccessioned
+1                    40                    Public         false
+2                    40                    Public         false
+3                    40                    Public         false
+4                    40                    Public         false
+5                    40                    Public         false
+6                    40                    Public         false
+  IsMissing LoanStatus CreatedBy           CreatedDate
+1     false     Active Migration 25/01/2002 9:24:09 AM
+2     false            Migration 25/01/2002 9:24:09 AM
+3     false            Migration 25/01/2002 9:24:09 AM
+4     false            Migration 25/01/2002 9:24:09 AM
+5     false            Migration 25/01/2002 9:24:09 AM
+6     false            Migration 25/01/2002 9:24:09 AM
+             UpdatedBy           UpdatedDate Quantity TypeStatus
+1    LANDCARE\\wilsonj 19/04/2018 3:52:03 PM       NA           
+2 LANDCARE\\pettersonm  8/05/2017 9:16:05 AM        1           
+3    LANDCARE\\wilsonj 19/04/2018 3:53:21 PM        1           
+4  LANDCARE\\williamsr  5/06/2018 2:05:13 PM       NA           
+5  LANDCARE\\williamsr  5/06/2018 2:07:25 PM       NA           
+6  LANDCARE\\williamsr  5/06/2018 2:08:52 PM       NA           
+                                                     VerbatimName
+1 Xanthomonas campestris pv. campestris (Pammel 1895) Dowson 1939
+2          Xanthomonas campestris pv. citri (Hasse 1915) Dye 1978
+3          Xanthomonas campestris pv. citri (Hasse 1915) Dye 1978
+4          Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
+5          Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
+6          Xanthomonas campestris pv. pruni (Smith 1903) Dye 1978
+                              TaxonName
+1 Xanthomonas campestris pv. campestris
+2      Xanthomonas campestris pv. citri
+3      Xanthomonas campestris pv. citri
+4      Xanthomonas campestris pv. pruni
+5      Xanthomonas campestris pv. pruni
+6      Xanthomonas campestris pv. pruni
+                            CurrentName
+1 Xanthomonas campestris pv. campestris
+2        Xanthomonas citri subsp. citri
+3        Xanthomonas citri subsp. citri
+4      Xanthomonas arboricola pv. pruni
+5      Xanthomonas arboricola pv. pruni
+6      Xanthomonas arboricola pv. pruni
+                          SourceNameId VerbatimDeterminer
+1 7A340EEC-10CE-4CA1-A7A1-561A65C970F3                   
+2 5AFC580F-3FA1-4638-95D2-DBEAA368B85A                   
+3 5AFC580F-3FA1-4638-95D2-DBEAA368B85A                   
+4 06AF8B3E-E455-4A0F-8E9A-5850DD751752                   
+5 06AF8B3E-E455-4A0F-8E9A-5850DD751752                   
+6 06AF8B3E-E455-4A0F-8E9A-5850DD751752                   
+  StandardDeterminer DeterminersRefNumber           Phylum
+1                                         "Proteobacteria"
+2                                         "Proteobacteria"
+3                                         "Proteobacteria"
+4                                         "Proteobacteria"
+5                                         "Proteobacteria"
+6                                         "Proteobacteria"
+                Class           Order           Family PartAffected
+1 Gammaproteobacteria Xanthomonadales Xanthomonadaceae    leaf vein
+2 Gammaproteobacteria Xanthomonadales Xanthomonadaceae        fruit
+3 Gammaproteobacteria Xanthomonadales Xanthomonadaceae        fruit
+4 Gammaproteobacteria Xanthomonadales Xanthomonadaceae       canker
+5 Gammaproteobacteria Xanthomonadales Xanthomonadaceae       canker
+6 Gammaproteobacteria Xanthomonadales Xanthomonadaceae       canker
+  Substrate BiostatusDescription OccurrenceDescription
+1                                              Present
+2                         Exotic            Eradicated
+3                         Exotic            Eradicated
+4                         Exotic               Present
+5                         Exotic               Present
+6                         Exotic               Present
+                             VerbatimTaxonName_C2
+1 Brassica rapa L. subsp. sylvestris (L.) Janchen
+2                                      Citrus sp.
+3                                      Citrus sp.
+4                            Prunus avium (L.) L.
+5                            Prunus avium (L.) L.
+6                            Prunus avium (L.) L.
+                     TaxonName_C2       Vernacular_C2
+1 Brassica rapa subsp. sylvestris         wild turnip
+2                          Citrus                    
+3                          Citrus                    
+4                    Prunus avium     cherry cv. Bing
+5                    Prunus avium cherry cv. Napoleon
+6                    Prunus avium      cherry cv. Van
+                                HostId  Family_C2 PartAffected_C2
+1 BD4F7AB8-F812-47F1-AA5F-324EC8602DFF Cruciferae       leaf vein
+2 CFDB247B-CCB3-4C3B-B852-297304B78310   Rutaceae           fruit
+3 CFDB247B-CCB3-4C3B-B852-297304B78310   Rutaceae           fruit
+4 F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae          canker
+5 F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae          canker
+6 F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae          canker
+  Substrate_C2 StandardCollector CollectionDateISO CollectorsRefNumber
+1                 Shackleton, DA           1962-07                    
+2                                          1962-12                    
+3                                          1962-12                    
+4                                                                     
+5                                                                     
+6                                                                     
+  VerbatimCountry     Country NZAreaCode StandardLocality
+1     New Zealand New Zealand   Auckland         Auckland
+2           Japan       Japan                            
+3           Japan       Japan                            
+4     New Zealand New Zealand   Auckland     Mount Albert
+5     New Zealand New Zealand   Auckland     Mount Albert
+6     New Zealand New Zealand   Auckland     Mount Albert
+  VerbatimLocality MapSheet MapSheet1 Easting Northing DecimalLat
+1         Auckland                         NA           -36.84056
+2        [Unknown]                         NA                  NA
+3        [Unknown]                         NA                  NA
+4        Mt Albert                         NA           -36.88400
+5        Mt Albert                         NA           -36.88400
+6        Mt Albert                         NA           -36.88400
+  DecimalLong Altitude AltitudeInMeters MicroHabitat Habitat
+1     174.740                        NA           NA        
+2          NA                        NA           NA        
+3          NA                        NA           NA        
+4     174.716                        NA           NA        
+5     174.716                        NA           NA        
+6     174.716                        NA           NA        
+  CollectionEventNotes IsolationDateISO DepositedDateISO DepositorName
+1                            1962-07-01       1985-09-01      D.W. Dye
+2                            1962-12-01       1963-01-01      D.W. Dye
+3                            1962-12-01       1985-09-01      D.W. Dye
+4                            1962-07-01       1985-09-01      D.W. Dye
+5                            1962-07-01       1986-03-01      D.W. Dye
+6                            1962-07-01       1985-12-01      D.W. Dye
+  DepositorRefNumber GenBank Literature Images
+1                Q27   false      false  false
+2                R16   false      false  false
+3                R17   false      false  false
+4                T19   false      false   true
+5                T20   false      false   true
+6                T21   false      false   true
