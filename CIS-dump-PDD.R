@@ -1,8 +1,8 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017)
+# Author: B.S. Weir (2017-2020)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-19-jan-2020.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-16-jan-2020.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -485,7 +485,7 @@ c <- subset(PDD.dump, (Country == "New Zealand"))
 
 #======GeoGraphic stuff========
 
-#New Zealand Area codes
+#New Zealand Area codes This is good
 nz <- subset(PDD.dump,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 attach(nz) 
@@ -517,7 +517,7 @@ mp
 
 #======Habitat========
 
-#New Zealand Area codes
+#too many to work
 nz <- subset(PDD.dump,(Country == "New Zealand"))
 attach(nz) 
 require(ggplot2)

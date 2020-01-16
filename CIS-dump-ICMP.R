@@ -415,6 +415,16 @@ drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetyp
 drp
 ggsave(drp, file='ICMP-deposit-dates.png', width=5, height=5)
 
+attach(ICMP.dump) 
+require(ggplot2)
+cdr <- ggplot(ICMP.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) + labs(title = "Date cultures were collected") + labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") 
+cdr <- cdr + scale_x_date()
+cdr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
+cdrp <- cdr + geom_histogram(binwidth=365.25)
+cdrp <- cdr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
+cdrp
+ggsave(cdrp, file='ICMP-Collection-dates.png', width=5, height=5)
+
 
 
 
