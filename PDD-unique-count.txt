@@ -1,40 +1,30 @@
-          AccessionNumber              SpecimenType              FilingNumber 
-                   103839                         3                        15 
-    SpecimenSecurityLevel SpecimenSecurityLevelText             Deaccessioned 
-                        5                         5                         2 
-                IsMissing                LoanStatus                  Quantity 
-                        2                         6                         5 
-                CreatedBy               CreatedDate                 UpdatedBy 
-                       32                     43326                        51 
-              UpdatedDate                TypeStatus              VerbatimName 
-                    47566                        13                     24768 
-                TaxonName               CurrentName              SourceNameId 
-                    16923                     14172                     17057 
-       VerbatimDeterminer        StandardDeterminer      DeterminersRefNumber 
-                     2038                       381                      5471 
-                   Phylum                     Class                     Order 
-                       15                        45                       150 
-                   Family              PartAffected                 Substrate 
-                      516                        16                      5781 
-     BiostatusDescription     OccurrenceDescription      VerbatimTaxonName_C2 
-                        7                        10                     12120 
-             TaxonName_C2             Vernacular_C2                    HostId 
-                     8748                        20                      8152 
-                Family_C2           PartAffected_C2              Substrate_C2 
-                      447                        16                        22 
-   CollectionEventContext     CollectionEventMethod         StandardCollector 
-                        5                         1                      8321 
-        CollectionDateISO       CollectorsRefNumber           VerbatimCountry 
-                    21152                     33942                       193 
-                  Country                NZAreaCode          StandardLocality 
-                      154                        39                     26634 
-         VerbatimLocality                  MapSheet                 MapSheet1 
-                    29599                         4                       134 
-                  Easting                  Northing                DecimalLat 
-                    15022                     15367                     21162 
-              DecimalLong                  Altitude          AltitudeInMeters 
-                    20997                      1028                       527 
-             MicroHabitat                   Habitat      CollectionEventNotes 
-                        6                      1489                       137 
-                  GenBank                Literature                    Images 
-                        2                         2                         2 
+          AccessionNumber              SpecimenType              FilingNumber     SpecimenSecurityLevel 
+                   103839                         3                        15                         5 
+SpecimenSecurityLevelText             Deaccessioned                 IsMissing                LoanStatus 
+                        5                         2                         2                         6 
+                 Quantity                 CreatedBy               CreatedDate                 UpdatedBy 
+                        5                        32                     43326                        51 
+              UpdatedDate                TypeStatus              VerbatimName                 TaxonName 
+                    47566                        13                     24768                     16923 
+              CurrentName              SourceNameId        VerbatimDeterminer        StandardDeterminer 
+                    14172                     17057                      2038                       381 
+     DeterminersRefNumber                    Phylum                     Class                     Order 
+                     5471                        15                        45                       150 
+                   Family              PartAffected                 Substrate      BiostatusDescription 
+                      516                        16                      5781                         7 
+    OccurrenceDescription      VerbatimTaxonName_C2              TaxonName_C2             Vernacular_C2 
+                       10                     12120                      8748                        20 
+                   HostId                 Family_C2           PartAffected_C2              Substrate_C2 
+                     8152                       447                        16                        22 
+   CollectionEventContext     CollectionEventMethod         StandardCollector         CollectionDateISO 
+                        5                         1                      8321                     21152 
+      CollectorsRefNumber           VerbatimCountry                   Country                NZAreaCode 
+                    33942                       193                       154                        39 
+         StandardLocality          VerbatimLocality                  MapSheet                 MapSheet1 
+                    26634                     29599                         4                       134 
+                  Easting                  Northing                DecimalLat               DecimalLong 
+                    15022                     15367                     21162                     20997 
+                 Altitude          AltitudeInMeters              MicroHabitat                   Habitat 
+                     1028                       527                         6                      1489 
+     CollectionEventNotes                   GenBank                Literature                    Images 
+                      137                         2                         2                         2 

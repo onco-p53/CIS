@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-11-nov-2019.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-19-jan-2020.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))

@@ -1,5 +1,5 @@
           AccessionNumber              SpecimenType 
-                    21486                         4 
+                    21619                         4 
              FilingNumber     SpecimenSecurityLevel 
                       162                         5 
 SpecimenSecurityLevelText             Deaccessioned 
@@ -7,56 +7,56 @@ SpecimenSecurityLevelText             Deaccessioned
                 IsMissing                LoanStatus 
                         1                         3 
                 CreatedBy               CreatedDate 
-                       14                      8485 
+                       15                      8617 
                 UpdatedBy               UpdatedDate 
-                       22                     17146 
+                       22                     17542 
                  Quantity                TypeStatus 
                         2                        17 
              VerbatimName                 TaxonName 
-                     4598                      3929 
+                     4654                      3971 
               CurrentName              SourceNameId 
-                     3578                      3942 
+                     3617                      3986 
        VerbatimDeterminer        StandardDeterminer 
-                      588                       362 
+                      602                       374 
      DeterminersRefNumber                    Phylum 
-                     1297                        17 
+                     1311                        17 
                     Class                     Order 
                        37                       115 
                    Family              PartAffected 
-                      346                      2533 
+                      350                      2539 
                 Substrate      BiostatusDescription 
-                      934                         7 
+                      953                         7 
     OccurrenceDescription      VerbatimTaxonName_C2 
-                        8                      2948 
+                        8                      2965 
              TaxonName_C2             Vernacular_C2 
-                     2115                      2403 
+                     2124                      2424 
                    HostId                 Family_C2 
-                     2059                       253 
+                     2070                       252 
           PartAffected_C2              Substrate_C2 
-                     2533                        79 
+                     2539                        81 
         StandardCollector         CollectionDateISO 
-                     1270                      2130 
+                     1363                      2226 
       CollectorsRefNumber           VerbatimCountry 
-                     2862                       218 
+                     2883                       218 
                   Country                NZAreaCode 
                       143                        37 
          StandardLocality          VerbatimLocality 
-                     3082                      3940 
+                     3096                      3990 
                  MapSheet                 MapSheet1 
                         4                         5 
                   Easting                  Northing 
                       479                       492 
                DecimalLat               DecimalLong 
-                     2110                      2128 
+                     2178                      2194 
                  Altitude          AltitudeInMeters 
                        23                        21 
              MicroHabitat                   Habitat 
-                        1                        51 
+                        1                        55 
      CollectionEventNotes          IsolationDateISO 
-                      222                      2546 
+                      223                      2570 
          DepositedDateISO             DepositorName 
-                     1675                       765 
+                     1698                       775 
        DepositorRefNumber                   GenBank 
-                    16717                         2 
+                    16794                         2 
                Literature                    Images 
                         2                         2 
