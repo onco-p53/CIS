@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-export-16-jan-2020.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-17-feb-2020.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 
 
@@ -354,7 +354,7 @@ con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countri
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
 con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
 print_bars <- con + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
-ggsave(print_bars, file='ICMP_country_by_kind.png', width=6, height=5)
+ggsave(print_bars, file='ICMP_country_by_kind.png', width=8, height=4.5)
 ggsave(print_bars, file='ICMP_country_by_kind.svg', width=6, height=5)
 ggsave(print_bars, file='ICMP_country_by_kind.eps', width=6, height=5)
 
@@ -401,7 +401,7 @@ di <- ggplot(ICMP.dump, aes(as.Date(IsolationDateISO, format='%Y-%m-%d'))) + lab
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='ICMP-isolation-dates.png', width=5, height=5)
+ggsave(dip, file='ICMP-isolation-dates.png', width=8, height=4.5)
 ggsave(dip, file='ICMP-isolation-dates.svg', width=5, height=5)
 ggsave(dip, file='ICMP-isolation-dates.eps', width=5, height=5)
 
@@ -539,7 +539,7 @@ p <- ggplot(ICMP.nz, aes(NZAreaCode)) + labs(title = "ICMP cultures by NZ region
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
 print_bars <- p + geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
-ggsave(print_bars, file='ICMP_NZAreaCode.png', width=5, height=5)
+ggsave(print_bars, file='ICMP_NZAreaCode.png', width=8, height=4.5)
 
 #Using GGPLOT, plot the Base World Map
 mp <- NULL

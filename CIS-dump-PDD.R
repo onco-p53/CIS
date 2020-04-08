@@ -397,10 +397,67 @@ drp <- di + geom_histogram(binwidth=365.25)
 ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
 
 
+#============Over months================
+
+#subset New Zealand specimens
+PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
+summary(PDD.awheto, maxsum=40)
+attach(PDD.awheto) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.awheto$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(date.collected, unit = "month")
+month(date.collected, label = TRUE)
+di <- ggplot(PDD.awheto, aes(month(mergemonths, label = TRUE), fill = CurrentName)) + labs(title = "Collection month of PDD specimens of Awheto") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
+di + geom_bar()
+dip <- di + geom_bar()
+ggsave(dip, file='PDD-awheto-dates.png', width=8, height=5)
+
+PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
+summary(PDD.awheto, maxsum=40)
+attach(PDD.awheto) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.awheto$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(date.collected, unit = "month")
+di <- ggplot(PDD.awheto, aes(month(mergemonths, label = TRUE), fill = TaxonName_C2)) + labs(title = "Collection month of PDD specimens of Awheto with host") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
+di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
+dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE)
+ggsave(dip, file='PDD-awheto-dates-host.png', width=8, height=5)
+
+library(tidyverse)
+drop_na(PDD.awheto$CollectionDateISOs)
+
+PDD.awheto$CollectionDateISOs %>% drop_na()
+
+
+#subset New Zealand specimens
+PDD.awheto <- subset(PDD.dump,(Family == "Glomerellaceae"))
+summary(PDD.Glomerellaceae, maxsum=40)
+attach(PDD.Glomerellaceae) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.awheto$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(date.collected, unit = "month")
+month(date.collected, label = TRUE)
+di <- ggplot(PDD.Glomerellaceae, aes(month(mergemonths, label = TRUE))) + labs(title = "Collection month of PDD specimens of Awheto") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
+di + geom_bar()
+dip <- di + geom_bar()
+ggsave(dip, file='Glomerellaceae-season.png', width=8, height=5)
 
 
 
 
+date.collected
+
+CollectionDateISO
+
+mergemonths <- round_date(date.collected, unit = "month")
+mergemonths
+
+
+
+#---------------------------------------------------
 
 
 

@@ -1,62 +1,32 @@
-          AccessionNumber              SpecimenType 
-                    21619                         4 
-             FilingNumber     SpecimenSecurityLevel 
-                      162                         5 
-SpecimenSecurityLevelText             Deaccessioned 
-                        5                         1 
-                IsMissing                LoanStatus 
-                        1                         3 
-                CreatedBy               CreatedDate 
-                       15                      8617 
-                UpdatedBy               UpdatedDate 
-                       22                     17542 
-                 Quantity                TypeStatus 
-                        2                        17 
-             VerbatimName                 TaxonName 
-                     4654                      3971 
-              CurrentName              SourceNameId 
-                     3617                      3986 
-       VerbatimDeterminer        StandardDeterminer 
-                      602                       374 
-     DeterminersRefNumber                    Phylum 
-                     1311                        17 
-                    Class                     Order 
-                       37                       115 
-                   Family              PartAffected 
-                      350                      2539 
-                Substrate      BiostatusDescription 
-                      953                         7 
-    OccurrenceDescription      VerbatimTaxonName_C2 
-                        8                      2965 
-             TaxonName_C2             Vernacular_C2 
-                     2124                      2424 
-                   HostId                 Family_C2 
-                     2070                       252 
-          PartAffected_C2              Substrate_C2 
-                     2539                        81 
-        StandardCollector         CollectionDateISO 
-                     1363                      2226 
-      CollectorsRefNumber           VerbatimCountry 
-                     2883                       218 
-                  Country                NZAreaCode 
-                      143                        37 
-         StandardLocality          VerbatimLocality 
-                     3096                      3990 
-                 MapSheet                 MapSheet1 
-                        4                         5 
-                  Easting                  Northing 
-                      479                       492 
-               DecimalLat               DecimalLong 
-                     2178                      2194 
-                 Altitude          AltitudeInMeters 
-                       23                        21 
-             MicroHabitat                   Habitat 
-                        1                        55 
-     CollectionEventNotes          IsolationDateISO 
-                      223                      2570 
-         DepositedDateISO             DepositorName 
-                     1698                       775 
-       DepositorRefNumber                   GenBank 
-                    16794                         2 
+          AccessionNumber              SpecimenType              FilingNumber     SpecimenSecurityLevel 
+                    21631                         4                       162                         5 
+SpecimenSecurityLevelText             Deaccessioned                 IsMissing                LoanStatus 
+                        5                         1                         1                         3 
+                CreatedBy               CreatedDate                 UpdatedBy               UpdatedDate 
+                       15                      8644                        22                     17696 
+                 Quantity                TypeStatus              VerbatimName                 TaxonName 
+                        2                        17                      4659                      3975 
+              CurrentName              SourceNameId        VerbatimDeterminer        StandardDeterminer 
+                     3621                      3990                       604                       375 
+     DeterminersRefNumber                    Phylum                     Class                     Order 
+                     1313                        17                        37                       115 
+                   Family              PartAffected                 Substrate      BiostatusDescription 
+                      350                      2539                       965                         7 
+    OccurrenceDescription      VerbatimTaxonName_C2              TaxonName_C2             Vernacular_C2 
+                        8                      2967                      2125                      2427 
+                   HostId                 Family_C2           PartAffected_C2              Substrate_C2 
+                     2071                       252                      2539                        82 
+        StandardCollector         CollectionDateISO       CollectorsRefNumber           VerbatimCountry 
+                     1397                      2267                      2895                       218 
+                  Country                NZAreaCode          StandardLocality          VerbatimLocality 
+                      143                        37                      3105                      4000 
+                 MapSheet                 MapSheet1                   Easting                  Northing 
+                        4                         5                       478                       491 
+               DecimalLat               DecimalLong                  Altitude          AltitudeInMeters 
+                     2192                      2207                        23                        21 
+             MicroHabitat                   Habitat      CollectionEventNotes          IsolationDateISO 
+                        1                        55                       222                      2573 
+         DepositedDateISO             DepositorName        DepositorRefNumber                   GenBank 
+                     1702                       777                     16785                         2 
                Literature                    Images 
                         2                         2 
