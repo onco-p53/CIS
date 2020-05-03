@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017-2020)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-16-jan-2020.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-2-may-2020.csv", header=TRUE, sep=",")
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -399,7 +399,21 @@ ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
 
 #============Over months================
 
-#subset New Zealand specimens
+#Collection month of NZ PDD specimens
+attach(PDD.dump.NZ) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.dump.NZ$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(date.collected, unit = "month")
+month(date.collected, label = TRUE)
+di <- ggplot(PDD.dump.NZ, aes(month(mergemonths, label = TRUE), fill = Phylum)) + labs(title = "Collection month of PDD specimens from NZ") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
+di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
+dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
+ggsave(dip, file='PDD-collection-month-dates.png', width=8, height=5)
+
+
+
+#awheto specimens
 PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
 summary(PDD.awheto, maxsum=40)
 attach(PDD.awheto) 
@@ -409,8 +423,8 @@ date.collected <-ymd(PDD.awheto$CollectionDateISO, truncated = 1)
 mergemonths <- floor_date(date.collected, unit = "month")
 month(date.collected, label = TRUE)
 di <- ggplot(PDD.awheto, aes(month(mergemonths, label = TRUE), fill = CurrentName)) + labs(title = "Collection month of PDD specimens of Awheto") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
-di + geom_bar()
-dip <- di + geom_bar()
+di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
+dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 ggsave(dip, file='PDD-awheto-dates.png', width=8, height=5)
 
 PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))

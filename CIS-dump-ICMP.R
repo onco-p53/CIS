@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017)
 
 #============Load and subset data================
-ICMP.dump.initial <- read.csv("ICMP-export-17-feb-2020.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-2-may-2020.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 
 
@@ -391,7 +391,27 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 #can do a culmalative graph?
 
 
-#model for PDD too
+#new month ICMP culture isolated (in NZ):
+attach(ICMP.dump.NZ) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(ICMP.dump.NZ$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(date.collected, unit = "month")
+di <- ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) + labs(title = "Collection month of ICMP cultures from NZ") + labs(x = "Month of collection", y =  "Number of cultures" , fill = "") 
+di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
+dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE)
+ggsave(dip, file='ICMP-isolation-month.png', width=8, height=5)
+
+
+#standard all ICMP overtime stats
+attach(ICMP.dump) 
+require(ggplot2)
+require(lubridate)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
+di <- ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) + labs(title = "Collection month of ICMP cultures") + labs(x = "Month of collection", y =  "Number of cultures" , fill = "") 
+di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+dip <- di + geom_histogram(binwidth=365.25)
+ggsave(dip, file='ICMP-isolation-dates2.png', width=8, height=5)
 
 
 
