@@ -31,6 +31,13 @@ summary(ICMP.yeast, maxsum=40)
 ICMP.dump.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 summary(ICMP.dump.NZ, maxsum=40)
 
+#============Load all the packages needed================
+
+library(tidyverse)
+require(ggplot2)
+require(lubridate)
+library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+
 
 
 
@@ -52,6 +59,12 @@ capture.output(u, file = "ICMP-unique-count.txt")
 
 # counts the number of unique values per collumn for NZ
 sapply(ICMP.dump.NZ, function(x) length(unique(x)))
+
+library(lubridate)
+d=tribble(ICMP.dump)
+d %>% mutate(date=mdy(textdate)) %>%
+  arrange(date)
+?arrange
 
 
 #============Type cultures================
@@ -395,12 +408,25 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 attach(ICMP.dump.NZ) 
 require(ggplot2)
 require(lubridate)
-date.collected <-ymd(ICMP.dump.NZ$CollectionDateISO, truncated = 1)
-mergemonths <- floor_date(date.collected, unit = "month")
-di <- ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) + labs(title = "Collection month of ICMP cultures from NZ") + labs(x = "Month of collection", y =  "Number of cultures" , fill = "") 
+month.isolated <-ymd(ICMP.dump.NZ$IsolationDateISO, truncated = 1)
+mergemonths <- floor_date(month.isolated, unit = "month")
+di <- ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) + labs(title = "Isolation month of ICMP cultures from NZ") + labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") 
 di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE)
 ggsave(dip, file='ICMP-isolation-month.png', width=8, height=5)
+
+#new month ICMP culture isolated (in NZ) [rewrite goodly]
+attach(ICMP.dump.NZ) 
+require(ggplot2)
+require(lubridate)
+month.isolated <- ymd(ICMP.dump.NZ$IsolationDateISO, truncated = 1)
+mergemonths <- floor_date(month.isolated, unit = "month")
+ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
+  labs(title = "Isolation month of ICMP cultures from NZ") + 
+  labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") +
+  geom_bar() + 
+    scale_x_discrete(na.translate = FALSE) + # this removes NAs
+ggsave(file='ICMP-isolation-month.png', width=8, height=5)
 
 
 #standard all ICMP overtime stats
@@ -408,12 +434,16 @@ attach(ICMP.dump)
 require(ggplot2)
 require(lubridate)
 date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
-di <- ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) + labs(title = "Collection month of ICMP cultures") + labs(x = "Month of collection", y =  "Number of cultures" , fill = "") 
+di <- ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
 ggsave(dip, file='ICMP-isolation-dates2.png', width=8, height=5)
 
+arrange(date.isolated)
 
+library(tidyverse)
+arrange(ICMP.dump, date.isolated) #this is the ealiest isolated culture
+arrange(ICMP.dump.NZ, month.isolated) #this is the ealiest isolated NZ culture
 
 attach(ICMP.dump) 
 require(ggplot2)
@@ -575,7 +605,7 @@ mp
 
 #======On Hosts========
 
-# subset out kiwifruit
+#kiwifruit
 ICMP.dump.kiwifruit <- subset(ICMP.dump,(TaxonName_C2 == "Actinidia deliciosa"))
 attach(b) 
 require(ggplot2)
@@ -584,6 +614,27 @@ p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
+
+
+#NZ Myrtaceae cultures in ICMP with a sequence
+ICMP.dump.Myrtaceae <- subset(ICMP.dump.NZ,(Family_C2 == "Myrtaceae"))
+ggplot(ICMP.dump.Myrtaceae, aes(SpecimenType, fill=GenBank)) + 
+  labs(title = "NZ Myrtaceae cultures in ICMP with a sequence") +
+  labs(x = "Taxonomic group", y = "Number of cultures") +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Paired")
+ggsave(file='ICMP_Myrtaceae-genbank.png', width=8, height=5)
+
+#Family of 'microbe' on NZ Myrtaceae in the ICMPt
+ICMP.dump.Myrtaceae <- subset(ICMP.dump.NZ,(Family_C2 == "Myrtaceae"))
+ggplot(ICMP.dump.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
+  labs(title = "Family of 'microbe' on NZ Myrtaceae in the ICMP") +
+  labs(x = "Family", y = "number of isolates") +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Paired")
+ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
 
 
 

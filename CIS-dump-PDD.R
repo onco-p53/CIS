@@ -412,6 +412,11 @@ dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes N
 ggsave(dip, file='PDD-collection-month-dates.png', width=8, height=5)
 
 
+library(tidyverse)
+date.collected.nz <-ymd(PDD.dump.NZ$CollectionDateISO)
+arrange(PDD.dump.NZ, date.collected.nz) #this is the ealiest isolated NZ specimen
+
+
 
 #awheto specimens
 PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
@@ -602,19 +607,17 @@ ggsave(print_bars, file='PDD_Habitat.png', width=15, height=49)
 
 #======On Hosts========
 
-# subset out kiwifruit
-PDD.dump.kiwifruit <- subset(PDD.dump,(TaxonName_C2 == "Actinidia deliciosa"))
 
-#ggplot code for bacterial Class
-attach(b) 
-require(ggplot2)
-p <- ggplot(PDD.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the PDD") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_kiwifruit-family.png', width=10, height=10)
 
-#======On Hosts========
+#Family of 'microbe' on NZ Myrtaceae in the ICMPt
+PDD.dump.Myrtaceae <- subset(PDD.dump.NZ,(Family_C2 == "Myrtaceae"))
+ggplot(PDD.dump.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
+  labs(title = "Family of 'microbe' on NZ Myrtaceae in the PDD Fungarium") +
+  labs(x = "Family", y = "number of isolates") +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Paired")
+ggsave(file='PDD_Myrtaceae-family.png', width=8, height=15)
 
 
 
