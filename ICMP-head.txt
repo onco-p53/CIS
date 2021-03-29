@@ -5,13 +5,13 @@
 4        ICMP 608 Bacterial Culture Xanthomonadaceae                    40                    Public         false
 5        ICMP 609 Bacterial Culture Xanthomonadaceae                    40                    Public         false
 6        ICMP 610 Bacterial Culture Xanthomonadaceae                    40                    Public         false
-  IsMissing LoanStatus CreatedBy           CreatedDate            UpdatedBy           UpdatedDate Quantity TypeStatus
-1     false     Active Migration 25/01/2002 9:24:09 am    LANDCARE\\wilsonj 19/04/2018 3:52:03 pm       NA           
-2     false            Migration 25/01/2002 9:24:09 am LANDCARE\\pettersonm  8/05/2017 9:16:05 am        1           
-3     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\wilsonj 19/04/2018 3:53:21 pm        1           
-4     false            Migration 25/01/2002 9:24:09 am  LANDCARE\\williamsr  5/06/2018 2:05:13 pm       NA           
-5     false            Migration 25/01/2002 9:24:09 am  LANDCARE\\williamsr  5/06/2018 2:07:25 pm       NA           
-6     false            Migration 25/01/2002 9:24:09 am  LANDCARE\\williamsr  5/06/2018 2:08:52 pm       NA           
+  IsMissing LoanStatus CreatedBy           CreatedDate         UpdatedBy            UpdatedDate Quantity TypeStatus
+1     false     Active Migration 25/01/2002 9:24:09 am LANDCARE\\wilsonj  19/04/2018 3:52:03 pm       NA           
+2     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:47:16 pm        1           
+3     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:47:55 pm        1           
+4     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:48:28 pm       NA           
+5     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:50:53 pm       NA           
+6     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:51:41 pm       NA           
                                                      VerbatimName                             TaxonName
 1 Xanthomonas campestris pv. campestris (Pammel 1895) Dowson 1939 Xanthomonas campestris pv. campestris
 2          Xanthomonas campestris pv. citri (Hasse 1915) Dye 1978      Xanthomonas campestris pv. citri
@@ -49,11 +49,11 @@
 6                    Prunus avium      cherry cv. Van F9D06EE7-5ADF-4397-84B8-E6BA8783308E   Rosaceae          canker
   Substrate_C2 StandardCollector CollectionDateISO CollectorsRefNumber VerbatimCountry     Country NZAreaCode
 1                 Shackleton, DA           1962-07                         New Zealand New Zealand   Auckland
-2                                          1962-12                               Japan       Japan           
-3                                          1962-12                               Japan       Japan           
-4                                                                          New Zealand New Zealand   Auckland
-5                                                                          New Zealand New Zealand   Auckland
-6                                                                          New Zealand New Zealand   Auckland
+2                 Shackleton, DA           1962-12                               Japan       Japan           
+3                 Shackleton, DA           1962-12                               Japan       Japan           
+4                        Dye, DW           1962-07                         New Zealand New Zealand   Auckland
+5                        Dye, DW           1962-07                         New Zealand New Zealand   Auckland
+6                        Dye, DW           1962-07                         New Zealand New Zealand   Auckland
   StandardLocality VerbatimLocality MapSheet MapSheet1 Easting Northing DecimalLat DecimalLong Altitude AltitudeInMeters
 1         Auckland         Auckland                         NA           -36.84056     174.740                        NA
 2                         [Unknown]                         NA                  NA          NA                        NA

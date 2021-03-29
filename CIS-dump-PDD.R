@@ -2,7 +2,8 @@
 # Author: B.S. Weir (2017-2020)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-2-may-2020.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-20-may-2020.csv", header=TRUE, sep=",")
+summary(PDD.dump$AccessionNumber, maxsum=10)
 
 # subset out "Deaccessioned=True", not implemented
 # PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
@@ -609,19 +610,23 @@ ggsave(print_bars, file='PDD_Habitat.png', width=15, height=49)
 
 
 
-#Family of 'microbe' on NZ Myrtaceae in the ICMPt
+#Order of 'microbe' on NZ Myrtaceae in the ICMPt
 PDD.dump.Myrtaceae <- subset(PDD.dump.NZ,(Family_C2 == "Myrtaceae"))
-ggplot(PDD.dump.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
-  labs(title = "Family of 'microbe' on NZ Myrtaceae in the PDD Fungarium") +
-  labs(x = "Family", y = "number of isolates") +
+ggplot(PDD.dump.Myrtaceae, aes(Order, fill=GenBank)) + #fill by type
+  labs(title = "Order of 'microbe' on NZ Myrtaceae in the PDD Fungarium") +
+  labs(x = "Order", y = "number of isolates") +
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Paired")
-ggsave(file='PDD_Myrtaceae-family.png', width=8, height=15)
+ggsave(file='PDD_Myrtaceae-order.png', width=8, height=15)
 
 
 
 
+#check double numbers
+
+PDD.dump.nohost <- subset(PDD.dump,(Family_C2 == ""))
+summary(PDD.dump.nohost$AccessionNumber, maxsum=10)
 
 
 
