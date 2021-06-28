@@ -1,13 +1,13 @@
  AccessionNumber    SpecimenType       FilingNumber       SpecimenSecurityLevel SpecimenSecurityLevelText
- Length:21778       Length:21778       Length:21778       Min.   : 1.00         Length:21778             
+ Length:22091       Length:22091       Length:22091       Min.   : 1.00         Length:22091             
  Class :character   Class :character   Class :character   1st Qu.:40.00         Class :character         
  Mode  :character   Mode  :character   Mode  :character   Median :40.00         Mode  :character         
-                                                          Mean   :37.14                                  
+                                                          Mean   :37.04                                  
                                                           3rd Qu.:40.00                                  
                                                           Max.   :40.00                                  
                                                                                                          
  Deaccessioned       IsMissing          LoanStatus         CreatedBy         CreatedDate         UpdatedBy        
- Length:21778       Length:21778       Length:21778       Length:21778       Length:21778       Length:21778      
+ Length:22091       Length:22091       Length:22091       Length:22091       Length:22091       Length:22091      
  Class :character   Class :character   Class :character   Class :character   Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                   
@@ -15,15 +15,15 @@
                                                                                                                   
                                                                                                                   
  UpdatedDate           Quantity      TypeStatus        VerbatimName        TaxonName         CurrentName       
- Length:21778       Min.   :1       Length:21778       Length:21778       Length:21778       Length:21778      
+ Length:22091       Min.   :1       Length:22091       Length:22091       Length:22091       Length:22091      
  Class :character   1st Qu.:1       Class :character   Class :character   Class :character   Class :character  
  Mode  :character   Median :1       Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                     Mean   :1                                                                                  
                     3rd Qu.:1                                                                                  
                     Max.   :1                                                                                  
-                    NA's   :10160                                                                              
+                    NA's   :10161                                                                              
  SourceNameId       VerbatimDeterminer StandardDeterminer DeterminersRefNumber    Phylum             Class          
- Length:21778       Length:21778       Length:21778       Length:21778         Length:21778       Length:21778      
+ Length:22091       Length:22091       Length:22091       Length:22091         Length:22091       Length:22091      
  Class :character   Class :character   Class :character   Class :character     Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character   Mode  :character  
                                                                                                                     
@@ -31,7 +31,7 @@
                                                                                                                     
                                                                                                                     
     Order              Family          PartAffected        Substrate         BiostatusDescription OccurrenceDescription
- Length:21778       Length:21778       Length:21778       Length:21778       Length:21778         Length:21778         
+ Length:22091       Length:22091       Length:22091       Length:22091       Length:22091         Length:22091         
  Class :character   Class :character   Class :character   Class :character   Class :character     Class :character     
  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character     
                                                                                                                        
@@ -39,7 +39,7 @@
                                                                                                                        
                                                                                                                        
  VerbatimTaxonName_C2 TaxonName_C2       Vernacular_C2         HostId           Family_C2         PartAffected_C2   
- Length:21778         Length:21778       Length:21778       Length:21778       Length:21778       Length:21778      
+ Length:22091         Length:22091       Length:22091       Length:22091       Length:22091       Length:22091      
  Class :character     Class :character   Class :character   Class :character   Class :character   Class :character  
  Mode  :character     Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                     
@@ -47,7 +47,7 @@
                                                                                                                     
                                                                                                                     
  Substrate_C2       StandardCollector  CollectionDateISO  CollectorsRefNumber VerbatimCountry      Country         
- Length:21778       Length:21778       Length:21778       Length:21778        Length:21778       Length:21778      
+ Length:22091       Length:22091       Length:22091       Length:22091        Length:22091       Length:22091      
  Class :character   Class :character   Class :character   Class :character    Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character   Mode  :character    Mode  :character   Mode  :character  
                                                                                                                    
@@ -55,23 +55,23 @@
                                                                                                                    
                                                                                                                    
   NZAreaCode        StandardLocality   VerbatimLocality     MapSheet          MapSheet1            Easting         
- Length:21778       Length:21778       Length:21778       Length:21778       Length:21778       Min.   :    154.6  
+ Length:22091       Length:22091       Length:22091       Length:22091       Length:22091       Min.   :    154.6  
  Class :character   Class :character   Class :character   Class :character   Class :character   1st Qu.:2467910.0  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :2615874.5  
-                                                                                                Mean   :2473677.8  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :2615549.0  
+                                                                                                Mean   :2472922.6  
                                                                                                 3rd Qu.:2675986.0  
                                                                                                 Max.   :2977021.3  
-                                                                                                NA's   :20826      
+                                                                                                NA's   :21138      
    Northing           DecimalLat      DecimalLong       Altitude         AltitudeInMeters MicroHabitat  
- Length:21778       Min.   :-79.92   Min.   :-178.5   Length:21778       Min.   :-114.0   Mode:logical  
- Class :character   1st Qu.:-40.66   1st Qu.: 167.6   Class :character   1st Qu.:  11.9   NA's:21778    
- Mode  :character   Median :-37.02   Median : 174.3   Mode  :character   Median : 165.9                 
-                    Mean   :-25.59   Mean   : 133.7                      Mean   : 305.6                 
-                    3rd Qu.:-35.61   3rd Qu.: 174.9                      3rd Qu.: 509.7                 
+ Length:22091       Min.   :-79.92   Min.   :-178.5   Length:22091       Min.   :-114.0   Mode:logical  
+ Class :character   1st Qu.:-40.66   1st Qu.: 166.8   Class :character   1st Qu.:  11.9   NA's:22091    
+ Mode  :character   Median :-37.01   Median : 174.1   Mode  :character   Median : 165.9                 
+                    Mean   :-25.14   Mean   : 133.7                      Mean   : 305.6                 
+                    3rd Qu.:-35.38   3rd Qu.: 174.9                      3rd Qu.: 509.7                 
                     Max.   : 65.57   Max.   : 179.7                      Max.   :1418.0                 
-                    NA's   :6457     NA's   :6457                        NA's   :21747                  
+                    NA's   :6275     NA's   :6275                        NA's   :22060                  
    Habitat          CollectionEventNotes IsolationDateISO   DepositedDateISO   DepositorName      DepositorRefNumber
- Length:21778       Length:21778         Length:21778       Length:21778       Length:21778       Length:21778      
+ Length:22091       Length:22091         Length:22091       Length:22091       Length:22091       Length:22091      
  Class :character   Class :character     Class :character   Class :character   Class :character   Class :character  
  Mode  :character   Mode  :character     Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                     
@@ -79,7 +79,7 @@
                                                                                                                     
                                                                                                                     
    GenBank           Literature           Images         
- Length:21778       Length:21778       Length:21778      
+ Length:22091       Length:22091       Length:22091      
  Class :character   Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character  
                                                          
