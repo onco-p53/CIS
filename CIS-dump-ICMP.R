@@ -54,12 +54,12 @@ summary(ICMP.dump, maxsum=20) #data after subsetting
 s <- summary(ICMP.dump, maxsum=25)
 capture.output(s, file = "ICMP-summary.txt")
 
-# counts the number of unique values per collumn for NZ
+# counts the number of unique values per column
 sapply(ICMP.dump, function(x) length(unique(x)))
 u <- sapply(ICMP.dump, function(x) length(unique(x)))
 capture.output(u, file = "ICMP-unique-count.txt")
 
-# counts the number of unique values per collumn for NZ
+# counts the number of unique values per column for NZ
 sapply(ICMP.dump.NZ, function(x) length(unique(x)))
 
 #============General stats================
@@ -71,8 +71,8 @@ table(ICMP.dump.NZ$SpecimenType)
 
 # Total number of each types for each organism
 
-
-
+?? as.numeric(length(unique(ICMP.dump$SpecimenType)))
+?? lengths(lapply(ICMP.dump$SpecimenType, unique))
 
 
 
@@ -128,7 +128,7 @@ sort(table(ICMP.dump$AccessionNumber),decreasing=TRUE)
 ggplot(ICMP.dump, aes(x="", y=AccessionNumber, fill=SpecimenType))+
   geom_bar(width = 1, stat = "identity")
 
-#bar chart by specimen type
+#pie chart by specimen type
 ggplot(ICMP.dump, aes(x=factor(1), fill=SpecimenType)) +
   geom_bar(width = 1) +
   coord_polar("y") +
@@ -137,7 +137,7 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=SpecimenType)) +
 ggsave(file='ICMP_specimen_pie.png', width=5, height=5)
 
 
-#bar chart by last updated user
+#pie chart by last updated user
 ICMP.dump$UpdatedBy3 <- sapply(ICMP.dump$UpdatedBy, tolower)
 
 ggplot(ICMP.dump, aes(x=factor(1), fill=UpdatedBy3)) +
@@ -473,6 +473,7 @@ date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
 ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  theme(legend.position = c(0.1, 0.8)) +
   geom_histogram(binwidth=365.25) # this is a bin of two years: binwidth=730
 ggsave(file='ICMP-isolation-dates2.png', width=8, height=5)
 
@@ -621,19 +622,46 @@ ggplot(ICMP.nz, aes(NZAreaCode)) +
   scale_x_discrete(limits = positions)
 ggsave(file='ICMP_NZAreaCode.png', width=8, height=4.5)
 
-#Using GGPLOT, plot the Base World Map
-mp <- NULL
-mapWorld <- borders("world", colour="gray50", fill="gray50") # create a layer of borders
-mp <- ggplot() +   mapWorld
-mp
 
-#Now Layer the cities on top
-mp <- mp + geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "black", size = 5)
-
-mp
+require(ggplot2)
+require(ggmap)
+require(maps)
+require(mapdata)
 
 
-need to map to NZAreacode somehow
+world <- map_data("world2Hires")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump.NZ, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1) +
+  geom_text(data = ICMP.dump.NZ, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  coord_fixed(1.3)
+
+world <- map_data("worldHires")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1) +
+  geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  coord_fixed(1.3)
+ggsave(file='ICMP_worldmap_labels.png', width=40, height=20)
+
+antibiotic.map <- read.csv("ICMP-antibiotic-map.csv", header=TRUE, sep=",")
+head(antibiotic.map)
+
+nz <- map_data("nzHires")
+ggplot() + 
+  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = antibiotic.map, aes(x = DecimalLong, y = DecimalLat), color = "black", size = 2) +
+  geom_text(data = antibiotic.map, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  coord_fixed(1.3)
+ggsave(file='ICMP_antibiotic_july2021labels.png', width=10, height=10)
+ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
+
+#to make the Chatham islands work you need to fudge them over 180 e.g. 183.41667
+
+
 
 
 #======On Hosts========
