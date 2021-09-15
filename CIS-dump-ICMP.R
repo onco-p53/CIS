@@ -484,10 +484,10 @@ arrange(ICMP.dump, date.isolated) #this is the earliest isolated culture
 arrange(ICMP.dump.NZ, month.isolated) #this is the earliest isolated NZ culture
 
 
-
-attach(ICMP.dump) 
+#deposit dates for bacteria
+attach(ICMP.bacteria) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(DepositedDateISO, format='%Y-%m-%d'))) + labs(title = "Date cultures were deposited in ICMP") + labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") 
+dr <- ggplot(ICMP.bacteria, aes(as.Date(DepositedDateISO, format='%Y-%m-%d'))) + labs(title = "Date bacterial cultures were deposited in ICMP") + labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
