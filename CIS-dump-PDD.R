@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017-2020)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-20-may-2020.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-10-sep-2021.csv", header=TRUE, sep=",")
 summary(PDD.dump$AccessionNumber, maxsum=10)
 
 # subset out "Deaccessioned=True", not implemented
@@ -629,6 +629,31 @@ PDD.dump.nohost <- subset(PDD.dump,(Family_C2 == ""))
 summary(PDD.dump.nohost$AccessionNumber, maxsum=10)
 
 
+#======Validations========
+
+#plot higher order taxon against storage location
+#Storage location main factor, colour by taxon
+
+#ggplot code for fungal Phylum
+require(ggplot2)
+ggplot(PDD.dump, aes(FilingNumber, fill=Phylum)) +
+  labs(title = "PDD Storage locations") +
+  labs(x = "storage location", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+ggsave(file='PDD-storagelocation.png', width=10, height=10)
+
+#ggplot code for fungal Phylum
+require(ggplot2)
+ggplot(PDD.dump, aes(Phylum, fill=FilingNumber)) +
+  labs(title = "PDD Storage locations") +
+  labs(x = "storage location", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Paired")
+ggsave(file='PDD-storagelocation2.png', width=10, height=10)
 
 
 
