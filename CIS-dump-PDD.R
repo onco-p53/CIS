@@ -1,5 +1,5 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017-2020)
+# Author: B.S. Weir (2017-2021)
 
 #============Load and subset data================
 PDD.dump <- read.csv("PDD-export-10-sep-2021.csv", header=TRUE, sep=",")
@@ -642,6 +642,7 @@ ggplot(PDD.dump, aes(FilingNumber, fill=Phylum)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip() +
+  scale_fill_brewer(palette = "Paired")
 ggsave(file='PDD-storagelocation.png', width=10, height=10)
 
 #ggplot code for fungal Phylum

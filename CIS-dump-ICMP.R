@@ -1,5 +1,5 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017)
+# Author: B.S. Weir (2017-2021)
 
 #============Load and subset data================
 ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
@@ -236,6 +236,9 @@ ggsave(file='ICMP_kingdoms_updated_by.png', width=7, height=7)
 
 # ----- bacterial taxon grouping -----
 
+sort(table(ICMP.dump$Family),decreasing=TRUE)[1:11] #top 11 families
+sort(table(ICMP.dump.NZ$Family),decreasing=TRUE)[1:11] #top 11 NZ families
+
 #ggplot code for bacterial Phylum
 attach(ICMP.bacteria) 
 require(ggplot2)
@@ -451,7 +454,7 @@ ggsave(print_bars, file='ICMP_country_by_kind_not_nz.png', width=10, height=10)
 # Do on received date and check for any blanks
 #can do a cumulative graph?
 
-#new month ICMP culture isolated (in NZ) [rewrite goodly]
+#new month ICMP culture isolated (in NZ)
 attach(ICMP.dump.NZ) 
 require(ggplot2)
 require(lubridate)
@@ -461,7 +464,7 @@ ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType))
   labs(title = "Isolation month of ICMP cultures from NZ") + 
   labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") +
   geom_bar() + 
-  scale_x_discrete(na.translate = FALSE) + # this removes NAs
+  scale_x_discrete(na.translate = FALSE)  # this removes NAs
 ggsave(file='ICMP-isolation-month.png', width=8, height=5)
 
 
@@ -487,13 +490,13 @@ arrange(ICMP.dump.NZ, month.isolated) #this is the earliest isolated NZ culture
 #deposit dates for bacteria
 attach(ICMP.bacteria) 
 require(ggplot2)
-dr <- ggplot(ICMP.bacteria, aes(as.Date(DepositedDateISO, format='%Y-%m-%d'))) + labs(title = "Date bacterial cultures were deposited in ICMP") + labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") 
-dr <- dr + scale_x_date()
-dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
-drp <- dr + geom_histogram(binwidth=365.25)
-drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
-drp
-ggsave(drp, file='ICMP-deposit-dates.png', width=5, height=5)
+ggplot(ICMP.bacteria, aes(as.Date(DepositedDateISO, format='%Y-%m-%d'))) +
+  labs(title = "Date bacterial cultures were deposited in ICMP") +
+  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
+  scale_x_date() +
+  geom_histogram(binwidth=365.25) +  # this is a bin of two years binwidth=730
+  geom_hline(yintercept=392, linetype=2)
+ggsave(file='ICMP-deposit-dates-bacteria.png', width=5, height=5)
 
 attach(ICMP.dump) 
 require(ggplot2)
@@ -666,15 +669,32 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 
 #======On Hosts========
 
+
 #kiwifruit
-ICMP.dump.kiwifruit <- subset(ICMP.dump,(TaxonName_C2 == "Actinidia deliciosa"))
-attach(b) 
 require(ggplot2)
-p <- ggplot(ICMP.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the ICMP") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
+ICMP.dump.kiwifruit <- subset(ICMP.bacteria,(Family_C2 == "Actinidiaceae" ))
+ggplot(ICMP.dump.kiwifruit, aes(Family)) +
+  labs(title = "Family of microbes on kiwifruit in the ICMP") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip()
 ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
+
+
+#standard all ICMP overtime stats
+require(ggplot2)
+require(lubridate)
+date.isolated <-ymd(ICMP.dump.kiwifruit$IsolationDateISO, truncated = 1)
+ggplot(ICMP.dump.kiwifruit, aes(date.isolated, fill = Country)) +
+  labs(title = "Isolation dates of ex-kiwifruit ICMP cultures") +
+  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  theme(legend.position = c(0.1, 0.7)) +
+  geom_histogram(binwidth=365.25) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(file='ICMP-isolation-dates-kiwifruit.png', width=8, height=5)
+
+
 
 
 #NZ Myrtaceae cultures in ICMP with a sequence
