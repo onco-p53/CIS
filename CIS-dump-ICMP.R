@@ -1,7 +1,10 @@
 ## R Script to process data exported from the CIS databases ##
 # Author: B.S. Weir (2017-2021)
 
-#============Load and subset data================
+#============Load data================
+
+R.version.string
+
 ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 summary(ICMP.dump.initial, maxsum=10)
@@ -15,6 +18,8 @@ library(lubridate)
 library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
 
 display.brewer.all(colorblindFriendly = TRUE)
+
+#============Sub set the Data================
 
 
 #tidyverse way of doing packages

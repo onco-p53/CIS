@@ -16,7 +16,13 @@ knitr::opts_chunk$set(echo = TRUE)
 This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection. This is an experimental showcase of presenting visulisations of data analysed in R in a user-freindly format. 
 
 ```{r}
+#import the files
 ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
+
+#load all packages needed
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
 ```
 
 
