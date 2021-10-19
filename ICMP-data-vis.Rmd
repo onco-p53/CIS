@@ -1,0 +1,40 @@
+---
+title: "ICMP data visualisation"
+author: "Bevan Weir"
+date: "19 October 2021"
+affiliation: "Manaaki Whenua - Landcare Research"
+subject: "Nationally significant collections"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection. This is an experimental showcase of presenting visulisations of data analysed in R in a user-freindly format. 
+
+```{r}
+ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
+```
+
+
+
+## General stats
+
+Here include the number of specimens, types ect. as a table.
+
+```{r}
+ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

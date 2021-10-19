@@ -5,6 +5,19 @@
 ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 summary(ICMP.dump.initial, maxsum=10)
+str(ICMP.dump.initial)
+
+#============Load all the packages needed================
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+
+display.brewer.all(colorblindFriendly = TRUE)
+
+
+#tidyverse way of doing packages
 
 # subset out viruses
 noviruses <- subset(ICMP.dump.initial, (SpecimenType == "Bacterial Culture" | SpecimenType == "Chromist Culture" | SpecimenType == "Fungal Culture" | SpecimenType == "Yeast Culture"))
@@ -17,29 +30,29 @@ head(ICMP.dump)
 #setting up per specimen type subsets, with summaries of each specimen type
 ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
 summary(ICMP.bacteria, maxsum=40)
+table(ICMP.bacteria$Phylum) #this is a validation check
 
 ICMP.chromist <- subset(ICMP.dump,(SpecimenType == "Chromist Culture"))
 summary(ICMP.chromist, maxsum=40)
+table(ICMP.chromist$Phylum) #this is a validation check
 
 ICMP.fungi <- subset(ICMP.dump,(SpecimenType == "Fungal Culture"))
 summary(ICMP.fungi, maxsum=40)
+table(ICMP.fungi$Phylum) #this is a validation check
 
 ICMP.yeast <- subset(ICMP.dump,(SpecimenType == "Yeast Culture"))
 summary(ICMP.yeast, maxsum=40)
+table(ICMP.yeast$Phylum) #this is a validation check
+
+ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
+summary(ICMP.types, maxsum=40)
 
 #subset New Zealand specimens
 ICMP.dump.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 summary(ICMP.dump.NZ, maxsum=40)
 head(ICMP.dump.NZ)
 
-#============Load all the packages needed================
 
-library(tidyverse)
-require(ggplot2)
-require(lubridate)
-library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
-
-display.brewer.all(colorblindFriendly = TRUE)
 
 
 
@@ -78,27 +91,40 @@ table(ICMP.dump.NZ$SpecimenType)
 
 #============Type cultures================
 
-#ggplot code for type cultures
-d <- subset(ICMP.dump,!(TypeStatus == ""))
-attach(d) #this means we don't need the $ sign
+#barchart of all ICMP types sorted by 'kind' of type
+attach(ICMP.types) 
 require(ggplot2)
-p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the ICMP") + labs(x = "'Kind' of type", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_types.png', width=10, height=10)
+ggplot(ICMP.types, aes(TypeStatus)) +
+  labs(title = "Types in the ICMP") +
+  labs(x = "'Kind' of type", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='ICMP_types.png', width=10, height=10)
+
+#barchart of all ICMP types sorted by 'kind' of type, coloured by kind of organism
+attach(ICMP.types) 
+require(ggplot2)
+ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
+  labs(title = "Types in the ICMP") +
+  labs(x = "'Kind' of type", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='ICMP.types.by.kind.png', width=10, height=10)
 
 #another one showing just the number of types in each kind of culture?
-
-#Types in the ICMP coloured by kind of organism
-d <- subset(ICMP.dump,!(TypeStatus == ""))
-attach(d) #this means we don't need the $ sign
+#barchart of all ICMP types sorted by 'kind' of type
+attach(ICMP.types) 
 require(ggplot2)
-p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the ICMP") + labs(x = "'Kind' of type", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP.types.by.kind.png', width=10, height=10)
+ggplot(ICMP.types, aes(SpecimenType)) +
+  labs(title = "Types in the ICMP") +
+  labs(x = "'Kind' of type", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='ICMP_types-by-SpecimenType.png', width=10, height=10)
+
 
 #Types in the ICMP with images
 d <- subset(ICMP.dump,!(TypeStatus == ""))
