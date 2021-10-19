@@ -21,15 +21,13 @@ display.brewer.all(colorblindFriendly = TRUE)
 
 #============Sub set the Data================
 
-
-#tidyverse way of doing packages
-
-# subset out viruses
-noviruses <- subset(ICMP.dump.initial, (SpecimenType == "Bacterial Culture" | SpecimenType == "Chromist Culture" | SpecimenType == "Fungal Culture" | SpecimenType == "Yeast Culture"))
-
-# subset out "Deaccessioned=True"
-ICMP.dump <- subset(noviruses,(Deaccessioned == "false"))
-head(ICMP.dump)
+#tidyverse way of sub setting - remove viruses and deaccessioned cultures
+ICMP.dump <- ICMP.dump.initial %>%
+  filter(SpecimenType == "Bacterial Culture" | 
+           SpecimenType == "Chromist Culture" | 
+           SpecimenType == "Fungal Culture" | 
+           SpecimenType == "Yeast Culture") %>%
+  filter(Deaccessioned == "false")
 
 
 #setting up per specimen type subsets, with summaries of each specimen type
@@ -58,6 +56,9 @@ summary(ICMP.dump.NZ, maxsum=40)
 head(ICMP.dump.NZ)
 
 
+count(ICMP.dump.initial,SpecimenType)
+count(ICMP.dump,SpecimenType)
+count(ICMP.dump.test,SpecimenType)
 
 
 
@@ -69,7 +70,7 @@ capture.output(h, file = "ICMP-head.txt")
 
 summary(ICMP.dump.initial, maxsum=25) #data before subsetting
 summary(ICMP.dump, maxsum=20) #data after subsetting
-s <- summary(ICMP.dump, maxsum=25)
+
 capture.output(s, file = "ICMP-summary.txt")
 
 # counts the number of unique values per column
@@ -96,13 +97,27 @@ table(ICMP.dump.NZ$SpecimenType)
 
 #============Type cultures================
 
+#sorting plots:
+#  https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+
+
+ICMP.types.sorted <- ICMP.types %>%
+  arrange(TypeStatus) %>%    # First sort by TypeStatus. This sort the dataframe but NOT the factor levels
+  mutate(TypeStatus=factor(TypeStatus, levels=TypeStatus)) %>%   # This trick update the factor levels
+
+#maybe need to make a count and make a new column?  
+  
+head(ICMP.types)
+head(ICMP.types.sorted)
+
+
+
 #barchart of all ICMP types sorted by 'kind' of type
 attach(ICMP.types) 
 require(ggplot2)
 ggplot(ICMP.types, aes(TypeStatus)) +
   labs(title = "Types in the ICMP") +
   labs(x = "'Kind' of type", y = "number of isolates") +
-  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
 ggsave(file='ICMP_types.png', width=10, height=10)
@@ -113,19 +128,17 @@ require(ggplot2)
 ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
   labs(title = "Types in the ICMP") +
   labs(x = "'Kind' of type", y = "number of isolates") +
-  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
 ggsave(file='ICMP.types.by.kind.png', width=10, height=10)
 
-#another one showing just the number of types in each kind of culture?
-#barchart of all ICMP types sorted by 'kind' of type
+
+#barchart of all ICMP types sorted by 'kind' of type, with genbank status
 attach(ICMP.types) 
 require(ggplot2)
-ggplot(ICMP.types, aes(SpecimenType)) +
-  labs(title = "Types in the ICMP") +
+ggplot(ICMP.types, aes(SpecimenType, fill=GenBank)) +
+  labs(title = "Types in the ICMP with a GenBank seqeunce") +
   labs(x = "'Kind' of type", y = "number of isolates") +
-  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
 ggsave(file='ICMP_types-by-SpecimenType.png', width=10, height=10)
@@ -169,9 +182,10 @@ ggsave(file='ICMP_specimen_pie.png', width=5, height=5)
 
 
 #pie chart by last updated user
-ICMP.dump$UpdatedBy3 <- sapply(ICMP.dump$UpdatedBy, tolower)
+ICMP.dump$LastUpdatedBy <- sapply(ICMP.dump$UpdatedBy, tolower)
 
-ggplot(ICMP.dump, aes(x=factor(1), fill=UpdatedBy3)) +
+ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
+  labs(title = "Last User to update an ICMP record") +
   geom_bar(width = 1) +
   coord_polar("y") +
   theme_void() +
