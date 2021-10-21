@@ -1,29 +1,29 @@
  AccessionNumber    SpecimenType       FilingNumber       SpecimenSecurityLevel SpecimenSecurityLevelText
- Length:22091       Length:22091       Length:22091       Min.   : 1.00         Length:22091             
+ Length:108508      Length:108508      Length:108508      Min.   : 1.00         Length:108508            
  Class :character   Class :character   Class :character   1st Qu.:40.00         Class :character         
  Mode  :character   Mode  :character   Mode  :character   Median :40.00         Mode  :character         
-                                                          Mean   :37.04                                  
+                                                          Mean   :39.94                                  
                                                           3rd Qu.:40.00                                  
                                                           Max.   :40.00                                  
                                                                                                          
- Deaccessioned       IsMissing          LoanStatus         CreatedBy         CreatedDate         UpdatedBy        
- Length:22091       Length:22091       Length:22091       Length:22091       Length:22091       Length:22091      
+ Deaccessioned       IsMissing          LoanStatus           Quantity      CreatedBy         CreatedDate       
+ Length:108508      Length:108508      Length:108508      Min.   :1       Length:108508      Length:108508     
+ Class :character   Class :character   Class :character   1st Qu.:1       Class :character   Class :character  
+ Mode  :character   Mode  :character   Mode  :character   Median :1       Mode  :character   Mode  :character  
+                                                          Mean   :1                                            
+                                                          3rd Qu.:1                                            
+                                                          Max.   :4                                            
+                                                          NA's   :86942                                        
+  UpdatedBy         UpdatedDate         TypeStatus        VerbatimName        TaxonName         CurrentName       
+ Length:108508      Length:108508      Length:108508      Length:108508      Length:108508      Length:108508     
  Class :character   Class :character   Class :character   Class :character   Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                   
                                                                                                                   
                                                                                                                   
                                                                                                                   
- UpdatedDate           Quantity      TypeStatus        VerbatimName        TaxonName         CurrentName       
- Length:22091       Min.   :1       Length:22091       Length:22091       Length:22091       Length:22091      
- Class :character   1st Qu.:1       Class :character   Class :character   Class :character   Class :character  
- Mode  :character   Median :1       Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-                    Mean   :1                                                                                  
-                    3rd Qu.:1                                                                                  
-                    Max.   :1                                                                                  
-                    NA's   :10161                                                                              
  SourceNameId       VerbatimDeterminer StandardDeterminer DeterminersRefNumber    Phylum             Class          
- Length:22091       Length:22091       Length:22091       Length:22091         Length:22091       Length:22091      
+ Length:108508      Length:108508      Length:108508      Length:108508        Length:108508      Length:108508     
  Class :character   Class :character   Class :character   Class :character     Class :character   Class :character  
  Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character   Mode  :character  
                                                                                                                     
@@ -31,7 +31,7 @@
                                                                                                                     
                                                                                                                     
     Order              Family          PartAffected        Substrate         BiostatusDescription OccurrenceDescription
- Length:22091       Length:22091       Length:22091       Length:22091       Length:22091         Length:22091         
+ Length:108508      Length:108508      Length:108508      Length:108508      Length:108508        Length:108508        
  Class :character   Class :character   Class :character   Class :character   Class :character     Class :character     
  Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character     Mode  :character     
                                                                                                                        
@@ -39,50 +39,50 @@
                                                                                                                        
                                                                                                                        
  VerbatimTaxonName_C2 TaxonName_C2       Vernacular_C2         HostId           Family_C2         PartAffected_C2   
- Length:22091         Length:22091       Length:22091       Length:22091       Length:22091       Length:22091      
+ Length:108508        Length:108508      Length:108508      Length:108508      Length:108508      Length:108508     
  Class :character     Class :character   Class :character   Class :character   Class :character   Class :character  
  Mode  :character     Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                     
                                                                                                                     
                                                                                                                     
                                                                                                                     
- Substrate_C2       StandardCollector  CollectionDateISO  CollectorsRefNumber VerbatimCountry      Country         
- Length:22091       Length:22091       Length:22091       Length:22091        Length:22091       Length:22091      
- Class :character   Class :character   Class :character   Class :character    Class :character   Class :character  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character    Mode  :character   Mode  :character  
+ Substrate_C2       CollectionEventContext CollectionEventMethod StandardCollector  CollectionDateISO 
+ Length:108508      Length:108508          Mode:logical          Length:108508      Length:108508     
+ Class :character   Class :character       NA's:108508           Class :character   Class :character  
+ Mode  :character   Mode  :character                             Mode  :character   Mode  :character  
+                                                                                                      
+                                                                                                      
+                                                                                                      
+                                                                                                      
+ CollectorsRefNumber VerbatimCountry      Country           NZAreaCode        StandardLocality   VerbatimLocality  
+ Length:108508       Length:108508      Length:108508      Length:108508      Length:108508      Length:108508     
+ Class :character    Class :character   Class :character   Class :character   Class :character   Class :character  
+ Mode  :character    Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character  
                                                                                                                    
                                                                                                                    
                                                                                                                    
                                                                                                                    
-  NZAreaCode        StandardLocality   VerbatimLocality     MapSheet          MapSheet1            Easting         
- Length:22091       Length:22091       Length:22091       Length:22091       Length:22091       Min.   :    154.6  
- Class :character   Class :character   Class :character   Class :character   Class :character   1st Qu.:2467910.0  
- Mode  :character   Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :2615549.0  
-                                                                                                Mean   :2472922.6  
-                                                                                                3rd Qu.:2675986.0  
-                                                                                                Max.   :2977021.3  
-                                                                                                NA's   :21138      
-   Northing           DecimalLat      DecimalLong       Altitude         AltitudeInMeters MicroHabitat  
- Length:22091       Min.   :-79.92   Min.   :-178.5   Length:22091       Min.   :-114.0   Mode:logical  
- Class :character   1st Qu.:-40.66   1st Qu.: 166.8   Class :character   1st Qu.:  11.9   NA's:22091    
- Mode  :character   Median :-37.01   Median : 174.1   Mode  :character   Median : 165.9                 
-                    Mean   :-25.14   Mean   : 133.7                      Mean   : 305.6                 
-                    3rd Qu.:-35.38   3rd Qu.: 174.9                      3rd Qu.: 509.7                 
-                    Max.   : 65.57   Max.   : 179.7                      Max.   :1418.0                 
-                    NA's   :6275     NA's   :6275                        NA's   :22060                  
-   Habitat          CollectionEventNotes IsolationDateISO   DepositedDateISO   DepositorName      DepositorRefNumber
- Length:22091       Length:22091         Length:22091       Length:22091       Length:22091       Length:22091      
- Class :character   Class :character     Class :character   Class :character   Class :character   Class :character  
- Mode  :character   Mode  :character     Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-                                                                                                                    
-                                                                                                                    
-                                                                                                                    
-                                                                                                                    
-   GenBank           Literature           Images         
- Length:22091       Length:22091       Length:22091      
- Class :character   Class :character   Class :character  
- Mode  :character   Mode  :character   Mode  :character  
-                                                         
-                                                         
-                                                         
-                                                         
+   MapSheet          MapSheet1           Easting            Northing           DecimalLat      DecimalLong    
+ Length:108508      Length:108508      Length:108508      Length:108508      Min.   :-53.70   Min.   :-178.2  
+ Class :character   Class :character   Class :character   Class :character   1st Qu.:-42.33   1st Qu.: 172.2  
+ Mode  :character   Mode  :character   Mode  :character   Mode  :character   Median :-39.05   Median : 174.5  
+                                                                             Mean   :-37.16   Mean   : 163.6  
+                                                                             3rd Qu.:-36.91   3rd Qu.: 175.2  
+                                                                             Max.   : 65.67   Max.   : 179.3  
+                                                                             NA's   :27245    NA's   :27245   
+   Altitude         AltitudeInMeters MicroHabitat         Habitat          CollectionEventNotes   GenBank         
+ Length:108508      Min.   :   0.6   Length:108508      Length:108508      Length:108508        Length:108508     
+ Class :character   1st Qu.:  72.0   Class :character   Class :character   Class :character     Class :character  
+ Mode  :character   Median : 250.0   Mode  :character   Mode  :character   Mode  :character     Mode  :character  
+                    Mean   : 404.4                                                                                
+                    3rd Qu.: 653.0                                                                                
+                    Max.   :6000.0                                                                                
+                    NA's   :105665                                                                                
+  Literature           Images         
+ Length:108508      Length:108508     
+ Class :character   Class :character  
+ Mode  :character   Mode  :character  
+                                      
+                                      
+                                      
+                                      

@@ -1,10 +1,12 @@
 ---
 title: "ICMP data visualisation"
 author: "Bevan Weir"
-date: "19 October 2021"
-affiliation: "Manaaki Whenua - Landcare Research"
-subject: "Nationally significant collections"
-output: html_document
+date: "21 October 2021"
+output:
+  html_document: default
+  pdf_document: default
+subject: Nationally significant collections
+affiliation: Manaaki Whenua - Landcare Research
 ---
 
 ```{r setup, include=FALSE}
@@ -13,13 +15,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection https://www.landcareresearch.co.nz/icmp. This is an experimental showcase of presenting visulisations of data analysed in R in a user-freindly format.
+This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection https://www.landcareresearch.co.nz/icmp. This is an experimental showcase of presenting visulisations of data analysed in R in a user-friendly format.
 
 This data excludes all deaccessioned cultures, but includes different specimen security levels such as 'confidential'.
 
 ```{r import, include=FALSE}
 #import the files
-ICMP.dump.initial <- read.csv("ICMP-export-27-jun-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-21-oct-2021.csv", header=TRUE, sep=",")
 
 #load all packages needed
 library(tidyverse)
@@ -70,14 +72,104 @@ There are different 'kinds' of types. Bacterial types are 'type strains', bacter
 ```{r types chart, echo=TRUE}
 
 #barchart of all ICMP types sorted by 'kind' of type, coloured by kind of organism
-ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
+positions <- c("Type strain", "Pathotype strain", "Neopathotype strain", "Type", "ex Type",  "Holotype", "ex Holotype", "Paratype", "ex Paratype", "Isotype", "Neotype", "ex Neotype", "Epitype", "ex Epitype", "Syntype", "Reference strain")
 ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
-  labs(title = "Types in the ICMP") +
+  labs(title = "Types in the ICMP culture collection") +
   labs(x = "'Kind' of type", y = "number of cultures") +
   geom_bar() + 
-  coord_flip()
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions)
 
 ```
+
+
+## Extended specimen data
+
+```{r Extended specimen data, echo=TRUE}
+
+library(gridExtra)
+
+#genbank.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
+ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
+  labs(title = "Cultures in the ICMP in GenBank") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar()
+
+#literature.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
+ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
+  labs(title = "Cultures in the ICMP with a citation in literature") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar()
+
+#image.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
+ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
+  labs(title = "Cultures in the ICMP with images") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar()
+
+#grid.arrange(genbank.plot, image.plot, literature.plot, nrow = 2, ncol = 2)
+
+```
+
+
+## geography
+
+```{r top countries, echo=TRUE}
+
+positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
+
+ICMP.10county <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
+
+ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
+  labs(title = "Top 10 Countries in the ICMP") +
+  labs(x = "Country", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions)
+  
+```
+
+```{r top NZ area codes, echo=TRUE}
+
+#New Zealand Area codes
+ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
+
+positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
+
+ggplot(ICMP.nz, aes(NZAreaCode)) +
+  labs(title = "ICMP cultures by NZ region") +
+  labs(x = "Crosby Region", y = "number of cultures") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+  scale_x_discrete(limits = positions)
+
+```
+
+
+the world map
+```{r world map, echo=TRUE}
+
+library(maps)
+library(mapdata)
+
+world <- map_data("world")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  coord_fixed(1.3)
+  
+```
+
+
+
 
 ## Curation stats
 

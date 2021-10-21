@@ -1,32 +1,32 @@
           AccessionNumber              SpecimenType              FilingNumber     SpecimenSecurityLevel 
-                    22088                         4                       162                         5 
+                    22224                         4                       162                         5 
 SpecimenSecurityLevelText             Deaccessioned                 IsMissing                LoanStatus 
                         5                         1                         2                         3 
                 CreatedBy               CreatedDate                 UpdatedBy               UpdatedDate 
-                       15                      9108                        22                     19398 
+                       16                      9242                        23                     19600 
                  Quantity                TypeStatus              VerbatimName                 TaxonName 
-                        2                        17                      4887                      4165 
+                        2                        17                      4929                      4190 
               CurrentName              SourceNameId        VerbatimDeterminer        StandardDeterminer 
-                     3779                      4177                       672                       419 
+                     3807                      4203                       690                       436 
      DeterminersRefNumber                    Phylum                     Class                     Order 
-                     1273                        17                        37                       117 
+                     1267                        17                        37                       117 
                    Family              PartAffected                 Substrate      BiostatusDescription 
-                      361                      2570                      1077                         7 
+                      361                      2580                      1093                         7 
     OccurrenceDescription      VerbatimTaxonName_C2              TaxonName_C2             Vernacular_C2 
-                        8                      2999                      2140                      2450 
+                        8                      3011                      2145                      2463 
                    HostId                 Family_C2           PartAffected_C2              Substrate_C2 
-                     2086                       254                      2570                       103 
+                     2091                       255                      2580                       112 
         StandardCollector         CollectionDateISO       CollectorsRefNumber           VerbatimCountry 
-                     1859                      2593                      3115                       222 
+                     1907                      2656                      3189                       232 
                   Country                NZAreaCode          StandardLocality          VerbatimLocality 
-                      144                        37                      3162                      4114 
+                      144                        37                      3198                      4180 
                  MapSheet                 MapSheet1                   Easting                  Northing 
-                        4                         5                       476                       489 
+                        4                         5                       479                       492 
                DecimalLat               DecimalLong                  Altitude          AltitudeInMeters 
-                     2673                      2697                        24                        22 
+                     2854                      2875                        25                        25 
              MicroHabitat                   Habitat      CollectionEventNotes          IsolationDateISO 
-                        1                        56                       220                      2669 
+                        1                        56                       220                      2710 
          DepositedDateISO             DepositorName        DepositorRefNumber                   GenBank 
-                     1774                       817                     16980                         2 
+                     1835                       824                     17017                         2 
                Literature                    Images 
                         2                         2 

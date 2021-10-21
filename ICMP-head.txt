@@ -6,7 +6,7 @@
 5        ICMP 609 Bacterial Culture Xanthomonadaceae                    40                    Public         false
 6        ICMP 610 Bacterial Culture Xanthomonadaceae                    40                    Public         false
   IsMissing LoanStatus CreatedBy           CreatedDate         UpdatedBy            UpdatedDate Quantity TypeStatus
-1     false     Active Migration 25/01/2002 9:24:09 am LANDCARE\\wilsonj  19/04/2018 3:52:03 pm       NA           
+1     false            Migration 25/01/2002 9:24:09 am LANDCARE\\wilsonj  19/04/2018 3:52:03 pm       NA           
 2     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:47:16 pm        1           
 3     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:47:55 pm        1           
 4     false            Migration 25/01/2002 9:24:09 am    LANDCARE\\LeeD 17/08/2020 12:48:28 pm       NA           
