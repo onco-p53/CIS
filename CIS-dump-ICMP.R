@@ -245,6 +245,9 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='ICMP_kingdoms.png', width=7, height=7)
 
+
+
+
 #GenBank status by kingdom
 ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
   labs(title = "Cultures in the ICMP in GenBank") +
@@ -831,7 +834,7 @@ ggplot(ICMP.dump.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
   labs(x = "Family", y = "number of isolates") +
   geom_bar() +
   coord_flip() +
-  scale_fill_brewer(palette = "Paired")
+  scale_fill_brewer(palette = "Set2")
 ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
 
 
@@ -840,10 +843,6 @@ ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
 summary(ICMP.dump$StandardCollector, maxsum=50)
 
 #======pulling stats======
-
-
-
-
 
 #NgāiTahu fungi
 #this data was cleaned for: public, NZ, fungi, and deposited before DOC date: 1 November 2011
@@ -874,3 +873,51 @@ d=tribble(ICMP.dump)
 d %>% mutate(date=mdy(textdate)) %>%
   arrange(date)
 ?arrange
+
+#====== Data manipulation======
+
+#merge together the Genbank literature and image data to one column
+
+#sub set out the interesting columns using "select" in dpylr
+library(dplyr)
+only.ext.specimen <- select(ICMP.dump, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
+head(only.ext.specimen)
+
+#create two new columns using "pivot_longer" into a tibble table
+library(tidyr)
+tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
+head(tibble.ext.specimen)
+
+# ** Cultures with extended specimen data
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "extended specimen data", y = "proportion of cultures with this data") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position = "fill")
+
+
+#Cultures with extended specimen data by SpecimenType with ExtendedSpecimen facet
+ggplot(tibble.ext.specimen, aes(SpecimenType, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "Taxon", y = "number of cultures") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar() +
+  facet_grid(cols = vars(ExtendedSpecimen))
+
+# ** Cultures with extended specimen data by ExtendedSpecimen with SpecimenType facet
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar() +
+  facet_grid(cols = vars(SpecimenType))
+
+#use position = "fill" to scale bars to 100%
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "Taxon", y = "number of cultures") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position = "fill") +
+  facet_grid(cols = vars(SpecimenType))
+
+

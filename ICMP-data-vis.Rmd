@@ -46,8 +46,7 @@ ICMP.dump <- ICMP.dump.initial %>%
 Here include:
 
 -   number of specimens
--   number of types
--   number at each security level
+-   number at each security level ?
 -   NZ versus overseas
 
 ```{r tables, echo=TRUE}
@@ -89,28 +88,30 @@ Extended specimen data is data beyond the basic taxonomic and and location. See:
 
 ```{r Extended specimen data, echo=FALSE}
 
-#genbank.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
-ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
-  labs(title = "Cultures in the ICMP in GenBank") +
+#sub set out the interesting columns using "select" in dpylr
+library(dplyr)
+only.ext.specimen <- select(ICMP.dump, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
+head(only.ext.specimen)
+
+#create two new columns using "pivot_longer" into a tibble table
+library(tidyr)
+tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
+head(tibble.ext.specimen)
+
+# ** Cultures with extended specimen data
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "extended specimen data", y = "proportion of cultures with this data") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position = "fill")
+
+# ** Cultures with extended specimen data by ExtendedSpecimen with SpecimenType facet
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-
-#literature.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
-ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
-  labs(title = "Cultures in the ICMP with a citation in literature") +
-  labs(x = "Taxon", y = "number of isolates") +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-
-#image.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
-ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
-  labs(title = "Cultures in the ICMP with images") +
-  labs(x = "Taxon", y = "number of isolates") +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-
-#grid.arrange(genbank.plot, image.plot, literature.plot, nrow = 2, ncol = 2)
+  geom_bar() +
+  facet_grid(cols = vars(SpecimenType))
 
 ```
 
