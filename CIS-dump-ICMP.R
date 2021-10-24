@@ -97,6 +97,14 @@ table(ICMP.dump.NZ$SpecimenType)
 ?? lengths(lapply(ICMP.dump$SpecimenType, unique))
 
 
+#this is useless for this dataset but could be ok for others
+library(psych)
+describeBy(
+  ICMP.dump,
+  ICMP.dump$SpecimenType # grouping variable
+)
+
+
 
 #============Type cultures================
 

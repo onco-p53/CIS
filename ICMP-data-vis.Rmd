@@ -18,6 +18,7 @@ library(lubridate)
 library(gridExtra)
 library(maps)
 library(mapdata)
+library(dplyr)
 
 ```
 
@@ -43,6 +44,9 @@ ICMP.dump <- ICMP.dump.initial %>%
 
 ## General stats
 
+The ICMP has `r getRversion()` cultures
+
+
 Here include:
 
 -   number of specimens
@@ -51,7 +55,9 @@ Here include:
 
 ```{r tables, echo=TRUE}
 
-table(ICMP.dump$SpecimenType)
+library(knitr)
+ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
+kable(ktable.specimen2, caption = "Basic stats") #knitr
 
 ```
 
@@ -84,19 +90,17 @@ ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
 
 ## Extended specimen data
 
-Extended specimen data is data beyond the basic taxonomic and and location. See: <https://academic.oup.com/bioscience/article/70/1/23/5637849> The charts below show the proportion of specimens that have this data.
+Extended specimen data is data beyond the basic taxonomic and and location. See: <https://academic.oup.com/bioscience/article/70/1/23/5637849> The charts below show the proportion of ICMP cultures that have DNA sequences lodged in GenBank global repository, images (usually of culture plates), and when a culture is specifically cited in literature.
 
 ```{r Extended specimen data, echo=FALSE}
 
 #sub set out the interesting columns using "select" in dpylr
 library(dplyr)
 only.ext.specimen <- select(ICMP.dump, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
-head(only.ext.specimen)
 
 #create two new columns using "pivot_longer" into a tibble table
 library(tidyr)
 tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
-head(tibble.ext.specimen)
 
 # ** Cultures with extended specimen data
 ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
@@ -104,6 +108,12 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   labs(x = "extended specimen data", y = "proportion of cultures with this data") +
   scale_fill_brewer(palette = "Paired") +
   geom_bar(position = "fill")
+
+```
+
+This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast) to show the relative proportions of extended specimen data for each of these. 
+
+```{r Extended specimen data 2, echo=FALSE}
 
 # ** Cultures with extended specimen data by ExtendedSpecimen with SpecimenType facet
 ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
