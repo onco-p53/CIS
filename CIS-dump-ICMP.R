@@ -568,6 +568,7 @@ mergemonths <- floor_date(month.isolated, unit = "month")
 ggplot(ICMP.dump.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
   labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
   geom_bar() + 
   scale_x_discrete(na.translate = FALSE)  # this removes NAs
 ggsave(file='ICMP-isolation-month.png', width=8, height=5)
@@ -581,11 +582,23 @@ date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
 ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
   theme(legend.position = c(0.1, 0.8)) +
-  geom_histogram(binwidth=365.25) # this is a bin of two years: binwidth=730
+  geom_histogram(binwidth=365.25)  # this is a bin of two years: binwidth=730
 ggsave(file='ICMP-isolation-dates2.png', width=8, height=5)
 
-#could also do this faceted ?
+#standard all ICMP overtime stats faceted
+attach(ICMP.dump) 
+require(ggplot2)
+require(lubridate)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
+ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+  labs(title = "Isolation dates of ICMP cultures") +
+  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  facet_grid(SpecimenType ~ .)
+ggsave(file='ICMP-isolation-dates-facet.png', width=8, height=5)
 
 
 
