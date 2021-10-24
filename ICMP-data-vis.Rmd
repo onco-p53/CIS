@@ -24,7 +24,7 @@ library(dplyr)
 
 ## Introduction
 
-This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visulisations of data analysed in R in a user-friendly format.
+This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visulisations of data analysed in R in a user-friendly format. 
 
 This data excludes all deaccessioned cultures, but includes different specimen security levels such as 'confidential'.
 
@@ -44,7 +44,7 @@ ICMP.dump <- ICMP.dump.initial %>%
 
 ## General stats
 
-The ICMP has `r getRversion()` cultures
+The ICMP has `r count(ICMP.dump)` cultures
 
 
 Here include:
@@ -58,6 +58,13 @@ Here include:
 library(knitr)
 ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
 kable(ktable.specimen2, caption = "Basic stats") #knitr
+
+
+ktable.specimen3 <- ICMP.dump %>% 
+  group_by(SpecimenType) %>%
+  tally()
+kable(ktable.specimen3, caption = "Basic stats") #knitr
+
 
 ```
 
@@ -196,6 +203,10 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 ### Isolation month
 
+May is the peak mushroom fruiting season, Jan may be an attifacet of missing mont or more likely the old way of entering data. Can I remove these??
+
+less in winter, more in summer trend.
+
 ```{r NZ isolated month chart, echo=FALSE}
 
 #new month ICMP culture isolated (in NZ)
@@ -229,3 +240,15 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
   scale_fill_brewer(palette = "Paired")
 
 ```
+
+
+need head table here maybe.
+
+```{r testing, echo=FALSE}
+
+rmarkdown::paged_table(head(ICMP.dump))
+
+```
+
+
+This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`.

@@ -63,6 +63,29 @@ count(ICMP.dump.initial,SpecimenType)
 count(ICMP.dump,SpecimenType)
 count(ICMP.dump.test,SpecimenType)
 
+as.integer( count(ICMP.dump) )
+
+
+ICMP.dump %>%
+  count(SpecimenType,TypeStatus) %>%
+  group_by(SpecimenType) %>%
+  group_by(TypeStatus, .add=TRUE) 
+
+
+
+summarise(ICMP.dump, c(SpecimenType,TypeStatus))
+
+ICMP.dump %>% 
+  group_by(SpecimenType)
+
+
+ICMP.dump %>% 
+  add_tally(wt = TypeStatus) %>%
+  group_by(SpecimenType) %>%
+  tally()
+
+
+
 
 
 #============Quick data check================
