@@ -290,6 +290,9 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
 
 ```
 
+
+### Security levels
+
 ```{r table of security levels , echo=FALSE}
 
 #table of security levels
@@ -299,6 +302,8 @@ table.security <- ICMP.dump %>%
 kable(table.security, caption = "table of security levels") #knitr
 
 ```
+
+### Biostatus
 
 ```{r table of biostatus , echo=FALSE}
 
@@ -315,6 +320,8 @@ table.security <- ICMP.dump %>%
 kable(table.security, caption = "table of biostatus description") #knitr
 
 ```
+
+### Head of the dataset
 
 This table shows the first few rows of the full dataset. use the arrows to explore across the columns.
 
