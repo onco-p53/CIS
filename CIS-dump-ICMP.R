@@ -58,12 +58,13 @@ ICMP.dump.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 summary(ICMP.dump.NZ, maxsum=40)
 head(ICMP.dump.NZ)
 
+#counting various things
 
 count(ICMP.dump.initial,SpecimenType)
 count(ICMP.dump,SpecimenType)
-count(ICMP.dump.test,SpecimenType)
-
 as.integer( count(ICMP.dump) )
+
+count(ICMP.dump,SpecimenSecurityLevelText)
 
 
 ICMP.dump %>%
@@ -798,6 +799,30 @@ ggplot() +
   #geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
 ggsave(file='ICMP_worldmap_labels.png', width=40, height=20)
+
+
+
+#the map has an issue as a work around remove the Chatham islands
+
+ICMP.no.chat <- ICMP.dump.NZ %>%
+  filter(NZAreaCode != "Chatham Islands") %>%
+  filter(NZAreaCode != "Kermadec Islands")
+
+nz <- map_data("nzHires")
+ggplot() + 
+  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  #  geom_text(data = ICMP.no.chat, position=position_jitter(width=1,height=15), aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 3, color = "black") + #, angle = 45
+  coord_fixed(1.3)
+
+
+
+
+#to make the Chatham islands work you need to fudge them over 180 e.g. 183.41667
+#will have to melt and add the fudge factor somehow to only chatham islands ones
+
+
 
 antibiotic.map <- read.csv("ICMP-antibiotic-map.csv", header=TRUE, sep=",")
 head(antibiotic.map)

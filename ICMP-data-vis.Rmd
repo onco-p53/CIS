@@ -3,7 +3,9 @@ title: "ICMP data visualisation"
 author: "Bevan Weir"
 date: "data as of 21 October 2021"
 output:
-  html_document: default
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
   pdf_document: default
 subject: Nationally significant collections
 affiliation: Manaaki Whenua - Landcare Research
@@ -19,16 +21,16 @@ library(gridExtra)
 library(maps)
 library(mapdata)
 library(dplyr)
+library(knitr)
 
 ```
 
 ## Introduction
 
-This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visulisations of data analysed in R in a user-friendly format. 
-
-This data excludes all deaccessioned cultures, but includes different specimen security levels such as 'confidential'.
+This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visulisations of data analysed in R in a user-friendly format.
 
 ```{r import, include=FALSE}
+
 #import the files
 ICMP.dump.initial <- read.csv("ICMP-export-21-oct-2021.csv", header=TRUE, sep=",")
 
@@ -40,30 +42,30 @@ ICMP.dump <- ICMP.dump.initial %>%
            SpecimenType == "Fungal Culture" | 
            SpecimenType == "Yeast Culture") %>%
   filter(Deaccessioned == "false")
+
+#how many cultures are public
+ICMP.public <- ICMP.dump.initial %>%
+  filter(SpecimenSecurityLevelText == "Public")
+
 ```
 
-## General stats
+## General statistics
 
-The ICMP has `r count(ICMP.dump)` cultures
+The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the number in bold.
 
+(also should include NZ only stats)
 
-Here include:
-
--   number of specimens
--   number at each security level ?
--   NZ versus overseas
-
-```{r tables, echo=TRUE}
-
-library(knitr)
-ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
-kable(ktable.specimen2, caption = "Basic stats") #knitr
+```{r tables, echo=FALSE}
 
 
-ktable.specimen3 <- ICMP.dump %>% 
+#ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
+#kable(ktable.specimen2, caption = "Basic stats") #knitr
+
+#table of specimen types
+table.stypes <- ICMP.dump %>% 
   group_by(SpecimenType) %>%
   tally()
-kable(ktable.specimen3, caption = "Basic stats") #knitr
+kable(table.stypes, caption = "table of specimen types") #knitr
 
 
 ```
@@ -90,6 +92,7 @@ ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
   labs(x = "'Kind' of type", y = "number of cultures") +
   geom_bar() + 
   coord_flip() +
+  theme(legend.position = c(0.85, 0.75)) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions)
 
@@ -118,7 +121,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
 
 ```
 
-This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast) to show the relative proportions of extended specimen data for each of these. 
+This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast) to show the relative proportions of extended specimen data for each of these.
 
 ```{r Extended specimen data 2, echo=FALSE}
 
@@ -128,13 +131,29 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
   geom_bar() +
+  theme(legend.position = c(0.92, 0.6)) +
   facet_grid(cols = vars(SpecimenType))
 
 ```
 
 ## Geography
 
-The geographic location of specimens is important. Most ICMP cultures were isolated from Aotearoa New Zealand, but
+ICMP cultures have been isolated from around the world.
+
+### world map
+
+```{r world map, echo=FALSE}
+
+world <- map_data("world")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  coord_fixed(1.3)
+  
+```
+
+The top 10 countries represented in the ICMP with type of samples are shown below.
 
 ```{r top countries, echo=FALSE}
 
@@ -148,19 +167,43 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip() +
+  theme(legend.position = c(0.85, 0.75)) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions)
   
 ```
 
+### New Zealand map
+
+Each of the cultures from New Zealand that have a geocoordinate are plotted below.
+
+```{r nz map, echo=FALSE}
+
+ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+
+ICMP.no.chat <- ICMP.NZ %>%
+  filter(NZAreaCode != "Chatham Islands") %>%
+  filter(NZAreaCode != "Kermadec Islands")
+
+nz <- map_data("nzHires")
+ggplot() + 
+  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  coord_fixed(1.3)
+  
+```
+
+There are various ways to divide Aotearoa New Zealand in regions. The ICMP uses 'Crosby Codes' which were developed for for recording specimen localities in the New Zealand. The ICMP is based in Auckland explaining the large number of collections from this region.
+
 ```{r top NZ area codes, echo=FALSE}
 
 #New Zealand Area codes
-ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
+ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 
-ggplot(ICMP.nz, aes(NZAreaCode)) +
+ggplot(ICMP.NZ, aes(NZAreaCode)) +
   labs(title = "ICMP cultures by NZ region") +
   labs(x = "Crosby Region", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -168,21 +211,6 @@ ggplot(ICMP.nz, aes(NZAreaCode)) +
   coord_flip() +
   scale_x_discrete(limits = positions)
 
-```
-
-### world map
-
-ICMP cultures were isolated from around the world.
-
-```{r world map, echo=FALSE}
-
-world <- map_data("world")
-ggplot() + 
-  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
-  theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
-  coord_fixed(1.3)
-  
 ```
 
 ## Timeline
@@ -203,17 +231,17 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 ### Isolation month
 
-May is the peak mushroom fruiting season, Jan may be an attifacet of missing mont or more likely the old way of entering data. Can I remove these??
+In the New Zealand autum, May is the peak mushroom fruiting season explaing the Jan may be an artifact of missing month or more likely the old way of entering data. Can I remove these??
 
 less in winter, more in summer trend.
 
 ```{r NZ isolated month chart, echo=FALSE}
 
 #new month ICMP culture isolated (in NZ)
-attach(ICMP.nz) 
-month.isolated <- ymd(ICMP.nz$IsolationDateISO, truncated = 1)
+attach(ICMP.NZ) 
+month.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 1)
 mergemonths <- floor_date(month.isolated, unit = "month")
-ggplot(ICMP.nz, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
+ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
   labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -224,7 +252,7 @@ ggplot(ICMP.nz, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
 
 ## Curation stats
 
-These stats may be useful for curation or data checking.
+These stats may be useful for curation or data checking for ICMP staff.
 
 ### Last updated user
 
@@ -241,14 +269,38 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
 
 ```
 
+```{r table of security levels , echo=FALSE}
 
-need head table here maybe.
+#table of security levels
+table.security <- ICMP.dump %>% 
+  group_by(SpecimenSecurityLevelText) %>%
+  tally()
+kable(table.security, caption = "table of security levels") #knitr
+
+```
+
+```{r table of biostatus , echo=FALSE}
+
+#table of security levels
+table.security <- ICMP.dump %>% 
+  group_by(OccurrenceDescription) %>%
+  tally()
+kable(table.security, caption = "table of biostatus Occurrence") #knitr
+
+#table of security levels
+table.security <- ICMP.dump %>% 
+  group_by(BiostatusDescription) %>%
+  tally()
+kable(table.security, caption = "table of biostatus description") #knitr
+
+```
+
+This table shows the first few rows of the full dataset. use the arrows to explore across the columns.
 
 ```{r testing, echo=FALSE}
 
 rmarkdown::paged_table(head(ICMP.dump))
 
 ```
-
 
 This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`.
