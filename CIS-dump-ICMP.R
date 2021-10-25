@@ -358,8 +358,6 @@ sort(table(ICMP.dump$Family),decreasing=TRUE)[1:11] #top 11 families
 sort(table(ICMP.dump.NZ$Family),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
-ggplot(data, aes(fill=condition, y=value, x=specie)) + 
-  geom_bar(position="stack", stat="identity")
 
 
 
@@ -844,6 +842,28 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 
 
 #======On Hosts========
+
+
+sort(table(ICMP.dump$Family_C2),decreasing=TRUE)[1:11] #top 11 families
+sort(table(ICMP.dump.NZ$Family_C2),decreasing=TRUE)[1:11] #top 11 NZ families
+
+#substrate does not work well as a controlled vocab.
+sort(table(ICMP.dump$Substrate),decreasing=TRUE)[1:11] #top 11 substrates
+sort(table(ICMP.dump.NZ$Substrate),decreasing=TRUE)[1:11] #top 11 NZ substrates
+
+
+#barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
+positions.10hosts <- c("Leguminosae", "Solanaceae", "Rosaceae", "Gramineae", "Actinidiaceae", "Myrtaceae", "Vitaceae", "Compositae", "Nothofagaceae",  "Cucurbitaceae")
+ICMP.10hosts <- subset(ICMP.dump, (Family_C2 == "Leguminosae" | Family_C2 == "Solanaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Gramineae" | Family_C2 == "Actinidiaceae" | Family_C2 == "Myrtaceae" | Family_C2 == "Vitaceae" | Family_C2 == "Compositae" | Family_C2 == "Nothofagaceae" | Family_C2 == "Cucurbitaceae"))
+
+ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
+  labs(title = "Top 10 host Families in the ICMP culture collection") +
+  labs(x = "Host plant Family", y = "number of cultures") +
+  geom_bar() + 
+  coord_flip() +
+  theme(legend.position = c(0.85, 0.75)) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions.10hosts)
 
 
 #kiwifruit

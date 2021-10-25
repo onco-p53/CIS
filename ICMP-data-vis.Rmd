@@ -252,7 +252,7 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 ### Isolation month
 
-In the New Zealand autum, May is the peak mushroom fruiting season explaing the Jan may be an artifact of missing month or more likely the old way of entering data. Can I remove these??
+In the New Zealand autumn, May is the peak mushroom fruiting season explain the number of fungi isolated in this month. In general there is a trend of fewer isolations in Winter and more in Summer. The high numbers in January may be an artifact of a prior way recording the data in the database which if the month was unknown it would be recorded as January.
 
 less in winter, more in summer trend.
 
