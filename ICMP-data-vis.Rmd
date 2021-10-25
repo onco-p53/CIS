@@ -51,7 +51,7 @@ ICMP.public <- ICMP.dump.initial %>%
 
 ## General statistics
 
-The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the number in bold.
+The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
 
 (also should include NZ only stats)
 
@@ -196,7 +196,7 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
 
 ### New Zealand distribution
 
-Each of the cultures from New Zealand that have a geocoordinate are plotted below.
+Each of the cultures from New Zealand that have a geocoordinate are plotted below. A better interative map can be found on GBIF at: https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862.
 
 ```{r nz map, echo=FALSE}
 
