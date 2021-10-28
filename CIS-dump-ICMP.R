@@ -634,6 +634,23 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 ggsave(file='ICMP-isolation-dates-facet.png', width=8, height=5)
 
 
+#standard all ICMP overtime stats faceted
+attach(ICMP.dump) 
+require(ggplot2)
+require(lubridate)
+date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 1)
+ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
+  labs(title = "Deposit dates of ICMP cultures") +
+  labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  facet_grid(SpecimenType ~ .)
+ggsave(file='ICMP-deposit-dates-facet.png', width=8, height=5)
+
+
+
+
+
 
 arrange(date.isolated)
 
