@@ -355,4 +355,4 @@ rmarkdown::paged_table(head(ICMP.dump))
 
 ```
 
-This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`.
+This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is avaliabe at <https://github.com/onco-p53/CIS>.
