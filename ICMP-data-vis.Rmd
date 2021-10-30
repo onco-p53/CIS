@@ -4,9 +4,11 @@ author: "Bevan Weir"
 date: "data as of 21 October 2021"
 output:
   html_document:
+    df_print: default
     toc: TRUE
     toc_float: TRUE
   pdf_document: default
+always_allow_html: true
 subject: Nationally significant collections
 affiliation: Manaaki Whenua - Landcare Research
 ---
@@ -72,11 +74,16 @@ kable(table.stypes, caption = "table of specimen types") #knitr
 
 ## Type cultures
 
-The ICMP has a number of type cultures.
-
-```{r types, echo=TRUE}
+```{r types, include=FALSE}
 
 ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
+
+```
+
+The ICMP has **`r count(ICMP.types)` type cultures** cultures, these consist of:
+
+```{r types table, echo=TRUE}
+
 table(ICMP.types$SpecimenType)
 
 ```
@@ -236,7 +243,28 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 ## Timeline
 
-What are the earliest cultures?
+```{r calulate dates, echo=FALSE}
+
+date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+sort(table(date.isolated),decreasing=FALSE)[1:1] #sort by isolation date
+
+#ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+#arrange(ICMP.dump, date.isolated)
+
+
+
+date.isolated.nz <-ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
+sort(table(date.isolated.nz),decreasing=FALSE)[1:1] #sort by isolation date
+
+```
+
+-   The earliest culture in ICMP is [*Erwinia* sp. ICMP 1580](https://scd.landcareresearch.co.nz/Specimen/ICMP_1580) isolated in 1901 from Canada
+
+-   The earliest New Zealand bacteria culture is [*Sinorhizobium meliloti* ICMP 1322](https://scd.landcareresearch.co.nz/Specimen/ICMP_1322) isolated in 1927
+
+-   The earliest New Zealand fungal culture is [*Fuscoporia contigua* ICMP 13879](https://scd.landcareresearch.co.nz/Specimen/ICMP_13879) isolated in 1946
+
+-   The earliest New Zealand yeast culture is [*Saccharomyces cerevisiae* ICMP 342](https://scd.landcareresearch.co.nz/Specimen/ICMP_342) isolated in 1949
 
 ```{r all isolated dates chart, echo=FALSE, warning=FALSE}
 

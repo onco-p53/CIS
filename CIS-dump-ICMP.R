@@ -648,7 +648,13 @@ ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
 ggsave(file='ICMP-deposit-dates-facet.png', width=8, height=5)
 
 
+ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+arrange(ICMP.dump, date.isolated)
 
+ICMP.dump.NZ$date.isolated <- ymd(ICMP.dump.NZ$IsolationDateISO, truncated = 3)
+arrange(ICMP.dump.NZ, date.isolated)
+
+#then extract columns and head them?
 
 
 
