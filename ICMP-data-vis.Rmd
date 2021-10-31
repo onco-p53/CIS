@@ -243,18 +243,25 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 ## Timeline
 
-```{r calulate dates, echo=FALSE}
+```{r calulate earliest culture dates, echo=FALSE}
 
-date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-sort(table(date.isolated),decreasing=FALSE)[1:1] #sort by isolation date
+#all cultures sorted by date. Add a new column date.isolated 
+ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+arrange(ICMP.dump, date.isolated) %>%
+  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+  slice_head(n=5)
 
-#ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-#arrange(ICMP.dump, date.isolated)
+#all cultures sorted by deposited date. Add a new column date.isolated 
+ICMP.dump$date.deposited <- ymd(ICMP.dump$DepositedDateISO, truncated = 3)
+arrange(ICMP.dump, date.deposited) %>%
+  select("AccessionNumber","SpecimenType", "Country", "date.deposited") %>%
+  slice_head(n=5)
 
-
-
-date.isolated.nz <-ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
-sort(table(date.isolated.nz),decreasing=FALSE)[1:1] #sort by isolation date
+#New Zealand cultures sorted by date. Add a new column date.isolated
+ICMP.NZ$date.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
+arrange(ICMP.NZ, date.isolated) %>%
+  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+  slice_head(n=5)
 
 ```
 
