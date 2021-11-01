@@ -631,29 +631,77 @@ ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
 ggsave(file='ICMP-isolation-month.png', width=8, height=5)
 
 
-#ICMP isolation dates
-attach(ICMP.dump) 
-require(ggplot2)
-require(lubridate)
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
+#years test, this works and produces a bar chart but not super useful
+ICMP.dump$date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3) %>%
+  floor_date(ICMP.dump$date.isolated, unit = "year")
+
 ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
   theme(legend.position = c(0.1, 0.8)) +
-  geom_histogram(binwidth=365.25)  # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_bar()  # this is a bin of two years: binwidth=730
+
+
+
+
+
+ICMP.dump$date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3) %>%
+  floor_date(ICMP.dump$date.isolated, unit = "year")
+
+ICMP.dump$date.isolated
+   
+
+
+
+#ICMP isolation dates playing with plotting
+#chould do a histogram with a wider binned freqpoly as a 'trendline'
+attach(ICMP.dump) 
+require(ggplot2)
+require(lubridate)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType, colour = SpecimenType)) +
+  labs(title = "Isolation dates of ICMP cultures") +
+  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = c(0.1, 0.8)) +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  #geom_dotplot(binwidth=365.25) #too much data
+  #stat_bin(binwidth=365.25) #fine i guess
+  geom_freqpoly(binwidth=1461) + # a bin of 4 years
+  geom_histogram(binwidth=1461)  # this is a bin of two years: binwidth=730
 ggsave(file='ICMP-isolation-dates2.png', width=8, height=5)
+
+
+#teseting some new code for overlaying a trend
+#prob need a simpler theme
+ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
+ggplot(ICMP.bacteria, aes(date.deposited)) +
+  theme_bw() +
+  labs(title = "Date bacterial cultures were deposited in ICMP") +
+  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, alpha = 0.2) +
+  geom_density(aes(y=500 * ..count..), size = 2) #multiplies the density by 500x so it is visible
+ggsave(file='ICMP-bacteria-depost-dates-smoothed.png', width=8, height=5)
+
+
+
+
+
 
 #ICMP isolation dates faceted
 attach(ICMP.dump) 
 require(ggplot2)
 require(lubridate)
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
 ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
   geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
   facet_grid(SpecimenType ~ .)
 ggsave(file='ICMP-isolation-dates-facet.png', width=8, height=5)
 
@@ -662,25 +710,29 @@ ggsave(file='ICMP-isolation-dates-facet.png', width=8, height=5)
 attach(ICMP.dump) 
 require(ggplot2)
 require(lubridate)
-date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 1)
+date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
 ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
   labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
-  geom_histogram(binwidth=365.25, show.legend = TRUE)# + # this is a bin of two years: binwidth=730
-#  facet_grid(SpecimenType ~ .)
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  facet_grid(SpecimenType ~ .)
 ggsave(file='ICMP-deposit-dates-facet.png', width=8, height=5)
 
 #teseting some new code
 ICMP.dump$date.deposited <- ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.deposited)) +
+builder <- ggplot(ICMP.dump, aes(date.deposited)) +
   labs(title = "Date bacterial cultures were deposited in ICMP") +
   labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
-#  geom_bar() # this is a bin of two years binwidth=730
   geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 #  geom_hline(yintercept=392, linetype=2)
-ggsave(file='ICMP-deposit-dates-bacteria.png', width=5, height=5)
+
+ggplot_build(builder)
+builder.data<-ggplot_build(builder)$data
+head(builder.data)
+mean(builder.data$count)
 
 #could do this early on and convert all to proper dates?? - nah make a seperate Date column
 #for intercep do count per year to seperate table?

@@ -273,19 +273,54 @@ arrange(ICMP.NZ, date.isolated) %>%
 
 -   The earliest New Zealand yeast culture is [*Saccharomyces cerevisiae* ICMP 342](https://scd.landcareresearch.co.nz/Specimen/ICMP_342) isolated in 1949
 
-```{r all isolated dates chart, echo=FALSE, warning=FALSE}
+### Isolations and deposits over time
+
+```{r all isolated dates chart, echo=FALSE, warning=TRUE}
 
 #standard all ICMP overtime stats faceted
 
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 1)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
 ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
   geom_histogram(binwidth=365.25, show.legend = FALSE) +
   facet_grid(SpecimenType ~ .)
 
 ```
+
+```{r all deposited dates chart, echo=FALSE, warning=TRUE}
+
+#ICMP deposit date faceted
+date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
+ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
+  labs(title = "Deposit dates of ICMP cultures") +
+  labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  facet_grid(SpecimenType ~ .)
+
+```
+
+
+
+```{r bacteria deposits chart, echo=FALSE, warning=TRUE}
+ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
+
+ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
+ggplot(ICMP.bacteria, aes(date.deposited)) +
+  theme_bw() +
+  labs(title = "Date bacterial cultures were deposited in ICMP") +
+  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, alpha = 0.2) +
+  geom_density(aes(y=500 * ..count..), size = 2) #multiplies the density by 500x so it is visible
+
+```
+
+
 
 ### Isolation month
 
