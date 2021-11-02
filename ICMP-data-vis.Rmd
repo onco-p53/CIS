@@ -243,7 +243,9 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 ## Timeline
 
-```{r calulate earliest culture dates, echo=FALSE}
+```{r calulate earliest culture dates, include=FALSE}
+
+#this is just for data checking e.g. ranking the eary ones don't display in the final version
 
 #all cultures sorted by date. Add a new column date.isolated 
 ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
@@ -275,7 +277,7 @@ arrange(ICMP.NZ, date.isolated) %>%
 
 ### Isolations and deposits over time
 
-```{r all isolated dates chart, echo=FALSE, warning=TRUE}
+```{r all isolated dates chart, echo=FALSE, warning=FALSE}
 
 #standard all ICMP overtime stats faceted
 
@@ -290,7 +292,7 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 ```
 
-```{r all deposited dates chart, echo=FALSE, warning=TRUE}
+```{r all deposited dates chart, echo=FALSE, warning=FALSE}
 
 #ICMP deposit date faceted
 date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
@@ -304,9 +306,7 @@ ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
 
 ```
 
-
-
-```{r bacteria deposits chart, echo=FALSE, warning=TRUE}
+```{r bacteria deposits chart, echo=FALSE, warning=FALSE}
 ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
 
 ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
@@ -319,8 +319,6 @@ ggplot(ICMP.bacteria, aes(date.deposited)) +
   geom_density(aes(y=500 * ..count..), size = 2) #multiplies the density by 500x so it is visible
 
 ```
-
-
 
 ### Isolation month
 
@@ -425,4 +423,4 @@ rmarkdown::paged_table(head(ICMP.dump))
 
 ```
 
-This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is avaliabe at <https://github.com/onco-p53/CIS>.
+This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.
