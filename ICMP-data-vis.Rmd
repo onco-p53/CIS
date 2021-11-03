@@ -4,6 +4,7 @@ author: "Bevan Weir"
 date: "data as of 21 October 2021"
 output:
   html_document:
+    code_folding: hide
     df_print: default
     toc: TRUE
     toc_float: TRUE
@@ -31,7 +32,7 @@ library(knitr)
 
 This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visualisations of data analysed in R in a user-friendly format.
 
-```{r import, include=FALSE}
+```{r import, echo=TRUE}
 
 #import the files
 ICMP.dump.initial <- read.csv("ICMP-export-21-oct-2021.csv", header=TRUE, sep=",")
@@ -57,7 +58,7 @@ The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures th
 
 (also should include NZ only stats)
 
-```{r tables, echo=FALSE}
+```{r tables, echo=TRUE}
 
 
 #ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
@@ -74,7 +75,7 @@ kable(table.stypes, caption = "table of specimen types") #knitr
 
 ## Type cultures
 
-```{r types, include=FALSE}
+```{r types, echo=TRUE}
 
 ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
 
@@ -90,7 +91,7 @@ table(ICMP.types$SpecimenType)
 
 There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type cultures may have been isolated from a type specimen (e.g. from PDD) and are thus 'ex types'.
 
-```{r types chart, echo=FALSE}
+```{r types chart, echo=TRUE}
 
 #barchart of all ICMP types sorted by 'kind' of type, coloured by kind of organism
 positions <- c("Type strain", "Pathotype strain", "Neopathotype strain", "Type", "ex Type",  "Holotype", "ex Holotype", "Paratype", "ex Paratype", "Isotype", "Neotype", "ex Neotype", "Epitype", "ex Epitype", "Syntype", "Reference strain")
@@ -109,7 +110,7 @@ ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
 
 Extended specimen data is data beyond the basic taxonomic and and location. See: <https://academic.oup.com/bioscience/article/70/1/23/5637849> The charts below show the proportion of ICMP cultures that have DNA sequences lodged in GenBank global repository, images (usually of culture plates), and when a culture is specifically cited in literature.
 
-```{r Extended specimen data, echo=FALSE}
+```{r Extended specimen data, echo=TRUE}
 
 #sub set out the interesting columns using "select" in dpylr
 library(dplyr)
@@ -130,7 +131,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
 
 This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast) to show the relative proportions of extended specimen data for each of these.
 
-```{r Extended specimen data 2, echo=FALSE}
+```{r Extended specimen data 2, echo=TRUE}
 
 # ** Cultures with extended specimen data by ExtendedSpecimen with SpecimenType facet
 ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
@@ -147,7 +148,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
 
 Many ICMP cultures are associated with a host plant, for example rhizobia in legume nodules, or plant pathogenic fungi causing leaf spots. Below are the top 10 most common host plant families in the ICMP with type of organism.
 
-```{r top 10 host families, echo=FALSE}
+```{r top 10 host families, echo=TRUE}
 
 #barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
 positions.10hosts <- c("Leguminosae", "Solanaceae", "Rosaceae", "Gramineae", "Actinidiaceae", "Myrtaceae", "Vitaceae", "Compositae", "Nothofagaceae",  "Cucurbitaceae")
@@ -170,7 +171,7 @@ ICMP cultures have been isolated from around the world.
 
 ### World distribution
 
-```{r world map, echo=FALSE, warning=FALSE}
+```{r world map, echo=TRUE, warning=FALSE}
 
 world <- map_data("world")
 ggplot() + 
@@ -183,7 +184,7 @@ ggplot() +
 
 The top 10 countries represented in the ICMP with type of samples are shown below.
 
-```{r top countries, echo=FALSE}
+```{r top countries, echo=TRUE}
 
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
 
@@ -205,7 +206,7 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
 
 Each of the cultures from New Zealand that have a geocoordinate are plotted below. A better interative map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
 
-```{r nz map, echo=FALSE, warning=FALSE}
+```{r nz map, echo=TRUE, warning=FALSE}
 
 ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 
@@ -217,14 +218,14 @@ nz <- map_data("nzHires")
 ggplot() + 
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.2, show.legend = FALSE) +
   coord_fixed(1.3)
   
 ```
 
 There are various ways to divide Aotearoa New Zealand in regions. The ICMP uses 'Crosby Codes' which were developed for for recording specimen localities in the New Zealand. The ICMP is based in Auckland explaining the large number of collections from this region.
 
-```{r top NZ area codes, echo=FALSE, warning=FALSE}
+```{r top NZ area codes, echo=TRUE, warning=FALSE}
 
 #New Zealand Area codes
 ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
@@ -243,7 +244,7 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 ## Timeline
 
-```{r calulate earliest culture dates, include=FALSE}
+```{r calulate earliest culture dates, echo=TRUE}
 
 #this is just for data checking e.g. ranking the eary ones don't display in the final version
 
@@ -277,7 +278,7 @@ arrange(ICMP.NZ, date.isolated) %>%
 
 ### Isolations and deposits over time
 
-```{r all isolated dates chart, echo=FALSE, warning=FALSE}
+```{r all isolated dates chart, echo=TRUE, warning=FALSE}
 
 #standard all ICMP overtime stats faceted
 
@@ -292,7 +293,7 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 ```
 
-```{r all deposited dates chart, echo=FALSE, warning=FALSE}
+```{r all deposited dates chart, echo=TRUE, warning=FALSE}
 
 #ICMP deposit date faceted
 date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
@@ -306,7 +307,7 @@ ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
 
 ```
 
-```{r bacteria deposits chart, echo=FALSE, warning=FALSE}
+```{r bacteria deposits chart, echo=TRUE, warning=FALSE}
 ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
 
 ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
@@ -326,7 +327,7 @@ In the New Zealand autumn, May is the peak mushroom fruiting season explain the 
 
 less in winter, more in summer trend.
 
-```{r NZ isolated month chart, echo=FALSE, warning=FALSE}
+```{r NZ isolated month chart, echo=TRUE, warning=FALSE}
 
 #new month ICMP culture isolated (in NZ)
 attach(ICMP.NZ) 
@@ -361,7 +362,7 @@ These stats may be useful for curation or data checking for ICMP staff.
 
 ### Last updated user
 
-```{r last updated user chart, echo=FALSE}
+```{r last updated user chart, echo=TRUE}
 
 #pie chart by last updated user
 #ICMP.dump$LastUpdatedBy <- sapply(ICMP.dump$UpdatedBy, tolower)
@@ -385,7 +386,7 @@ ggplot(ICMP.dump, aes(LastUpdatedBy, fill = SpecimenType)) +
 
 ### Security levels
 
-```{r table of security levels , echo=FALSE}
+```{r table of security levels, echo=TRUE}
 
 #table of security levels
 table.security <- ICMP.dump %>% 
@@ -397,7 +398,7 @@ kable(table.security, caption = "table of security levels") #knitr
 
 ### Biostatus
 
-```{r table of biostatus , echo=FALSE}
+```{r table of biostatus, echo=TRUE}
 
 #table of security levels
 table.security <- ICMP.dump %>% 
@@ -417,7 +418,7 @@ kable(table.security, caption = "table of biostatus description") #knitr
 
 This table shows the first few rows of the full dataset. use the arrows to explore across the columns.
 
-```{r testing, echo=FALSE}
+```{r testing, echo=TRUE}
 
 rmarkdown::paged_table(head(ICMP.dump))
 

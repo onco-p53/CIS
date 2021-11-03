@@ -16,6 +16,7 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+library(svglite)
 
 display.brewer.all(colorblindFriendly = TRUE)
 display.brewer.all(colorblindFriendly = FALSE)
@@ -860,13 +861,20 @@ ICMP.no.chat <- ICMP.NZ %>%
   filter(NZAreaCode != "Chatham Islands") %>%
   filter(NZAreaCode != "Kermadec Islands")
 
-nz <- map_data("nzHires")
+#this super high res map is for checking weird points
+map_data("nzHires")
 ggplot() + 
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
-  #  geom_text(data = ICMP.no.chat, position=position_jitter(width=1,height=15), aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 3, color = "black") + #, angle = 45
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.2, show.legend = FALSE) +
+  geom_text(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
+ggsave(file='ICMP_NZ-aeracode-map_labels.png', width=50, height=50, limitsize = FALSE)
+ggsave(file='ICMP_NZ-aeracode-map_labels.svg', width=50, height=50, limitsize = FALSE)
+
+
+
+position=position_jitter(width=0,height=0)
 
 
 
