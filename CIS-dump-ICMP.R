@@ -866,7 +866,7 @@ map_data("nzHires")
 ggplot() + 
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.2, show.legend = FALSE) +
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.5, show.legend = FALSE) +
   geom_text(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
 ggsave(file='ICMP_NZ-aeracode-map_labels.png', width=50, height=50, limitsize = FALSE)

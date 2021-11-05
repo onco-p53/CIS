@@ -1,7 +1,7 @@
 ---
 title: "ICMP data visualisation"
 author: "Bevan Weir"
-date: "data as of 21 October 2021"
+date: "data as of 4 November 2021"
 output:
   html_document:
     code_folding: hide
@@ -35,7 +35,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE}
 
 #import the files
-ICMP.dump.initial <- read.csv("ICMP-export-21-oct-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-4-nov-2021.csv", header=TRUE, sep=",")
 
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
