@@ -5,7 +5,7 @@
 
 R.version.string
 
-ICMP.dump.initial <- read.csv("ICMP-export-21-oct-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-20-nov-2021.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
 summary(ICMP.dump.initial, maxsum=10)
 str(ICMP.dump.initial)
@@ -139,7 +139,7 @@ describeBy(
 
 ICMP.types.sorted <- ICMP.types %>%
   arrange(TypeStatus) %>%    # First sort by TypeStatus. This sort the dataframe but NOT the factor levels
-  mutate(TypeStatus=factor(TypeStatus, levels=TypeStatus)) %>%   # This trick update the factor levels
+  mutate(TypeStatusSort =factor(TypeStatus, levels=TypeStatus))   # This trick update the factor levels
 
 #maybe need to make a count and make a new column?  
   
@@ -152,7 +152,7 @@ ggplot(ICMP.types, aes(TypeStatus)) +
   labs(x = "'Kind' of type", y = "number of isolates") +
   geom_bar() + 
   coord_flip()
-ggsave(file='ICMP_types.png', width=10, height=10)
+ggsave(file='./ouputs/ICMP_types.png', width=10, height=10)
 
 ## KEY CHART ##
 #barchart of all ICMP types sorted by 'kind' of type, coloured by kind of organism
@@ -164,8 +164,7 @@ ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions)
-ggsave(file='ICMP.types.by.kind.png', width=10, height=10)
-
+ggsave(file='./ouputs/ICMP.types.by.kind.png', width=10, height=10)
 
 #barchart of all ICMP types sorted by 'kind' of type, with genbank status
 ggplot(ICMP.types, aes(SpecimenType, fill=GenBank)) +
@@ -173,36 +172,35 @@ ggplot(ICMP.types, aes(SpecimenType, fill=GenBank)) +
   labs(x = "'Kind' of type", y = "number of isolates") +
   geom_bar() + 
   coord_flip()
-ggsave(file='ICMP_types-by-SpecimenType.png', width=10, height=10)
-
+ggsave(file='./ouputs/ICMP_types-by-SpecimenType.png', width=10, height=10)
 
 #Types in the ICMP with images
-d <- subset(ICMP.dump,!(TypeStatus == ""))
-attach(d) #this means we don't need the $ sign
-require(ggplot2)
-p <- ggplot(d, aes(TypeStatus, fill=Images)) + labs(title = "Types in the ICMP with images") + labs(x = "'Kind' of type", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP.types.with.iamges.png', width=10, height=10)
+ggplot(ICMP.types, aes(TypeStatus, fill=Images)) +
+  labs(title = "Types in the ICMP with images") +
+  labs(x = "'Kind' of type", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip()
+ggsave(file='./ouputs/ICMP.types.with.iamges.png', width=10, height=10)
 
 #Types in ICMP with sequences in GenBank
-d <- subset(ICMP.dump,!(TypeStatus == ""))
-attach(d) #this means we don't need the $ sign
-require(ggplot2)
-p <- ggplot(d, aes(TypeStatus, fill=GenBank)) + labs(title = "Types in ICMP with sequences in GenBank") + labs(x = "'Kind' of type", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP.types.with.sequence.png', width=10, height=10)
+ggplot(ICMP.types, aes(TypeStatus, fill=GenBank)) +
+  labs(title = "Types in ICMP with sequences in GenBank") +
+  labs(x = "'Kind' of type", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip()
+ggsave(file='./ouputs/ICMP.types.with.sequence.png', width=10, height=10)
+
 
 #============PIE CHART!================
 
-#this is borked code, but if sorted correctly could be a visual map of deposits over time
+
+#this is borked code, but if sorted correctly could be a barcode map of deposits over time
 #sort would have to strip ICMP number
-sort(table(ICMP.dump$AccessionNumber),decreasing=TRUE)
-ggplot(ICMP.dump, aes(x="", y=AccessionNumber, fill=SpecimenType))+
-  geom_bar(width = 1, stat = "identity")
+#sort(table(ICMP.dump$AccessionNumber),decreasing=TRUE)
+#ggplot(ICMP.dump, aes(x="", y=AccessionNumber, fill=SpecimenType))+
+#  geom_bar(width = 1, stat = "identity")
 
 #pie chart by specimen type
 ggplot(ICMP.dump, aes(x=factor(1), fill=SpecimenType)) +
@@ -210,7 +208,7 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=SpecimenType)) +
   coord_polar("y") +
   theme_void() +
   scale_fill_brewer(palette = "Set2")
-ggsave(file='ICMP_specimen_pie.png', width=5, height=5)
+ggsave(file='./ouputs/ICMP_specimen_pie.png', width=5, height=5)
 
 
 #pie chart by last updated user
@@ -222,7 +220,7 @@ ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
   coord_polar("y") +
   theme_void() +
   scale_fill_brewer(palette = "Paired")
-ggsave(file='ICMP_last-updated_pie.png', width=5, height=5)
+ggsave(file='./ouputs/ICMP_last-updated_pie.png', width=5, height=5)
 
 
 #============Extended specimen data================
@@ -230,109 +228,72 @@ ggsave(file='ICMP_last-updated_pie.png', width=5, height=5)
 #install gridextra
 library(gridExtra)
 
-#GenBank status by kingdom
-genbank.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
-  labs(title = "Cultures in the ICMP in GenBank") +
-  labs(x = "Taxon", y = "number of isolates") +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-ggsave(print_bars, file='extended-specimen-genbank.png', width=7, height=7)
-
-#GenBank status by kingdom
-literature.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
-  labs(title = "Cultures in the ICMP with a citation in literature") +
-  labs(x = "Taxon", y = "number of isolates") +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-ggsave(print_bars, file='extended-specimen-literature.png', width=7, height=7)
-
-#GenBank status by kingdom
-image.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
-  labs(title = "Cultures in the ICMP with images") +
-  labs(x = "Taxon", y = "number of isolates") +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar()
-ggsave(print_bars, file='extended-specimen-images.png', width=7, height=7)
-
-
-grid.arrange(genbank.plot, literature.plot, image.plot, nrow = 2, ncol = 2)
-
-
-
-
-
-#here want to have:
-#genbank
-#literature
-#iamge
-#create a subset of these
-
-#============Kingdom Level barcharts================
-
-#plain code for a kingdom barchart
-attach(ICMP.dump) 
-require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType)) + labs(title = "Cultures in the ICMP by Kingdom") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_kingdoms.png', width=7, height=7)
-
-
-
-
-#GenBank status by kingdom
+#GenBank status by sample type
+#genbank.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
 ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
   labs(title = "Cultures in the ICMP in GenBank") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
   geom_bar()
-ggsave(print_bars, file='ICMP_kingdoms_genbank.png', width=7, height=7)
+ggsave(file='./ouputs/extended-specimen-genbank.png', width=7, height=7)
 
-#kingdoms with literature
-attach(ICMP.dump) 
-require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Cultures in the ICMP in Literature") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_kingdoms_Literature.png', width=7, height=7)
+#Literature status by sample type
+#literature.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
+ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
+  labs(title = "Cultures in the ICMP with a citation in literature") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar()
+ggsave(file='./ouputs/extended-specimen-literature.png', width=7, height=7)
 
-#kingdoms with images
-attach(ICMP.dump) 
-require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) + labs(title = "Cultures in the ICMP with images") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_kingdoms_images.png', width=7, height=7)
+#Image status by sample type
+#image.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
+  ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
+  labs(title = "Cultures in the ICMP with images") +
+  labs(x = "Taxon", y = "number of isolates") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar()
+ggsave(file='./ouputs/extended-specimen-images.png', width=7, height=7)
 
-#could also do a stacked bar chart with images, genbank, literature all on one chart.
+#This is a way to arrange on a grid, need to uncomment above
+#grid.arrange(genbank.plot, literature.plot, image.plot, nrow = 2, ncol = 2)
 
-#kingdoms by Occurrence in NZ
-attach(ICMP.dump) 
-require(ggplot2)
+
+#Add code here from the rmd file for faceted graph
+
+
+#============Sample kind Level barcharts================
+
+#Simple sample type barchart
+ggplot(ICMP.dump, aes(SpecimenType)) +
+  labs(title = "Cultures in the ICMP by Sample type") +
+  labs(x = "Taxon", y = "number of isolates") + 
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_kingdoms.png', width=7, height=7)
+
+
+#Occurrence in NZ
 ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) +
   labs(title = "Cultures in the ICMP by occurrence in NZ") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
-  coord_flip() #+
-#  scale_fill_brewer(palette = "Paired")
-ggsave(file='ICMP_kingdoms_occurrence.png', width=7, height=7)
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2")
+ggsave(file='./ouputs/ICMP_kingdoms_occurrence.png', width=7, height=7)
 
 
-
-
-
-#kingdoms by Order Status
-attach(ICMP.dump) 
-require(ggplot2)
-p <- ggplot(ICMP.dump, aes(SpecimenType, fill= LoanStatus)) + labs(title = "ICMP Order Status") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
+#Order Status
+ggplot(ICMP.dump, aes(SpecimenType, fill= LoanStatus)) +
+  labs(title = "ICMP Order Status") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2")
+ggsave(file='./ouputs/ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated
 #need to filter out low users and just as a bar or pie graph?
@@ -344,7 +305,7 @@ ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy3)) +
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Paired")
-ggsave(file='ICMP_kingdoms_updated_by.png', width=7, height=7)
+ggsave(file='./ouputs/ICMP_kingdoms_updated_by.png', width=7, height=7)
 
 #need a kingdoms by NZ cultures??
 
@@ -359,46 +320,41 @@ sort(table(ICMP.dump$Family),decreasing=TRUE)[1:11] #top 11 families
 sort(table(ICMP.NZ$Family),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
+#Bacterial Phylum
+ggplot(ICMP.bacteria, aes(Phylum)) +
+  labs(title = "ICMP by bacterial phylum") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_bacteria-phylum.png', width=10, height=10)
 
+#Bacterial Class
+ggplot(ICMP.bacteria, aes(Class)) +
+  labs(title = "ICMP by bacterial class") +
+  labs(x = "Taxon", y = "number of isolates") + 
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_bacteria-class.png', width=10, height=10)
 
-
-
-
-#ggplot code for bacterial Phylum
-attach(ICMP.bacteria) 
-require(ggplot2)
-p <- ggplot(ICMP.bacteria, aes(Phylum)) + labs(title = "ICMP by bacterial phylum") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_bacteria-phylum.png', width=10, height=10)
-
-#ggplot code for bacterial Class
-attach(ICMP.bacteria) 
-require(ggplot2)
-p <- ggplot(ICMP.bacteria, aes(Class)) + labs(title = "ICMP by bacterial class") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_bacteria-class.png', width=10, height=10)
-
-#ggplot code for bacterial Order
-ggplot(ICMP.bacteria, aes(Order))
+#Bacterial Order
+ggplot(ICMP.bacteria, aes(Order)) +
   labs(title = "ICMP by bacterial order") +
   labs(x = "Taxon", y = "number of isolates") +
-#  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(file='ICMP_bacteria-order.png', width=10, height=10)
+ggsave(file='./ouputs/ICMP_bacteria-order.png', width=10, height=10)
 
-#ggplot code for bacterial Family
-attach(ICMP.bacteria) 
-require(ggplot2)
-p <- ggplot(ICMP.bacteria, aes(Family)) + labs(title = "ICMP by bacterial family") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_bacteria-family.png', width=20, height=10)
+#Bacterial Family
+ggplot(ICMP.bacteria, aes(Family)) +
+  labs(title = "ICMP by bacterial family") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_bacteria-family.png', width=20, height=10)
 
 
 # -----  fungal taxon grouping ----- 
@@ -688,7 +644,19 @@ ggplot(ICMP.bacteria, aes(date.deposited)) +
 ggsave(file='ICMP-bacteria-depost-dates-smoothed.png', width=8, height=5)
 
 
-
+#ICMP isolation dates 
+attach(ICMP.dump) 
+require(ggplot2)
+require(lubridate)
+date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
+ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+  labs(title = "Isolation dates of ICMP cultures") +
+  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = c(0.1, 0.8)) +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y")
+ggsave(file='ICMP-isolation-dates.png', width=12, height=7.5)
 
 
 
@@ -848,10 +816,22 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
   #geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
-ggsave(file='ICMP_worldmap_labels.png', width=40, height=20)
+ggsave(file='ICMP_worldmap_poster.png', width=12, height=6)
+
+
+
+
+world <- map_data("world2")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
+  coord_fixed(1.3)
+
+
 
 
 
@@ -862,7 +842,7 @@ ICMP.no.chat <- ICMP.NZ %>%
   filter(NZAreaCode != "Kermadec Islands")
 
 #this super high res map is for checking weird points
-map_data("nzHires")
+nz <- map_data("nzHires")
 ggplot() + 
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
@@ -899,6 +879,53 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 
 #to make the Chatham islands work you need to fudge them over 180 e.g. 183.41667
 #will have to melt and add the fudge factor somehow to only Chatams ones
+
+
+
+# Libraries ---------------------------------------------------------------
+#Plotting functions
+library(dplyr) #Pipes/filter because I am lazy
+library(sf) #Simple feature
+library(ggplot2) #Mapping
+library(ggspatial) #Add's fancy shit to the map
+
+# Loading in data ---------------------------------------------------------
+
+#Rhizobia dataset + Bevan's filters
+rhizo.df <- read.csv("./data/ICMP-export-4-nov-2021.csv") %>%
+  filter(SpecimenType == "Bacterial Culture" |
+           SpecimenType == "Chromist Culture" |
+           SpecimenType == "Fungal Culture" |
+           SpecimenType == "Yeast Culture") %>%
+  filter(Deaccessioned == "false")
+
+
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
+  st_transform(2193) #Setting map projection - NZGD2000
+
+#Transforming to an SF object
+rhizoNZ.sf <- rhizo.df %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
+
+#Plotting - takes a second to execute
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+          size = 1, alpha = 0.2, show.legend = FALSE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal()
+
+#Saving the code
+ggsave("./graphs/rhizobiaNZ.png",
+       width = 8, height = 6)
 
 
 
@@ -1057,5 +1084,38 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   scale_fill_brewer(palette = "Paired") +
   geom_bar(position = "fill") +
   facet_grid(cols = vars(SpecimenType))
+
+
+ICMP.dump %>%
+  group_by(species, sex) %>%
+  select(height, mass) %>%
+  summarise(
+    height = mean(height, na.rm = TRUE),
+    mass = mean(mass, na.rm = TRUE)
+  )
+
+
+#======Special cases========
+
+# Neofabraea actinidiae -----
+
+#the map has an issue as a work around remove the Chatham islands
+
+ICMP.Neofabraea <- ICMP.NZ %>%
+  filter(NZAreaCode != "Chatham Islands") %>%
+  filter(NZAreaCode != "Kermadec Islands") %>%
+  filter(CurrentName == "Neofabraea actinidiae")
+
+#this super high res map is for checking weird points
+nz <- map_data("nzHires")
+ggplot() + 
+  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.Neofabraea, aes(x = DecimalLong, y = DecimalLat, colour = TaxonName_C2), size = 5, alpha = 0.5, show.legend = TRUE) +
+  #geom_text(data = ICMP.Neofabraea, position=position_jitter (width=0.5,height=0.2), aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 3, color = "black") + #little bit of jitter
+  coord_map(xlim = c(172, 178), ylim = c(-34, -40))
+  #coord_fixed(1.3)
+ggsave(file='ICMP_Neofabraea_actinidiae_map.png', width=5, height=5, limitsize = FALSE)
+
 
 

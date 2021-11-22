@@ -1,7 +1,9 @@
 ---
 title: "ICMP data visualisation"
-author: "Bevan Weir"
-date: "data as of 4 November 2021"
+author: 
+  name: "Bevan Weir"
+  affiliation: "Manaaki Whenua - Landcare Research"
+date: "data as of 20 November 2021"
 output:
   html_document:
     code_folding: hide
@@ -11,7 +13,7 @@ output:
   pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
-affiliation: Manaaki Whenua - Landcare Research
+
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +27,7 @@ library(maps)
 library(mapdata)
 library(dplyr)
 library(knitr)
+library(kableExtra)
 
 ```
 
@@ -35,7 +38,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE}
 
 #import the files
-ICMP.dump.initial <- read.csv("ICMP-export-4-nov-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-20-nov-2021.csv", header=TRUE, sep=",")
 
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
@@ -68,7 +71,8 @@ The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures th
 table.stypes <- ICMP.dump %>% 
   group_by(SpecimenType) %>%
   tally()
-kable(table.stypes, caption = "table of specimen types") #knitr
+kbl(table.stypes, caption = "table of specimen types") %>% 
+kable_paper("hover", full_width = F) #can use striped instead of hover
 
 
 ```
@@ -414,14 +418,22 @@ kable(table.security, caption = "table of biostatus description") #knitr
 
 ```
 
+
+
+```{r testing3, echo=TRUE}
+
+#knitr::include_url("https://public.flourish.studio/visualisation/7745803/")
+
+```
+
 ### Head of the dataset
 
 This table shows the first few rows of the full dataset. use the arrows to explore across the columns.
 
 ```{r testing, echo=TRUE}
-
-rmarkdown::paged_table(head(ICMP.dump))
-
+ 
+ rmarkdown::paged_table(head(ICMP.dump))
+ 
 ```
 
 This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.

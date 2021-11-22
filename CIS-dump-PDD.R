@@ -368,11 +368,133 @@ ggsave(print_bars, file='PDD_country_by_kind_not_nz.png', width=10, height=10)
 ## could make a pseudo dataset manually replaceing all non target countries with "other"
 
 
+#============timeline================
+
+#all cultures sorted by date. Add a new column date.collected 
+PDD.dump$date.collected <- ymd(PDD.dump$CollectionDateISO, truncated = 3)
+arrange(PDD.dump, date.collected) %>%
+  select("AccessionNumber","SpecimenType", "Country", "date.collected") %>%
+  slice_head(n=10)
+
 #============Over time================
 
 # also do a trend line of growth. so do a scatterplot and fir a trend line to project growth.
 # Do on recived date and check for any blanks
 #can do a culmalative graph?
+
+#phylum to too many lets subset it:
+library(tidyverse)
+PDD.groups <- PDD.dump %>%
+  filter(Phylum == "Basidiomycota" | 
+           Phylum == "Ascomycota" | 
+           Phylum == "Amoebozoa" | 
+           Phylum == "Oomycota") %>%
+  filter(Deaccessioned == "false")
+
+
+#ICMP isolation dates faceted
+attach(PDD.groups) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.groups$CollectionDateISO, truncated = 3)
+ggplot(PDD.groups, aes(date.collected, fill = Phylum)) +
+  labs(title = "Collection dates of PDD specimens") +
+  labs(x = "Date of collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  facet_grid(Phylum ~ .)
+ggsave(file='PDD-collection-dates-facet.png', width=8, height=5)
+
+
+#Only basidios:
+library(tidyverse)
+PDD.basidio <- PDD.dump %>%
+  filter(Phylum == "Basidiomycota") %>%
+  filter(Deaccessioned == "false")
+
+head(PDD.basidio)
+
+
+#ICMP isolation dates faceted
+attach(PDD.basidio) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.basidio$CollectionDateISO, truncated = 3)
+ggplot(PDD.basidio, aes(date.collected, fill = Class)) +
+  labs(title = "Collection dates of PDD specimens") +
+  labs(x = "Date of collection", y =  "Number of specimens" , fill = "") +
+#  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") #+
+#  facet_grid(Class ~ .)
+ggsave(file='PDD-collection-dates-facet-basidio-class.png', width=8, height=5)
+
+
+#ggplot code for Class
+attach(PDD.basidio) 
+require(ggplot2)
+p <- ggplot(PDD.basidio, aes(Class)) + labs(title = "PDD Basidiomyces by class") + labs(x = "Taxon", y = "number of isolates")
+p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
+p + geom_bar()+ coord_flip()
+print_bars <- p + geom_bar()+ coord_flip()
+ggsave(print_bars, file='PDD_class_basidio.png', width=10, height=10)
+
+
+#Only ascos:
+library(tidyverse)
+PDD.asco <- PDD.dump %>%
+  filter(Phylum == "Ascomycota") %>%
+  filter(Deaccessioned == "false")
+
+head(PDD.asco)
+
+
+#ICMP isolation dates faceted
+attach(PDD.asco) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.asco$CollectionDateISO, truncated = 3)
+ggplot(PDD.asco, aes(date.collected, fill = Class)) +
+  labs(title = "Collection dates of PDD specimens") +
+  labs(x = "Date of collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") #+
+#  facet_grid(Class ~ .)
+ggsave(file='PDD-collection-dates-facet-asco-class.png', width=8, height=5)
+
+
+#Just discos:
+library(tidyverse)
+PDD.disco <- PDD.dump %>%
+  filter(Class == "Leotiomycetes") %>%
+  filter(Deaccessioned == "false")
+
+head(PDD.disco)
+
+
+#ICMP isolation dates faceted
+attach(PDD.disco) 
+require(ggplot2)
+require(lubridate)
+date.collected <-ymd(PDD.disco$CollectionDateISO, truncated = 3)
+ggplot(PDD.disco, aes(date.collected, fill = Order)) +
+  labs(title = "Collection dates of PDD Leotiomycetes specimens") +
+  labs(x = "Date of collection", y =  "Number of specimens") +
+  theme(legend.position = c(0.1, 0.7)) +
+  scale_fill_brewer(palette = "Paired") +
+  geom_histogram(binwidth=1826.25, show.legend = TRUE) + # 5: 1826.25
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") #+
+  #facet_grid(Order ~ .)
+ggsave(file='PDD-collection-dates-facet-disco-order.png', width=8, height=5)
+
+
+
+
+
+
+
 
 help(as.Date)
 help(ISOdatetime)
