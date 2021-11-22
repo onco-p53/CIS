@@ -354,83 +354,70 @@ ggplot(ICMP.bacteria, aes(Family)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() + 
   coord_flip()
-ggsave(file='./ouputs/ICMP_bacteria-family.png', width=20, height=10)
+ggsave(file='./ouputs/ICMP_bacteria-family.png', width=10, height=20)
 
 
 # -----  fungal taxon grouping ----- 
 
-#ggplot code for fungal Phylum
+#Fungal Phylum
 ggplot(ICMP.fungi, aes(Phylum)) +
   labs(title = "ICMP by fungal phylum") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(file='ICMP_fungal-phylum.png', width=10, height=10)
+ggsave(file='./ouputs/ICMP_fungal-phylum.png', width=10, height=10)
 
 
-#ggplot code for fungal Phylum
-ggplot(ICMP.fungi, aes(Phylum)) +
-  labs(title = "ICMP by fungal phylum") +
+#Fungal Class
+ggplot(ICMP.fungi, aes(Class)) +
+  labs(title = "ICMP by fungal class") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
-  geom_bar(position="fill") +
+  geom_bar() + 
   coord_flip()
-ggsave(file='ICMP_fungal-phylum-stracked.png', width=10, height=10)
+ggsave(file='./ouputs/ICMP_fungal-class.png', width=10, height=10)
 
+#Fungal Order
+ggplot(ICMP.fungi, aes(Order)) + 
+  labs(title = "ICMP by fungal order") + 
+  labs(x = "Taxon", y = "number of isolates") + 
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_fungal-order.png', width=10, height=20)
 
-
-
-
-#ggplot code for fungal Class
-attach(ICMP.fungi) 
-require(ggplot2)
-p <- ggplot(ICMP.fungi, aes(Class)) + labs(title = "ICMP by fungal class") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_fungal-class.png', width=10, height=10)
-
-#ggplot code for fungal Order
-attach(ICMP.fungi) 
-require(ggplot2)
-p <- ggplot(ICMP.fungi, aes(Order)) + labs(title = "ICMP by fungal order") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_fungal-order.png', width=10, height=10)
-
-#ggplot code for fungal Family
-attach(ICMP.fungi) 
-require(ggplot2)
-p <- ggplot(ICMP.fungi, aes(Family)) + labs(title = "ICMP by fungal family") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_fungal-family.png', width=20, height=10)
+#Fungal Family
+ggplot(ICMP.fungi, aes(Family)) +
+  labs(title = "ICMP by fungal family") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(print_bars, file='./ouputs/ICMP_fungal-family.png', width=0, height=20)
 
 
 
 #============Other names================
 
-#ggplot code for yeast Phylum
-attach(ICMP.yeast) 
-require(ggplot2)
-p <- ggplot(ICMP.yeast, aes(Phylum)) + labs(title = "ICMP by yeast phylum") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_yeast-phylum.png', width=10, height=10)
+#Yeast Phylum
+ggplot(ICMP.yeast, aes(Phylum)) + 
+  labs(title = "ICMP by yeast phylum") + 
+  labs(x = "Taxon", y = "number of isolates") + 
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_yeast-phylum.png', width=10, height=10)
 
 
-#ggplot code for chromist Phylum
-attach(ICMP.chromist) 
-require(ggplot2)
-p <- ggplot(ICMP.chromist, aes(Phylum)) + labs(title = "ICMP by chromist phylum") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='ICMP_chromist-phylum.png', width=10, height=10)
+#Chromist Phylum
+ggplot(ICMP.chromist, aes(Phylum)) +
+  labs(title = "ICMP by chromist phylum") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+ggsave(file='./ouputs/ICMP_chromist-phylum.png', width=10, height=10)
 
 
 
@@ -789,9 +776,9 @@ ICMP.dump$topcontrib
 
 
 
-#======Mapping and geo refs========
+#======NZ Maps========
 
-#New Zealand Area codes
+#New Zealand Area codes bar chart
 ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 ggplot(ICMP.nz, aes(NZAreaCode)) +
@@ -801,35 +788,47 @@ ggplot(ICMP.nz, aes(NZAreaCode)) +
   geom_bar() +
   coord_flip() +
   scale_x_discrete(limits = positions)
-ggsave(file='ICMP_NZAreaCode.png', width=8, height=4.5)
+ggsave(file='./ouputs/ICMP_NZAreaCode.png', width=8, height=4.5)
 
 
-require(ggplot2)
-require(ggmap)
-require(maps)
-require(mapdata)
+#require(ggplot2)
+#require(ggmap)
+#require(maps)
+#require(mapdata)
 
 
+#Good code for NZ map plotting
+library(dplyr) #Pipes/filter because I am lazy
+library(sf) #Simple feature
+library(ggplot2) #Mapping
+library(ggspatial) #Add's fancy shit to the map
 
+# Loading in data 
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
+  st_transform(2193) #Setting map projection - NZGD2000
 
-world <- map_data("world")
-ggplot() + 
-  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
-  theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
-  #geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
-  coord_fixed(1.3)
-ggsave(file='ICMP_worldmap_poster.png', width=12, height=6)
+#Transforming to an SF object
+rhizoNZ.sf <- ICMP.dump %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
 
+#Plotting - takes a second to execute
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+          size = 1, alpha = 0.2, show.legend = FALSE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal()
+#Saving the code
+ggsave(file='./ouputs/NZ_map.png', width=8, height=6)
 
-
-
-world <- map_data("world2")
-ggplot() + 
-  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
-  theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
-  coord_fixed(1.3)
 
 
 
@@ -881,51 +880,26 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 #will have to melt and add the fudge factor somehow to only Chatams ones
 
 
+#======World Maps========
 
-# Libraries ---------------------------------------------------------------
-#Plotting functions
-library(dplyr) #Pipes/filter because I am lazy
-library(sf) #Simple feature
-library(ggplot2) #Mapping
-library(ggspatial) #Add's fancy shit to the map
-
-# Loading in data ---------------------------------------------------------
-
-#Rhizobia dataset + Bevan's filters
-rhizo.df <- read.csv("./data/ICMP-export-4-nov-2021.csv") %>%
-  filter(SpecimenType == "Bacterial Culture" |
-           SpecimenType == "Chromist Culture" |
-           SpecimenType == "Fungal Culture" |
-           SpecimenType == "Yeast Culture") %>%
-  filter(Deaccessioned == "false")
+world <- map_data("world")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
+  #geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  coord_fixed(1.3)
+ggsave(file='ICMP_worldmap_poster.png', width=12, height=6)
 
 
-#Reading in a NZ specific map
-nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
-  st_transform(2193) #Setting map projection - NZGD2000
 
-#Transforming to an SF object
-rhizoNZ.sf <- rhizo.df %>%
-  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
-  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
-  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
-  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
 
-#Plotting - takes a second to execute
-ggplot() +
-  geom_sf(data = nz.sf) +
-  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
-          size = 1, alpha = 0.2, show.legend = FALSE) +
-  annotation_scale(location = "br") +
-  annotation_north_arrow(location = "tl",
-                         which_north = "true",
-                         style = north_arrow_fancy_orienteering) +
-  theme_minimal()
-
-#Saving the code
-ggsave("./graphs/rhizobiaNZ.png",
-       width = 8, height = 6)
+world <- map_data("world2")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
+  coord_fixed(1.3)
 
 
 
