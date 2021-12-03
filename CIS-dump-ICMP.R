@@ -18,8 +18,8 @@ library(lubridate)
 library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
 library(svglite)
 
-display.brewer.all(colorblindFriendly = TRUE)
-display.brewer.all(colorblindFriendly = FALSE)
+#display.brewer.all(colorblindFriendly = TRUE)
+#display.brewer.all(colorblindFriendly = FALSE)
 
 # OK ones are Paired if you have heaps of data. Others are: Set2
 
@@ -113,8 +113,13 @@ sapply(ICMP.NZ, function(x) length(unique(x)))
 
 # Total number of each organism
 
+
+
+
 table(ICMP.dump$SpecimenType)
 table(ICMP.NZ$SpecimenType)
+
+#should makea  summary tibble
 
 # Total number of each types for each organism
 
@@ -129,6 +134,29 @@ describeBy(
   ICMP.dump$SpecimenType # grouping variable
 )
 
+
+#create a genera column
+#i guess take taxonomic name and then take everyting left of the space,
+#would pick up higher levels if that all there is, e.g. Agaricales
+
+library(stringr)
+#prob a muteate to add acolum to teh dataset
+
+ICMP.dump %>%
+  
+select(ICMP.dump, AccessionNumber, TaxonName) %>%
+
+str_split(ICMP.dump$TaxonName, " ") %>% #this splits TaxonName by spaces
+  str_extract(strings, phone)
+
+
+transmute(mtcars, gpm = 1 / mpg)
+
+
+str_split(ICMP.dump$TaxonName, "[a-zA-Z]+")
+
+ICMP.dump %>% 
+  glimpse
 
 
 #============Type cultures================
@@ -853,15 +881,7 @@ ggsave(file='ICMP_NZ-aeracode-map_labels.svg', width=50, height=50, limitsize = 
 
 
 
-position=position_jitter(width=0,height=0)
-
-
-
-
-#to make the Chatham islands work you need to fudge them over 180 e.g. 183.41667
-#will have to melt and add the fudge factor somehow to only chatham islands ones
-
-
+#position=position_jitter(width=0,height=0)
 
 antibiotic.map <- read.csv("ICMP-antibiotic-map.csv", header=TRUE, sep=",")
 head(antibiotic.map)

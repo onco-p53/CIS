@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 20 November 2021"
+date: "data as of 2 December 2021"
 output:
   html_document:
     code_folding: hide
@@ -28,6 +28,8 @@ library(mapdata)
 library(dplyr)
 library(knitr)
 library(kableExtra)
+library(sf) #Simple feature
+library(ggspatial) #Add's fancy shit to the map
 
 ```
 
@@ -38,7 +40,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE}
 
 #import the files
-ICMP.dump.initial <- read.csv("ICMP-export-20-nov-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read.csv("ICMP-export-2-dec-2021.csv", header=TRUE, sep=",")
 
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
@@ -68,11 +70,11 @@ The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures th
 #kable(ktable.specimen2, caption = "Basic stats") #knitr
 
 #table of specimen types
-table.stypes <- ICMP.dump %>% 
-  group_by(SpecimenType) %>%
-  tally()
-kbl(table.stypes, caption = "table of specimen types") %>% 
-kable_paper("hover", full_width = F) #can use striped instead of hover
+#table.stypes <- ICMP.dump %>% 
+#  group_by(SpecimenType) %>%
+#  tally()
+#kbl(table.stypes, caption = "table of specimen types") %>% 
+#kable_paper("hover", full_width = F) #can use striped instead of hover
 
 
 ```
@@ -210,20 +212,44 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
 
 Each of the cultures from New Zealand that have a geocoordinate are plotted below. A better interative map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
 
-```{r nz map, echo=TRUE, warning=FALSE}
+```{r nz map, echo=FALSE, message=FALSE, warning=FALSE}
 
-ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+#ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
 
-ICMP.no.chat <- ICMP.NZ %>%
-  filter(NZAreaCode != "Chatham Islands") %>%
-  filter(NZAreaCode != "Kermadec Islands")
+#ICMP.no.chat <- ICMP.NZ %>%
+#  filter(NZAreaCode != "Chatham Islands") %>%
+#  filter(NZAreaCode != "Kermadec Islands")
 
-nz <- map_data("nzHires")
-ggplot() + 
-  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
-  theme_void() +
-  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.2, show.legend = FALSE) +
-  coord_fixed(1.3)
+#nz <- map_data("nzHires")
+#ggplot() + 
+#  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+#  theme_void() +
+#  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = #1, alpha = 0.2, show.legend = FALSE) +
+#  coord_fixed(1.3)
+
+# Loading in data 
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
+  st_transform(2193) #Setting map projection - NZGD2000
+
+#Transforming to an SF object
+rhizoNZ.sf <- ICMP.dump %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
+
+#Plotting - takes a second to execute
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+          size = 1, alpha = 0.2, show.legend = FALSE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal()
   
 ```
 
