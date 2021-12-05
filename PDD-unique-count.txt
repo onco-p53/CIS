@@ -1,30 +1,30 @@
           AccessionNumber              SpecimenType              FilingNumber     SpecimenSecurityLevel 
-                   107726                         3                        15                         5 
+                   108177                         3                        15                         5 
 SpecimenSecurityLevelText             Deaccessioned                 IsMissing                LoanStatus 
                         5                         2                         2                         6 
                  Quantity                 CreatedBy               CreatedDate                 UpdatedBy 
-                        5                        32                     47213                        53 
+                        5                        32                     47664                        53 
               UpdatedDate                TypeStatus              VerbatimName                 TaxonName 
-                    52027                        13                     25646                     17262 
+                    53500                        13                     25738                     17327 
               CurrentName              SourceNameId        VerbatimDeterminer        StandardDeterminer 
-                    14398                     17412                      2081                       426 
+                    14457                     17477                      2095                       440 
      DeterminersRefNumber                    Phylum                     Class                     Order 
-                     6138                        16                        46                       151 
+                     6137                        16                        46                       151 
                    Family              PartAffected                 Substrate      BiostatusDescription 
-                      532                        16                      6193                         7 
+                      535                        16                      6253                         7 
     OccurrenceDescription      VerbatimTaxonName_C2              TaxonName_C2             Vernacular_C2 
-                       10                     12325                      8801                        22 
+                       10                     12345                      8811                        23 
                    HostId                 Family_C2           PartAffected_C2              Substrate_C2 
-                     8206                       448                        16                        24 
+                     8216                       450                        16                        27 
    CollectionEventContext     CollectionEventMethod         StandardCollector         CollectionDateISO 
-                        5                         1                      8397                     21554 
+                        5                         1                      8421                     21559 
       CollectorsRefNumber           VerbatimCountry                   Country                NZAreaCode 
-                    36441                       194                       154                        39 
+                    36653                       194                       154                        39 
          StandardLocality          VerbatimLocality                  MapSheet                 MapSheet1 
-                    26707                     30305                         4                       135 
+                    26709                     30351                         4                       135 
                   Easting                  Northing                DecimalLat               DecimalLong 
-                    15005                     15346                     22927                     22710 
+                    15007                     15348                     23283                     23029 
                  Altitude          AltitudeInMeters              MicroHabitat                   Habitat 
-                     1107                       559                         8                      1585 
+                     1110                       560                        28                      1632 
      CollectionEventNotes                   GenBank                Literature                    Images 
-                      148                         2                         2                         2 
+                      156                         2                         2                         2 

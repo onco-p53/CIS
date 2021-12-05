@@ -2,7 +2,7 @@
 # Author: B.S. Weir (2017-2021)
 
 #============Load and subset data================
-PDD.dump <- read.csv("PDD-export-10-sep-2021.csv", header=TRUE, sep=",")
+PDD.dump <- read.csv("PDD-export-2-dec-2021.csv", header=TRUE, sep=",")
 summary(PDD.dump$AccessionNumber, maxsum=10)
 
 # subset out "Deaccessioned=True", not implemented
@@ -15,6 +15,14 @@ summary(PDD.alcohol, maxsum=40)
 #subset New Zealand specimens
 PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
 summary(PDD.dump.NZ, maxsum=40)
+
+#============Load all the packages needed================
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+library(svglite)
 
 #============Quick data check================
 #have a quick look at the data
@@ -36,18 +44,17 @@ sapply(PDD.dump.NZ, function(x) length(unique(x)))
 
 #============Bevan's Specimens================
 
-#ggplot code for type Specimens factored by Specimen type
 bsw <- subset(PDD.dump,(StandardCollector == "Weir, BS"))
-attach(bsw) #this means we don't need the $ sign
-require(ggplot2)
-p <- ggplot(bsw, aes(Images, fill=GenBank)) + labs(title = "Bevan's specimens in PDD") + labs(x = "with images", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='Bevans.with.images.png', width=5, height=5)
+ggplot(bsw, aes(Images, fill=GenBank)) +
+  labs(title = "Bevan's specimens in PDD") +
+  labs(x = "with images", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip()
+ggsave(file='./ouputs/PDD/Bevans-with-images.png', width=5, height=5)
 
-bsws <- summary(bsw, maxsum=25)
-bsws
+#bsws <- summary(bsw, maxsum=25)
+#bsws
 
 
 #============Type Specimens================

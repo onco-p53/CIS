@@ -13,7 +13,6 @@ output:
   pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
-
 ---
 
 ```{r setup, include=FALSE}
@@ -229,7 +228,7 @@ Each of the cultures from New Zealand that have a geocoordinate are plotted belo
 
 # Loading in data 
 #Reading in a NZ specific map
-nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) %>%
   st_transform(2193) #Setting map projection - NZGD2000
 
 #Transforming to an SF object
@@ -443,8 +442,6 @@ table.security <- ICMP.dump %>%
 kable(table.security, caption = "table of biostatus description") #knitr
 
 ```
-
-
 
 ```{r testing3, echo=TRUE}
 
