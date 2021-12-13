@@ -752,6 +752,30 @@ ggsave(file='PDD_Myrtaceae-order.png', width=8, height=15)
 
 
 
+#grass pathogens collected over time in PDD
+
+PDD.Gramineae <- PDD.dump.NZ %>%
+  filter(Family_C2 == "Gramineae")
+
+head(PDD.Gramineae)
+
+PDD.Gramineae$date.collected <-ymd(PDD.Gramineae$CollectionDateISO, truncated = 3)
+ggplot(PDD.Gramineae, aes(date.collected, fill = "Family")) +
+  labs(title = "Collection of grass pathogens in the PDD fungarium over time") +
+  labs(x = "Date of Collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = c(0.1, 0.8)) +
+  geom_histogram(binwidth=1461, show.legend = FALSE) + # 2y is 730, 4y = 
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y")
+ggsave(file='./ouputs/PDD/PDD-grass-pathogens.png', width=8, height=5)
+
+
+head(PDD.Gramineae)
+
+
+
+
+
 #check double numbers
 
 PDD.dump.nohost <- subset(PDD.dump,(Family_C2 == ""))

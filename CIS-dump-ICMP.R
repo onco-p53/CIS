@@ -116,7 +116,17 @@ sapply(ICMP.NZ, function(x) length(unique(x)))
 # Total number of each organism
 
 
-as_tibble(ICMP.dump)
+as_tibble(ICMP.dump) # likely not needed
+
+#This lists the number of different values for each column
+ICMP.dump %>%
+  map_int(n_distinct)
+
+#how to use this to say how many countries?
+ICMP.dump %>%
+  select("AccessionNumber", "Country") %>%
+  map_int(n_distinct)
+
 
 
 table(ICMP.dump$SpecimenType)
