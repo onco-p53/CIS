@@ -7,8 +7,10 @@ R.version.string
 
 ICMP.dump.initial <- read.csv("ICMP-export-2-dec-2021.csv", header=TRUE, sep=",")
 head(ICMP.dump.initial)
+tail(ICMP.dump.initial)
 summary(ICMP.dump.initial, maxsum=10)
 str(ICMP.dump.initial)
+print(tbl_df(ICMP.dump.initial), n=300)
 
 #============Load all the packages needed================
 
