@@ -1,16 +1,6 @@
 ## R Script to process data exported from the CIS databases ##
 # Author: B.S. Weir (2017-2021)
 
-#============Load data================
-
-R.version.string
-
-ICMP.dump.initial <- read_csv("ICMP-export-2-dec-2021.csv")
-head(ICMP.dump.initial)
-tail(ICMP.dump.initial)
-summary(ICMP.dump.initial, maxsum=10)
-str(ICMP.dump.initial)
-print(tbl_df(ICMP.dump.initial), n=300)
 
 #============Load all the packages needed================
 
@@ -27,6 +17,18 @@ library(lubridate)
 
 # OK ones are Paired if you have heaps of data. Others are: Set2
 
+
+#============Load data================
+
+R.version.string
+
+spec()
+head(ICMP.dump.initial)
+tail(ICMP.dump.initial)
+summary(ICMP.dump.initial, maxsum=10)
+str(ICMP.dump.initial)
+
+
 #============Sub set the Data================
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
@@ -35,7 +37,8 @@ ICMP.dump <- ICMP.dump.initial %>%
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
            SpecimenType == "Yeast Culture") %>%
-  filter(Deaccessioned == "false")
+  filter(Deaccessioned == "FALSE") %>%
+  glimpse()
 
 
 #setting up per specimen type subsets, with summaries of each specimen type
