@@ -5,7 +5,7 @@
 
 R.version.string
 
-ICMP.dump.initial <- read.csv("ICMP-export-2-dec-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read_csv("ICMP-export-2-dec-2021.csv")
 head(ICMP.dump.initial)
 tail(ICMP.dump.initial)
 summary(ICMP.dump.initial, maxsum=10)
