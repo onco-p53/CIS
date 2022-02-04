@@ -1119,10 +1119,11 @@ savastanoi.df <- ICMP.dump %>%
 ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   labs(title = "Isolation dates of ICMP Pseudomonas savastanoi cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures") +
+  theme_bw() +
   scale_fill_brewer(palette = "Set2") +
-  theme(legend.position = c(0.15, 0.8)) +
+  theme(legend.position = c(0.15, 0.7)) +
   geom_histogram(binwidth=365.25, show.legend = TRUE) +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
-ggsave(file='./ouputs/ICMP/P.savastanoi-date-hosts.png', width=12, height=7.5)
+ggsave(file='./ouputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
 
 
