@@ -16,6 +16,9 @@ summary(PDD.alcohol, maxsum=40)
 PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
 summary(PDD.dump.NZ, maxsum=40)
 
+
+#may want to use get_dupes() to deduplicate componenets?
+
 #============Load all the packages needed================
 
 library(tidyverse)

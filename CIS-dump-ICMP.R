@@ -1014,6 +1014,10 @@ str_c(str_split_fixed("Bacteroides oleiciplenus YIT 12058", " ",4)[,c(1,3)],coll
 lst <- strsplit(mystring, " ")  # split string on space
 lst[[1]][2] # access second element
 
+names <- c("Keisha", "Mohammed", "Jane", "Mathieu")
+str_view(CurrentName, "^M")
+
+
 
 
 #merge together the Genbank literature and image data to one column
@@ -1112,7 +1116,7 @@ savastanoi.df <- ICMP.dump %>%
   filter(Country == "New Zealand") %>%
   rename(Host = TaxonName_C2) %>%
   mutate(date.isolated = ymd(IsolationDateISO, truncated = 3)) %>%
-  glimpse()
+  glimpse() %>%
 
 #ICMP isolation dates 
 
@@ -1126,4 +1130,4 @@ ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
 ggsave(file='./ouputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
 
-
+str_view(CurrentName, "^M")
