@@ -36,10 +36,10 @@ library(ggspatial) #Add's fancy shit to the map
 
 This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visualisations of data analysed in R in a user-friendly format.
 
-```{r import, echo=TRUE}
+```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.dump.initial <- read.csv("ICMP-export-2-dec-2021.csv", header=TRUE, sep=",")
+ICMP.dump.initial <- read_csv("ICMP-export-2-dec-2021.csv")
 
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
@@ -48,7 +48,7 @@ ICMP.dump <- ICMP.dump.initial %>%
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
            SpecimenType == "Yeast Culture") %>%
-  filter(Deaccessioned == "false")
+  filter(Deaccessioned == "FALSE")
 
 #how many cultures are public
 ICMP.public <- ICMP.dump.initial %>%
@@ -58,20 +58,57 @@ ICMP.public <- ICMP.dump.initial %>%
 
 ## General statistics
 
-The ICMP database has `r count(ICMP.dump.initial)` entries, removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
+The ICMP database has `r count(ICMP.dump.initial)` entries, but after removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
 
-(also should include NZ only stats)
+The table below lists the number of Bacterial, Chromist (e.g. *Phytophthora*), fungal, and yeast cultures in the collection.
 
-```{r tables, echo=TRUE}
+```{r tables, echo=TRUE, message=FALSE, warning=FALSE}
+
+total.table <- ICMP.dump %>% # this one get a total count
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    AllICMP = n(), 
+    .groups = "drop"
+  )
+
+types.table <- ICMP.dump %>% # this one get a types count
+  filter(TypeStatus != "") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    Types = n(), 
+    .groups = "drop"
+  )
+
+NZ.table <- ICMP.dump %>% # this one get a total count
+  filter(Country == "New Zealand") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    NZ = n(), 
+    .groups = "drop"
+  )
+
+NZtype.table <- ICMP.dump %>% # NZ types
+  filter(Country == "New Zealand" & TypeStatus != "") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    NZtypes = n(), 
+    .groups = "drop"
+  )
+
+icmp.count.table <- left_join(total.table, types.table) %>%
+  left_join(NZ.table) %>%
+  left_join(NZtype.table) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(where(is.character), ~"Total")))
+
+kable(icmp.count.table, digits=0, "html",
+      caption = "table of specimen types")%>%
+  kable_styling("striped", "bordered") %>%
+  add_header_above(c(" " = 2,  "number of cultures" = 3))
+  
 
 
-#ktable.specimen2 <- count(ICMP.dump,SpecimenType) #dpylr
-#kable(ktable.specimen2, caption = "Basic stats") #knitr
-
-#table of specimen types
-#table.stypes <- ICMP.dump %>% 
-#  group_by(SpecimenType) %>%
-#  tally()
 #kbl(table.stypes, caption = "table of specimen types") %>% 
 #kable_paper("hover", full_width = F) #can use striped instead of hover
 
@@ -86,15 +123,7 @@ ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
 
 ```
 
-The ICMP has **`r count(ICMP.types)` type cultures** cultures, these consist of:
-
-```{r types table, echo=TRUE}
-
-table(ICMP.types$SpecimenType)
-
-```
-
-There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type cultures may have been isolated from a type specimen (e.g. from PDD) and are thus 'ex types'.
+The ICMP has **`r count(ICMP.types)` type cultures** cultures. There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type cultures may have been isolated from (*ex*) a type specimen (e.g. from PDD) and are thus 'ex types'.
 
 ```{r types chart, echo=TRUE}
 
@@ -154,7 +183,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
 
 ## Host plants
 
-Many ICMP cultures are associated with a host plant, for example rhizobia in legume nodules, or plant pathogenic fungi causing leaf spots. Below are the top 10 most common host plant families in the ICMP with type of organism.
+Many ICMP cultures are associated with a host plant, for example rhizobia in legume nodules, or plant pathogenic fungi causing leaf spots. Below are the top 10 most common host plant families in the ICMP with type of organism. The large number of legume hosts likely relates to the large number of symbiotic rhizobia in the collection.
 
 ```{r top 10 host families, echo=TRUE}
 
@@ -214,7 +243,7 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
 
 ### New Zealand distribution
 
-Each of the cultures from New Zealand that have a geocoordinate are plotted below. A better interative map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
+Each of the cultures from New Zealand that have a geocoordinate are plotted below. An interactive map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
 
 ```{r nz map, echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -365,7 +394,7 @@ In the New Zealand autumn, May is the peak mushroom fruiting season explain the 
 
 less in winter, more in summer trend.
 
-```{r NZ isolated month chart, echo=TRUE, warning=FALSE}
+```{r NZ isolated month chart, echo=TRUE, message=FALSE, warning=FALSE}
 
 #new month ICMP culture isolated (in NZ)
 attach(ICMP.NZ) 
