@@ -1,53 +1,59 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017-2021)
-
-#============Load and subset data================
-PDD.dump <- read.csv("PDD-export-2-dec-2021.csv", header=TRUE, sep=",")
-summary(PDD.dump$AccessionNumber, maxsum=10)
-
-# subset out "Deaccessioned=True", not implemented
-# PDD.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
-
-#setting up per specimen type subsets, with summaries of each specimen type
-PDD.alcohol <- subset(PDD.dump,(SpecimenType == "Alcohol"))
-summary(PDD.alcohol, maxsum=40)
-
-#subset New Zealand specimens
-PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
-summary(PDD.dump.NZ, maxsum=40)
-
-
-#may want to use get_dupes() to deduplicate componenets?
+# Author: B.S. Weir (2017-2022)
 
 #============Load all the packages needed================
 
 library(tidyverse)
-library(ggplot2)
 library(lubridate)
-library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
-library(svglite)
+library(RColorBrewer)
+#library(svglite)
+
+
+#============Load and subset data================
+PDD.df <- read_csv("PDD-export-2-dec-2021.csv") %>%
+  glimpse()
+#that other summary package thing
+
+
+
+
+
+
+#may want to use get_dupes() to deduplicate componenets?
+
+#also sort into those categories as discussed by Peter Johnston in the past
+
+
+#subset New Zealand specimens
+PDD.NZ.df <- subset(PDD.df,(Country == "New Zealand"))
+summary(PDD.NZ.df, maxsum=40)
+
+
 
 #============Quick data check================
 #have a quick look at the data
-head(PDD.dump)
+head(PDD.df)
 
-# summary(PDD.dump.initial, maxsum=25) #data before subsetting, not implemented
-summary(PDD.dump, maxsum=25) #data after subsetting
+# summary(PDD.df.initial, maxsum=25) #data before subsetting, not implemented
+summary(PDD.df, maxsum=25) #data after subsetting
 
-s <- summary(PDD.dump, maxsum=25)
+s <- summary(PDD.df, maxsum=25)
 capture.output(s, file = "PDD-summary.txt")
 
+
+#Just do these as a big table??
+
 # counts the number of unique values per collumn
-sapply(PDD.dump, function(x) length(unique(x)))
-up <- sapply(PDD.dump, function(x) length(unique(x)))
+sapply(PDD.df, function(x) length(unique(x)))
+up <- sapply(PDD.df, function(x) length(unique(x)))
 capture.output(up, file = "PDD-unique-count.txt")
 
 # counts the number of unique values per collumn for NZ
-sapply(PDD.dump.NZ, function(x) length(unique(x)))
+sapply(PDD.NZ.df, function(x) length(unique(x)))
 
 #============Bevan's Specimens================
 
-bsw <- subset(PDD.dump,(StandardCollector == "Weir, BS"))
+bsw <- subset(PDD.df,(StandardCollector == "Weir, BS"))
 ggplot(bsw, aes(Images, fill=GenBank)) +
   labs(title = "Bevan's specimens in PDD") +
   labs(x = "with images", y = "number of specimens") +
@@ -63,7 +69,7 @@ ggsave(file='./ouputs/PDD/Bevans-with-images.png', width=5, height=5)
 #============Type Specimens================
 
 #ggplot code for type Specimens
-d <- subset(PDD.dump,!(TypeStatus == ""))
+d <- subset(PDD.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the PDD") + labs(x = "'Kind' of type", y = "number of isolates")
@@ -75,7 +81,7 @@ ggsave(print_bars, file='PDD_types.png', width=5, height=5)
 #another one showing just the number of types in each kind of culture?
 
 #ggplot code for type Specimens factored by Specimen type
-d <- subset(PDD.dump,!(TypeStatus == ""))
+d <- subset(PDD.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus, fill=Images)) + labs(title = "Types in the PDD Fungarium with images") + labs(x = "'Kind' of type", y = "number of isolates")
@@ -87,36 +93,36 @@ ggsave(print_bars, file='PDD.types.with.images.png', width=5, height=5)
 #============Kingdom Level barcharts================
 
 #plain code for a kingdom barchart
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(SpecimenType)) + labs(title = "Specimens in the PDD by Specimen type") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(SpecimenType)) + labs(title = "Specimens in the PDD by Specimen type") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_specimen_types.png', width=5, height=5)
 
 #kingdoms in GenBank
-attach(PDD.dump)
+attach(PDD.df)
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(GenBank)) + labs(title = "Specimens in the PDD in GenBank") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(GenBank)) + labs(title = "Specimens in the PDD in GenBank") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_in_genbank.png', width=5, height=5)
 
 #kingdoms with literature
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Literature)) + labs(title = "Specimens in the PDD in Literature") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Literature)) + labs(title = "Specimens in the PDD in Literature") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_in_Literature.png', width=5, height=5)
 
 #kingdoms with images
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Images)) + labs(title = "Specimens in the PDD with images") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Images)) + labs(title = "Specimens in the PDD with images") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -125,43 +131,43 @@ ggsave(print_bars, file='PDD_with_images.png', width=5, height=5)
 #could also do a stacked bar chart with images, genbank, literature all on one chart.
 
 #kingdoms by Occurrence Description
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_kingdoms_occurrence.png', width=5, height=5)
 
 #CollectionEventMethod
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(CollectionEventMethod)) + labs(title = "Specimens in the PDD by Collection Event Method") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(CollectionEventMethod)) + labs(title = "Specimens in the PDD by Collection Event Method") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_CollectionEventMethod.png', width=7, height=7)
 
 #kingdoms by Occurrence Description
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(OccurrenceDescription)) + labs(title = "Specimens in the PDD by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_kingdoms_occurrence2.png', width=7, height=7)
 
 #kingdoms by Order Status
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(LoanStatus)) + labs(title = "PDD Order Status") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(LoanStatus)) + labs(title = "PDD Order Status") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated by
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
 p <- ggplot(UpdatedBy) + labs(title = "PDD Last updated by") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -177,45 +183,45 @@ ggsave(print_bars, file='PDD_updated_by.png', width=7, height=7)
 
 
 #Phylum
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Phylum)) + labs(title = "PDD by phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Phylum)) + labs(title = "PDD by phylum") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_phylum.png', width=10, height=10)
 
 #ggplot code for Class
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Class)) + labs(title = "PDD by class") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Class)) + labs(title = "PDD by class") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_class.png', width=10, height=10)
 
 #ggplot code for Order
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Order)) + labs(title = "PDD by order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Order)) + labs(title = "PDD by order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_order.png', width=10, height=10)
 
 #ggplot code for Order
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Order, fill=SpecimenType)) + labs(title = "PDD by order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Order, fill=SpecimenType)) + labs(title = "PDD by order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD_order-speciemtype.png', width=10, height=10)
 
 #ggplot code for Family
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump, aes(Family)) + labs(title = "PDD by bacterial family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.df, aes(Family)) + labs(title = "PDD by bacterial family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -224,7 +230,7 @@ print_bars <- p + geom_bar()+ coord_flip()
 
 # -----  fungal taxon grouping ----- 
 
-f <- subset(PDD.dump, SpecimenType == "Fungal Culture")
+f <- subset(PDD.df, SpecimenType == "Fungal Culture")
 
 #ggplot code for fungal Phylum
 attach(f) 
@@ -265,7 +271,7 @@ ggsave(print_bars, file='PDD_fungal-family.png', width=20, height=10)
 #============Other names================
 
 # error Kingdom is missing
-names.present.fungi <- subset(PDD.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+names.present.fungi <- subset(PDD.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum
@@ -317,10 +323,10 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 #============Countries================
 
 
-PDD.dump.NZ <- subset(PDD.dump,(Country == "New Zealand"))
-attach(PDD.dump.NZ) 
+PDD.NZ.df <- subset(PDD.df,(Country == "New Zealand"))
+attach(PDD.NZ.df) 
 require(ggplot2)
-p <- ggplot(PDD.dump.NZ, aes(NZAreaCode)) + labs(title = "NZ Specimens in the PDD by Area Code") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(PDD.NZ.df, aes(NZAreaCode)) + labs(title = "NZ Specimens in the PDD by Area Code") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -330,7 +336,7 @@ ggsave(print_bars, file='PDD_NZAreaCode.png', width=7, height=7)
 
 
 #ggplot code for country
-cy <- subset(PDD.dump,!(Country == ""))
+cy <- subset(PDD.df,!(Country == ""))
 require(ggplot2)
 con <- ggplot(cy, aes(Country)) + labs(title = "Top 10 Countries") + labs(x = "Country", y = "number")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -341,7 +347,7 @@ ggsave(print_bars, file='PDD_country.png', width=10, height=10)
 
 #ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "Italy", "France")
-c <- subset(PDD.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(PDD.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the PDD") + labs(x = "Country", y = "number of isolates")
@@ -353,7 +359,7 @@ ggsave(print_bars, file='PDD_country_by_kind.svg', width=6, height=5)
 ggsave(print_bars, file='PDD_country_by_kind.eps', width=6, height=5)
 
 #ggplot code for pacific country
-c <- subset(PDD.dump, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
+c <- subset(PDD.df, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the PDD") + labs(x = "Country", y = "number of isolates")
@@ -365,7 +371,7 @@ ggsave(print_bars, file='PDD-pacific-countries.png', width=10, height=10)
 
 #ggplot code for country
 positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy", "Canada")
-c <- subset(PDD.dump, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(PDD.df, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the PDD (not including NZ)") + labs(x = "Country", y = "number of isolates")
@@ -381,8 +387,8 @@ ggsave(print_bars, file='PDD_country_by_kind_not_nz.png', width=10, height=10)
 #============timeline================
 
 #all cultures sorted by date. Add a new column date.collected 
-PDD.dump$date.collected <- ymd(PDD.dump$CollectionDateISO, truncated = 3)
-arrange(PDD.dump, date.collected) %>%
+PDD.df$date.collected <- ymd(PDD.df$CollectionDateISO, truncated = 3)
+arrange(PDD.df, date.collected) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.collected") %>%
   slice_head(n=10)
 
@@ -394,7 +400,7 @@ arrange(PDD.dump, date.collected) %>%
 
 #phylum to too many lets subset it:
 library(tidyverse)
-PDD.groups <- PDD.dump %>%
+PDD.groups <- PDD.df %>%
   filter(Phylum == "Basidiomycota" | 
            Phylum == "Ascomycota" | 
            Phylum == "Amoebozoa" | 
@@ -419,7 +425,7 @@ ggsave(file='PDD-collection-dates-facet.png', width=8, height=5)
 
 #Only basidios:
 library(tidyverse)
-PDD.basidio <- PDD.dump %>%
+PDD.basidio <- PDD.df %>%
   filter(Phylum == "Basidiomycota") %>%
   filter(Deaccessioned == "false")
 
@@ -453,7 +459,7 @@ ggsave(print_bars, file='PDD_class_basidio.png', width=10, height=10)
 
 #Only ascos:
 library(tidyverse)
-PDD.asco <- PDD.dump %>%
+PDD.asco <- PDD.df %>%
   filter(Phylum == "Ascomycota") %>%
   filter(Deaccessioned == "false")
 
@@ -477,7 +483,7 @@ ggsave(file='PDD-collection-dates-facet-asco-class.png', width=8, height=5)
 
 #Just discos:
 library(tidyverse)
-PDD.disco <- PDD.dump %>%
+PDD.disco <- PDD.df %>%
   filter(Class == "Leotiomycetes") %>%
   filter(Deaccessioned == "false")
 
@@ -509,22 +515,22 @@ ggsave(file='PDD-collection-dates-facet-disco-order.png', width=8, height=5)
 help(as.Date)
 help(ISOdatetime)
 
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-di <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) + labs(title = "Collection dates of PDD specimens") + labs(x = "Date of collection", y =  "Number of specimens" , fill = "") 
+di <- ggplot(PDD.df, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) + labs(title = "Collection dates of PDD specimens") + labs(x = "Date of collection", y =  "Number of specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
 ggsave(dip, file='PDD-collection-dates.png', width=5, height=5)
 
 
-PDD.dump$topcontrib <- ifelse(PDD.dump$StandardCollector == "Dingley, JM", "Dingley, JM", "other")
+PDD.df$topcontrib <- ifelse(PDD.df$StandardCollector == "Dingley, JM", "Dingley, JM", "other")
 #there must be a better way to do this
-PDD.dump$topcontrib
+PDD.df$topcontrib
 
-attach(PDD.dump) 
+attach(PDD.df) 
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Collection", y =  "Number of Specimens" , fill = "")
+dr <- ggplot(PDD.df, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Collection", y =  "Number of Specimens" , fill = "")
 dr + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 drp <- di + geom_histogram(binwidth=365.25)
 ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
@@ -533,26 +539,26 @@ ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
 #============Over months================
 
 #Collection month of NZ PDD specimens
-attach(PDD.dump.NZ) 
+attach(PDD.NZ.df) 
 require(ggplot2)
 require(lubridate)
-date.collected <-ymd(PDD.dump.NZ$CollectionDateISO, truncated = 1)
+date.collected <-ymd(PDD.NZ.df$CollectionDateISO, truncated = 1)
 mergemonths <- floor_date(date.collected, unit = "month")
 month(date.collected, label = TRUE)
-di <- ggplot(PDD.dump.NZ, aes(month(mergemonths, label = TRUE), fill = Phylum)) + labs(title = "Collection month of PDD specimens from NZ") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
+di <- ggplot(PDD.NZ.df, aes(month(mergemonths, label = TRUE), fill = Phylum)) + labs(title = "Collection month of PDD specimens from NZ") + labs(x = "Month of collection", y =  "Number of specimens" , fill = "") 
 di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 ggsave(dip, file='PDD-collection-month-dates.png', width=8, height=5)
 
 
 library(tidyverse)
-date.collected.nz <-ymd(PDD.dump.NZ$CollectionDateISO)
-arrange(PDD.dump.NZ, date.collected.nz) #this is the ealiest isolated NZ specimen
+date.collected.nz <-ymd(PDD.NZ.df$CollectionDateISO)
+arrange(PDD.NZ.df, date.collected.nz) #this is the ealiest isolated NZ specimen
 
 
 
 #awheto specimens
-PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
+PDD.awheto <- subset(PDD.df,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
 summary(PDD.awheto, maxsum=40)
 attach(PDD.awheto) 
 require(ggplot2)
@@ -565,7 +571,7 @@ di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 dip <- di + geom_bar() + scale_x_discrete(na.translate = FALSE) # this removes NAs
 ggsave(dip, file='PDD-awheto-dates.png', width=8, height=5)
 
-PDD.awheto <- subset(PDD.dump,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
+PDD.awheto <- subset(PDD.df,(CurrentName == "Ophiocordyceps robertsii" | CurrentName == "Cordyceps hauturu"))
 summary(PDD.awheto, maxsum=40)
 attach(PDD.awheto) 
 require(ggplot2)
@@ -584,7 +590,7 @@ PDD.awheto$CollectionDateISOs %>% drop_na()
 
 
 #subset New Zealand specimens
-PDD.awheto <- subset(PDD.dump,(Family == "Glomerellaceae"))
+PDD.awheto <- subset(PDD.df,(Family == "Glomerellaceae"))
 summary(PDD.Glomerellaceae, maxsum=40)
 attach(PDD.Glomerellaceae) 
 require(ggplot2)
@@ -616,9 +622,9 @@ mergemonths
 
 
 
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
-di <- ggplot(PDD.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(PDD.df, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -627,12 +633,12 @@ ggsave(dip, file='PDD-isolation-dates2.png', width=4, height=3)
 
 
 
-PDD.dump$topcontrib <- ifelse(PDD.dump$Contributor == "NZP", "NZP", "other")
-PDD.dump$topcontrib
+PDD.df$topcontrib <- ifelse(PDD.df$Contributor == "NZP", "NZP", "other")
+PDD.df$topcontrib
 
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
-ditc <- ggplot(PDD.dump, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+ditc <- ggplot(PDD.df, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of PDD Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 ditc <- ditc + scale_x_date()
 ditc + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 ditcp <- ditc + geom_histogram(binwidth=365.25)
@@ -641,9 +647,9 @@ ggsave(dip, file='PDD-isolation-dates2.png', width=4, height=3)
 
 
 
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of PDD Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(PDD.df, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of PDD Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -651,9 +657,9 @@ ggsave(drp, file='PDD-received-dates.png', width=10, height=10)
 
 ## CAN we do this by organism too?
 
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of PDD Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(PDD.df, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of PDD Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -664,21 +670,21 @@ sum2 <- ggplot_build(drp) #this extracts the values from the histogram
 sum2
 
 
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(PDD.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(PDD.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the PDD collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='PDD-received-dates-contributor.png', width=15, height=10)
 
 
-PDD.dump$topcontrib <- ifelse(PDD.dump$Contributor == "NZP", "NZP", "other")
+PDD.df$topcontrib <- ifelse(PDD.df$Contributor == "NZP", "NZP", "other")
 
-PDD.dump$topcontrib
+PDD.df$topcontrib
 
 #ggplot code for collections over the years
-attach(PDD.dump) #this means we don't need the $ sign
+attach(PDD.df) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the PDD") + labs(x = "Country", y = "number of isolates")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -687,7 +693,7 @@ print_bars <- con + geom_histogram()+ coord_flip()
 ggsave(print_bars, file='PDD-pacific-countries.png', width=10, height=10)
 
 #ggplot code for collections over the years in NZ
-c <- subset(PDD.dump, (Country == "New Zealand"))
+c <- subset(PDD.df, (Country == "New Zealand"))
 
 #also need something that plots monthly e.g. fungi versus collection month.
 
@@ -695,7 +701,7 @@ c <- subset(PDD.dump, (Country == "New Zealand"))
 #======GeoGraphic stuff========
 
 #New Zealand Area codes This is good
-nz <- subset(PDD.dump,(Country == "New Zealand"))
+nz <- subset(PDD.df,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 attach(nz) 
 require(ggplot2)
@@ -727,7 +733,7 @@ mp
 #======Habitat========
 
 #too many to work
-nz <- subset(PDD.dump,(Country == "New Zealand"))
+nz <- subset(PDD.df,(Country == "New Zealand"))
 attach(nz) 
 require(ggplot2)
 p <- ggplot(nz, aes(Habitat)) + labs(title = "PDD specimens by Habitat") + labs(x = "Habitat", y = "number of specimens")
@@ -743,8 +749,8 @@ ggsave(print_bars, file='PDD_Habitat.png', width=15, height=49)
 
 
 #Order of 'microbe' on NZ Myrtaceae in the ICMPt
-PDD.dump.Myrtaceae <- subset(PDD.dump.NZ,(Family_C2 == "Myrtaceae"))
-ggplot(PDD.dump.Myrtaceae, aes(Order, fill=GenBank)) + #fill by type
+PDD.df.Myrtaceae <- subset(PDD.NZ.df,(Family_C2 == "Myrtaceae"))
+ggplot(PDD.df.Myrtaceae, aes(Order, fill=GenBank)) + #fill by type
   labs(title = "Order of 'microbe' on NZ Myrtaceae in the PDD Fungarium") +
   labs(x = "Order", y = "number of isolates") +
   geom_bar() +
@@ -757,7 +763,7 @@ ggsave(file='PDD_Myrtaceae-order.png', width=8, height=15)
 
 #grass pathogens collected over time in PDD
 
-PDD.Gramineae <- PDD.dump.NZ %>%
+PDD.Gramineae <- PDD.NZ.df %>%
   filter(Family_C2 == "Gramineae")
 
 head(PDD.Gramineae)
@@ -781,8 +787,8 @@ head(PDD.Gramineae)
 
 #check double numbers
 
-PDD.dump.nohost <- subset(PDD.dump,(Family_C2 == ""))
-summary(PDD.dump.nohost$AccessionNumber, maxsum=10)
+PDD.df.nohost <- subset(PDD.df,(Family_C2 == ""))
+summary(PDD.df.nohost$AccessionNumber, maxsum=10)
 
 
 #======Validations========
@@ -792,7 +798,7 @@ summary(PDD.dump.nohost$AccessionNumber, maxsum=10)
 
 #ggplot code for fungal Phylum
 require(ggplot2)
-ggplot(PDD.dump, aes(FilingNumber, fill=Phylum)) +
+ggplot(PDD.df, aes(FilingNumber, fill=Phylum)) +
   labs(title = "PDD Storage locations") +
   labs(x = "storage location", y = "number of specimens") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -803,7 +809,7 @@ ggsave(file='PDD-storagelocation.png', width=10, height=10)
 
 #ggplot code for fungal Phylum
 require(ggplot2)
-ggplot(PDD.dump, aes(Phylum, fill=FilingNumber)) +
+ggplot(PDD.df, aes(Phylum, fill=FilingNumber)) +
   labs(title = "PDD Storage locations") +
   labs(x = "storage location", y = "number of specimens") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
