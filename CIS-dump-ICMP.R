@@ -1,38 +1,39 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017-2021)
-
+# Author: B.S. Weir (2017-2022)
 
 #============Load all the packages needed================
 
 library(tidyverse)
-library(ggplot2)
 library(lubridate)
-library(RColorBrewer) # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+library(RColorBrewer)
 library(svglite)
-library(lubridate)
 
-
-#display.brewer.all(colorblindFriendly = TRUE)
-#display.brewer.all(colorblindFriendly = FALSE)
-
-# OK ones are Paired if you have heaps of data. Others are: Set2
-
+#versions
+R.version.string
 
 #============Load data================
 
-R.version.string
-
-ICMP.dump.initial <- read_csv("ICMP-export-2-dec-2021.csv")
-head(ICMP.dump.initial)
-tail(ICMP.dump.initial)
-summary(ICMP.dump.initial, maxsum=10)
-str(ICMP.dump.initial)
+ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
+                                guess_max = Inf,
+                                show_col_types = FALSE
+                                )
 
 
-#============Sub set the Data================
+#============Check imported data for issues================
+
+# get duplicates based due to component duplication
+# may need correction in CIS if TaxonName_C2 = NA, export as a CSV
+ICMP.dupes <- ICMP.as.imported.df %>%
+  get_dupes(AccessionNumber) %>%
+  select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  filter(is.na(TaxonName_C2)) %>% #comment this out to get all
+  write_csv(file='./ouputs/ICMP/ICMP.dupes.csv')
+
+
+#============Subset and massage the Data================
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.dump <- ICMP.dump.initial %>%
+ICMP.df <- ICMP.as.imported.df %>%
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
@@ -42,53 +43,53 @@ ICMP.dump <- ICMP.dump.initial %>%
 
 
 #setting up per specimen type subsets, with summaries of each specimen type
-ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
+ICMP.bacteria <- subset(ICMP.df,(SpecimenType == "Bacterial Culture"))
 summary(ICMP.bacteria, maxsum=40)
 table(ICMP.bacteria$Phylum) #this is a validation check
 
-ICMP.chromist <- subset(ICMP.dump,(SpecimenType == "Chromist Culture"))
+ICMP.chromist <- subset(ICMP.df,(SpecimenType == "Chromist Culture"))
 summary(ICMP.chromist, maxsum=40)
 table(ICMP.chromist$Phylum) #this is a validation check
 
-ICMP.fungi <- subset(ICMP.dump,(SpecimenType == "Fungal Culture"))
+ICMP.fungi <- subset(ICMP.df,(SpecimenType == "Fungal Culture"))
 summary(ICMP.fungi, maxsum=40)
 table(ICMP.fungi$Phylum) #this is a validation check
 
-ICMP.yeast <- subset(ICMP.dump,(SpecimenType == "Yeast Culture"))
+ICMP.yeast <- subset(ICMP.df,(SpecimenType == "Yeast Culture"))
 summary(ICMP.yeast, maxsum=40)
 table(ICMP.yeast$Phylum) #this is a validation check
 
-ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
+ICMP.types <- subset(ICMP.df,!(TypeStatus == ""))
 summary(ICMP.types, maxsum=40)
 
 #subset New Zealand specimens
-ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
 summary(ICMP.NZ, maxsum=40)
 head(ICMP.NZ)
 
 #counting various things
 
-count(ICMP.dump.initial,SpecimenType)
-count(ICMP.dump,SpecimenType)
-as.integer( count(ICMP.dump) )
+count(ICMP.as.imported.df,SpecimenType)
+count(ICMP.df,SpecimenType)
+as.integer( count(ICMP.df) )
 
-count(ICMP.dump,SpecimenSecurityLevelText)
+count(ICMP.df,SpecimenSecurityLevelText)
 
 
-ICMP.dump %>%
+ICMP.df %>%
   count(SpecimenType,TypeStatus) %>%
   group_by(SpecimenType) %>%
   group_by(TypeStatus, .add=TRUE) 
 
 
 
-summarise(ICMP.dump, c(SpecimenType,TypeStatus))
+summarise(ICMP.df, c(SpecimenType,TypeStatus))
 
-ICMP.dump %>% 
+ICMP.df %>% 
   group_by(SpecimenType)
 
 
-ICMP.dump %>% 
+ICMP.df %>% 
   add_tally(wt = TypeStatus) %>%
   group_by(SpecimenType) %>%
   tally()
@@ -99,57 +100,82 @@ ICMP.dump %>%
 
 #============Quick data check================
 #have a quick look at the data
-head(ICMP.dump)
-h <- head(ICMP.dump)
+head(ICMP.df)
+h <- head(ICMP.df)
 capture.output(h, file = "ICMP-head.txt")
 
-summary(ICMP.dump.initial, maxsum=25) #data before subsetting
-summary(ICMP.dump, maxsum=20) #data after subsetting
+summary(ICMP.as.imported.df, maxsum=25) #data before subsetting
+summary(ICMP.df, maxsum=20) #data after subsetting
 
 capture.output(s, file = "ICMP-summary.txt")
 
 # counts the number of unique values per column
-sapply(ICMP.dump, function(x) length(unique(x)))
-u <- sapply(ICMP.dump, function(x) length(unique(x)))
+sapply(ICMP.df, function(x) length(unique(x)))
+u <- sapply(ICMP.df, function(x) length(unique(x)))
 capture.output(u, file = "ICMP-unique-count.txt")
 
 # counts the number of unique values per column for NZ
 sapply(ICMP.NZ, function(x) length(unique(x)))
 
+
+head(ICMP.as.imported.df)
+tail(ICMP.as.imported.df)
+summary(ICMP.as.imported.df, maxsum=10)
+str(ICMP.as.imported.df)
+
+
+
+#============Colours and notes================
+
+
+# notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+
+
+#display.brewer.all(colorblindFriendly = TRUE)
+#display.brewer.all(colorblindFriendly = FALSE)
+
+# OK ones are Paired if you have heaps of data. Others are: Set2
+
+
 #============General stats================
+
+
+
+
+
 
 # Total number of each organism
 
 
-as_tibble(ICMP.dump) # likely not needed
+as_tibble(ICMP.df) # likely not needed
 
 #This lists the number of different values for each column
-ICMP.dump %>%
+ICMP.df %>%
   map_int(n_distinct)
 
 #how to use this to say how many countries?
-ICMP.dump %>%
+ICMP.df %>%
   select("AccessionNumber", "Country") %>%
   map_int(n_distinct)
 
 
 
-table(ICMP.dump$SpecimenType)
+table(ICMP.df$SpecimenType)
 table(ICMP.NZ$SpecimenType)
 
 #should makea  summary tibble
 
 # Total number of each types for each organism
 
-?? as.numeric(length(unique(ICMP.dump$SpecimenType)))
-?? lengths(lapply(ICMP.dump$SpecimenType, unique))
+?? as.numeric(length(unique(ICMP.df$SpecimenType)))
+?? lengths(lapply(ICMP.df$SpecimenType, unique))
 
 
 #this is useless for this dataset but could be ok for others
 library(psych)
 describeBy(
-  ICMP.dump,
-  ICMP.dump$SpecimenType # grouping variable
+  ICMP.df,
+  ICMP.df$SpecimenType # grouping variable
 )
 
 
@@ -160,20 +186,20 @@ describeBy(
 library(stringr)
 #prob a muteate to add acolum to teh dataset
 
-ICMP.dump %>%
+ICMP.df %>%
   
-select(ICMP.dump, AccessionNumber, TaxonName) %>%
+select(ICMP.df, AccessionNumber, TaxonName) %>%
 
-str_split(ICMP.dump$TaxonName, " ") %>% #this splits TaxonName by spaces
+str_split(ICMP.df$TaxonName, " ") %>% #this splits TaxonName by spaces
   str_extract(strings, phone)
 
 
 transmute(mtcars, gpm = 1 / mpg)
 
 
-str_split(ICMP.dump$TaxonName, "[a-zA-Z]+")
+str_split(ICMP.df$TaxonName, "[a-zA-Z]+")
 
-ICMP.dump %>% 
+ICMP.df %>% 
   glimpse
 
 
@@ -244,12 +270,12 @@ ggsave(file='./ouputs/ICMP/ICMP.types.with.sequence.png', width=10, height=10)
 
 #this is borked code, but if sorted correctly could be a barcode map of deposits over time
 #sort would have to strip ICMP number
-#sort(table(ICMP.dump$AccessionNumber),decreasing=TRUE)
-#ggplot(ICMP.dump, aes(x="", y=AccessionNumber, fill=SpecimenType))+
+#sort(table(ICMP.df$AccessionNumber),decreasing=TRUE)
+#ggplot(ICMP.df, aes(x="", y=AccessionNumber, fill=SpecimenType))+
 #  geom_bar(width = 1, stat = "identity")
 
 #pie chart by specimen type
-ggplot(ICMP.dump, aes(x=factor(1), fill=SpecimenType)) +
+ggplot(ICMP.df, aes(x=factor(1), fill=SpecimenType)) +
   geom_bar(width = 1) +
   coord_polar("y") +
   theme_void() +
@@ -258,9 +284,9 @@ ggsave(file='./ouputs/ICMP/ICMP_specimen_pie.png', width=5, height=5)
 
 
 #pie chart by last updated user
-ICMP.dump$LastUpdatedBy <- sapply(ICMP.dump$UpdatedBy, tolower)
+ICMP.df$LastUpdatedBy <- sapply(ICMP.df$UpdatedBy, tolower)
 
-ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
+ggplot(ICMP.df, aes(x=factor(1), fill=LastUpdatedBy)) +
   labs(title = "Last User to update an ICMP record") +
   geom_bar(width = 1) +
   coord_polar("y") +
@@ -275,8 +301,8 @@ ggsave(file='./ouputs/ICMP/ICMP_last-updated_pie.png', width=5, height=5)
 library(gridExtra)
 
 #GenBank status by sample type
-#genbank.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
-ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
+#genbank.plot <- ggplot(ICMP.df, aes(SpecimenType, fill=GenBank)) +
+ggplot(ICMP.df, aes(SpecimenType, fill=GenBank)) +
   labs(title = "Cultures in the ICMP in GenBank") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
@@ -284,8 +310,8 @@ ggplot(ICMP.dump, aes(SpecimenType, fill=GenBank)) +
 ggsave(file='./ouputs/ICMP/extended-specimen-genbank.png', width=7, height=7)
 
 #Literature status by sample type
-#literature.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
-ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
+#literature.plot <- ggplot(ICMP.df, aes(SpecimenType, fill=Literature)) +
+ggplot(ICMP.df, aes(SpecimenType, fill=Literature)) +
   labs(title = "Cultures in the ICMP with a citation in literature") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
@@ -293,8 +319,8 @@ ggplot(ICMP.dump, aes(SpecimenType, fill=Literature)) +
 ggsave(file='./ouputs/ICMP/extended-specimen-literature.png', width=7, height=7)
 
 #Image status by sample type
-#image.plot <- ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
-  ggplot(ICMP.dump, aes(SpecimenType, fill=Images)) +
+#image.plot <- ggplot(ICMP.df, aes(SpecimenType, fill=Images)) +
+  ggplot(ICMP.df, aes(SpecimenType, fill=Images)) +
   labs(title = "Cultures in the ICMP with images") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
@@ -311,7 +337,7 @@ ggsave(file='./ouputs/ICMP/extended-specimen-images.png', width=7, height=7)
 #============Sample kind Level barcharts================
 
 #Simple sample type barchart
-ggplot(ICMP.dump, aes(SpecimenType)) +
+ggplot(ICMP.df, aes(SpecimenType)) +
   labs(title = "Cultures in the ICMP by Sample type") +
   labs(x = "Taxon", y = "number of isolates") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -321,7 +347,7 @@ ggsave(file='./ouputs/ICMP_kingdoms.png', width=7, height=7)
 
 
 #Occurrence in NZ
-ggplot(ICMP.dump, aes(SpecimenType, fill=OccurrenceDescription)) +
+ggplot(ICMP.df, aes(SpecimenType, fill=OccurrenceDescription)) +
   labs(title = "Cultures in the ICMP by occurrence in NZ") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -332,7 +358,7 @@ ggsave(file='./ouputs/ICMP/ICMP_kingdoms_occurrence.png', width=7, height=7)
 
 
 #Occurrence in NZ
-ggplot(ICMP.dump, aes(OccurrenceDescription, fill=SpecimenType)) +
+ggplot(ICMP.df, aes(OccurrenceDescription, fill=SpecimenType)) +
   labs(title = "Cultures in the ICMP by occurrence in NZ") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -342,7 +368,7 @@ ggplot(ICMP.dump, aes(OccurrenceDescription, fill=SpecimenType)) +
 ggsave(file='./ouputs/ICMP/ICMP_kingdoms_occurrence-alt.png', width=7, height=7)
 
 #Order Status
-ggplot(ICMP.dump, aes(SpecimenType, fill= LoanStatus)) +
+ggplot(ICMP.df, aes(SpecimenType, fill= LoanStatus)) +
   labs(title = "ICMP Order Status") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -353,8 +379,8 @@ ggsave(file='./ouputs/ICMP/ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated
 #need to filter out low users and just as a bar or pie graph?
-ICMP.dump$UpdatedBy3 <- sapply(ICMP.dump$UpdatedBy, tolower)
-ggplot(ICMP.dump, aes(SpecimenType, fill= UpdatedBy3)) +
+ICMP.df$UpdatedBy3 <- sapply(ICMP.df$UpdatedBy, tolower)
+ggplot(ICMP.df, aes(SpecimenType, fill= UpdatedBy3)) +
   labs(title = "ICMP Last updated by") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -372,7 +398,7 @@ ggsave(file='./ouputs/ICMP/ICMP_kingdoms_updated_by.png', width=7, height=7)
 
 # ----- bacterial taxon grouping -----
 
-sort(table(ICMP.dump$Family),decreasing=TRUE)[1:11] #top 11 families
+sort(table(ICMP.df$Family),decreasing=TRUE)[1:11] #top 11 families
 sort(table(ICMP.NZ$Family),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
@@ -480,7 +506,7 @@ ggsave(file='./ouputs/ICMP/ICMP_chromist-phylum.png', width=10, height=10)
 
 
 # fungi present in NZ
-#names.present.fungi <- subset(ICMP.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+#names.present.fungi <- subset(ICMP.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 #summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum
@@ -531,11 +557,11 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 
 #============Countries================
 
-sort(table(ICMP.dump$Country),decreasing=TRUE)[1:12] #top 11 countries
+sort(table(ICMP.df$Country),decreasing=TRUE)[1:12] #top 11 countries
 
 #ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
-ICMP.10county <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
+ICMP.10county <- subset(ICMP.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
 
 ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP") +
@@ -549,7 +575,7 @@ ggsave(file='./ouputs/ICMP/ICMP_country_by_kind.png', width=8, height=4.5)
 
 
 #ggplot code for pacific country
-pacific <- subset(ICMP.dump, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
+pacific <- subset(ICMP.df, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
 ggplot(pacific, aes(Country, fill=SpecimenType)) +
   labs(title = "Pacific Countries cultures in the ICMP") +
   labs(x = "Country", y = "number of isolates") +
@@ -562,7 +588,7 @@ ggsave(file='./ouputs/ICMP/ICMP-pacific-countries.png', width=10, height=10)
 
 #ggplot code for country
 positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy", "Iran, Islamic Republic Of")
-ICMP.10county.noNZ <- subset(ICMP.dump, (Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy") | Country == "Iran, Islamic Republic Of")
+ICMP.10county.noNZ <- subset(ICMP.df, (Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy") | Country == "Iran, Islamic Republic Of")
 ggplot(ICMP.10county.noNZ, aes(Country, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP (not including NZ)") +
   labs(x = "Country", y = "number of isolates") +
@@ -586,14 +612,14 @@ library(dplyr)
 #should make a tibble of the below
 
 #all cultures sorted by date. Add a new column date.isolated 
-ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-arrange(ICMP.dump, date.isolated) %>%
+ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
+arrange(ICMP.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
   slice_head(n=5)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
-ICMP.dump$date.deposited <- ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-arrange(ICMP.dump, date.deposited) %>%
+ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+arrange(ICMP.df, date.deposited) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.deposited") %>%
   slice_head(n=10)
 
@@ -618,10 +644,10 @@ ggsave(file='./ouputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 #years test, this works and produces a bar chart but not super useful
-ICMP.dump$date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3) %>%
-  floor_date(ICMP.dump$date.isolated, unit = "year")
+ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
+  floor_date(ICMP.df$date.isolated, unit = "year")
 
-ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -633,18 +659,18 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 
 
 
-ICMP.dump$date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3) %>%
-  floor_date(ICMP.dump$date.isolated, unit = "year")
+ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
+  floor_date(ICMP.df$date.isolated, unit = "year")
 
-ICMP.dump$date.isolated
+ICMP.df$date.isolated
    
 
 
 
 #ICMP isolation dates playing with plotting
 #could do a histogram with a wider binned freqpoly as a 'trendline'
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType, colour = SpecimenType)) +
+date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType, colour = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -670,8 +696,8 @@ ggsave(file='./ouputs/ICMP/ICMP-bacteria-depost-dates-smoothed.png', width=8, he
 
 
 #ICMP isolation dates 
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -682,8 +708,8 @@ ggsave(file='./ouputs/ICMP/ICMP-isolation-dates.png', width=12, height=7.5)
 
 
 #ICMP isolation dates faceted
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -694,8 +720,8 @@ ggsave(file='./ouputs/ICMP/ICMP-isolation-dates-facet.png', width=8, height=5)
 
 
 #ICMP deposit date faceted
-date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
+date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
   labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -705,8 +731,8 @@ ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
 ggsave(file='./ouputs/ICMP/ICMP-deposit-dates-facet.png', width=8, height=5)
 
 #testing some new code
-ICMP.dump$date.deposited <- ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-builder <- ggplot(ICMP.dump, aes(date.deposited)) +
+ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+builder <- ggplot(ICMP.df, aes(date.deposited)) +
   labs(title = "Date bacterial cultures were deposited in ICMP") +
   labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
@@ -722,7 +748,7 @@ mean(builder.data$count)
 #for intercep do count per year to seperate table?
 
 #collection dates. really only for comparing with isolation %% CollectionDateISO
-ggplot(ICMP.dump, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) +
+ggplot(ICMP.df, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) +
   labs(title = "Date cultures were collected") +
   labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
   scale_x_date() +
@@ -732,13 +758,13 @@ ggsave(file='./ouputs/ICMP/ICMP-Collection-dates.png', width=5, height=5)
 
 
 
-ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
-ICMP.dump$topcontrib
+ICMP.df$topcontrib <- ifelse(ICMP.df$Contributor == "NZP", "NZP", "other")
+ICMP.df$topcontrib
 
 
-attach(ICMP.dump) 
+attach(ICMP.df) 
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(ICMP.df, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -753,18 +779,18 @@ sum2 <- ggplot_build(drp) #this extracts the values from the histogram
 sum2
 
 
-attach(ICMP.dump) #this means we don't need the $ sign
+attach(ICMP.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(ICMP.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(ICMP.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
 
 
-ICMP.dump$topcontrib <- ifelse(ICMP.dump$Contributor == "NZP", "NZP", "other")
+ICMP.df$topcontrib <- ifelse(ICMP.df$Contributor == "NZP", "NZP", "other")
 
-ICMP.dump$topcontrib
+ICMP.df$topcontrib
 
 
 
@@ -776,7 +802,7 @@ ICMP.dump$topcontrib
 #======NZ Maps========
 
 #New Zealand Area codes bar chart
-ICMP.nz <- subset(ICMP.dump,(Country == "New Zealand"))
+ICMP.nz <- subset(ICMP.df,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 ggplot(ICMP.nz, aes(NZAreaCode)) +
   labs(title = "ICMP cultures by NZ region") +
@@ -806,7 +832,7 @@ nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
   st_transform(2193) #Setting map projection - NZGD2000
 
 #Transforming to an SF object
-rhizoNZ.sf <- ICMP.dump %>%
+rhizoNZ.sf <- ICMP.df %>%
   filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
   st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
   st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
@@ -875,8 +901,8 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
-  #geom_text(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
+  #geom_text(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
 ggsave(file='ICMP_worldmap_poster.png', width=12, height=6)
 
@@ -887,7 +913,7 @@ world <- map_data("world2")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
+  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
   coord_fixed(1.3)
 
 
@@ -896,17 +922,17 @@ ggplot() +
 #======On Hosts========
 
 
-sort(table(ICMP.dump$Family_C2),decreasing=TRUE)[1:11] #top 11 families
+sort(table(ICMP.df$Family_C2),decreasing=TRUE)[1:11] #top 11 families
 sort(table(ICMP.NZ$Family_C2),decreasing=TRUE)[1:11] #top 11 NZ families
 
 #substrate does not work well as a controlled vocab.
-sort(table(ICMP.dump$Substrate),decreasing=TRUE)[1:11] #top 11 substrates
+sort(table(ICMP.df$Substrate),decreasing=TRUE)[1:11] #top 11 substrates
 sort(table(ICMP.NZ$Substrate),decreasing=TRUE)[1:11] #top 11 NZ substrates
 
 
 #barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
 positions.10hosts <- c("Leguminosae", "Solanaceae", "Rosaceae", "Gramineae", "Actinidiaceae", "Myrtaceae", "Vitaceae", "Compositae", "Nothofagaceae",  "Cucurbitaceae")
-ICMP.10hosts <- subset(ICMP.dump, (Family_C2 == "Leguminosae" | Family_C2 == "Solanaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Gramineae" | Family_C2 == "Actinidiaceae" | Family_C2 == "Myrtaceae" | Family_C2 == "Vitaceae" | Family_C2 == "Compositae" | Family_C2 == "Nothofagaceae" | Family_C2 == "Cucurbitaceae"))
+ICMP.10hosts <- subset(ICMP.df, (Family_C2 == "Leguminosae" | Family_C2 == "Solanaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Gramineae" | Family_C2 == "Actinidiaceae" | Family_C2 == "Myrtaceae" | Family_C2 == "Vitaceae" | Family_C2 == "Compositae" | Family_C2 == "Nothofagaceae" | Family_C2 == "Cucurbitaceae"))
 
 ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
   labs(title = "Top 10 host Families in the ICMP culture collection") +
@@ -920,8 +946,8 @@ ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
 
 #kiwifruit
 require(ggplot2)
-ICMP.dump.kiwifruit <- subset(ICMP.bacteria,(Family_C2 == "Actinidiaceae" ))
-ggplot(ICMP.dump.kiwifruit, aes(Family)) +
+ICMP.df.kiwifruit <- subset(ICMP.bacteria,(Family_C2 == "Actinidiaceae" ))
+ggplot(ICMP.df.kiwifruit, aes(Family)) +
   labs(title = "Family of microbes on kiwifruit in the ICMP") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -933,8 +959,8 @@ ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
 #standard all ICMP overtime stats
 require(ggplot2)
 require(lubridate)
-date.isolated <-ymd(ICMP.dump.kiwifruit$IsolationDateISO, truncated = 1)
-ggplot(ICMP.dump.kiwifruit, aes(date.isolated, fill = Country)) +
+date.isolated <-ymd(ICMP.df.kiwifruit$IsolationDateISO, truncated = 1)
+ggplot(ICMP.df.kiwifruit, aes(date.isolated, fill = Country)) +
   labs(title = "Isolation dates of ex-kiwifruit ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   theme(legend.position = c(0.1, 0.7)) +
@@ -946,8 +972,8 @@ ggsave(file='ICMP-isolation-dates-kiwifruit.png', width=8, height=5)
 
 
 #NZ Myrtaceae cultures in ICMP with a sequence
-ICMP.dump.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
-ggplot(ICMP.dump.Myrtaceae, aes(SpecimenType, fill=GenBank)) + 
+ICMP.df.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
+ggplot(ICMP.df.Myrtaceae, aes(SpecimenType, fill=GenBank)) + 
   labs(title = "NZ Myrtaceae cultures in ICMP with a sequence") +
   labs(x = "Taxonomic group", y = "Number of cultures") +
   geom_bar() +
@@ -956,8 +982,8 @@ ggplot(ICMP.dump.Myrtaceae, aes(SpecimenType, fill=GenBank)) +
 ggsave(file='ICMP_Myrtaceae-genbank.png', width=8, height=5)
 
 #Family of 'microbe' on NZ Myrtaceae in the ICMPt
-ICMP.dump.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
-ggplot(ICMP.dump.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
+ICMP.df.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
+ggplot(ICMP.df.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
   labs(title = "Family of 'microbe' on NZ Myrtaceae in the ICMP") +
   labs(x = "Family", y = "number of isolates") +
   geom_bar() +
@@ -968,7 +994,7 @@ ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
 
 #======people======
 
-summary(ICMP.dump$StandardCollector, maxsum=50)
+summary(ICMP.df$StandardCollector, maxsum=50)
 
 #======pulling stats======
 
@@ -997,7 +1023,7 @@ ggsave(dip, file='NgāiTahu-isolation-dates2.png', width=8, height=5)
 
 
 library(lubridate)
-d=tribble(ICMP.dump)
+d=tribble(ICMP.df)
 d %>% mutate(date=mdy(textdate)) %>%
   arrange(date)
 ?arrange
@@ -1024,7 +1050,7 @@ str_view(CurrentName, "^M")
 
 #sub set out the interesting columns using "select" in dpylr
 library(dplyr)
-only.ext.specimen <- select(ICMP.dump, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
+only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
 head(only.ext.specimen)
 
 #create two new columns using "pivot_longer" into a tibble table
@@ -1065,7 +1091,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   facet_grid(cols = vars(SpecimenType))
 
 
-ICMP.dump %>%
+ICMP.df %>%
   group_by(species, sex) %>%
   select(height, mass) %>%
   summarise(
@@ -1111,7 +1137,7 @@ ggsave(file='./ouputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=5, height=
 # Pseudomonas savastanoi  -----
 
 
-savastanoi.df <- ICMP.dump %>% 
+savastanoi.df <- ICMP.df %>% 
   filter(str_detect(CurrentName, "^Pseudomonas savastanoi")) %>% 
   filter(Country == "New Zealand") %>%
   rename(Host = TaxonName_C2) %>%

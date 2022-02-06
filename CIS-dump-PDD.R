@@ -6,22 +6,34 @@
 library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
+library(janitor)
 #library(svglite)
 
 
-#============Load and subset data================
-PDD.df <- read_csv("PDD-export-2-dec-2021.csv") %>%
+#============Load data================
+
+PDD.as.imported.df <- read_csv("PDD-export-2-dec-2021.csv",
+                                guess_max = Inf, #assign column types
+                                show_col_types = FALSE) %>%
   glimpse()
-#that other summary package thing
 
 
+#============Check imported data for issues================
+
+# get duplicates based due to component duplication
+# may need correction in CIS if TaxonName_C2 = NA, export as a CSV
+PDD.dupes <- PDD.as.imported.df %>%
+  get_dupes(AccessionNumber) %>%
+  select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  filter(is.na(TaxonName_C2)) %>% #comment this out to get all
+  write_csv(file='./ouputs/PDD/PDD.dupes.csv')
 
 
+#============Subset and massage the Data================
 
-
-#may want to use get_dupes() to deduplicate componenets?
 
 #also sort into those categories as discussed by Peter Johnston in the past
+#mutate a new column based in if tehn???
 
 
 #subset New Zealand specimens
