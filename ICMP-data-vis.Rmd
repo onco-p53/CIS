@@ -34,16 +34,16 @@ library(ggspatial) #Add's fancy shit to the map
 
 ## Introduction
 
-This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visualisations of data analysed in R in a user-friendly format.
+This is an R Markdown document for statistics derived from specimen data of the ICMP culture collection <https://www.landcareresearch.co.nz/icmp>. This is an experimental showcase of presenting visualisations of data analysed in R in a user-friendly format. The ICMP is the national culture collection of Aotearoa New Zealand with a focus on plant-associated microbes and fungi including 'mushrooms'.
 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.dump.initial <- read_csv("ICMP-export-2-dec-2021.csv")
+ICMP.initial.df <- read_csv("ICMP-export-2-dec-2021.csv")
 
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.dump <- ICMP.dump.initial %>%
+ICMP.df <- ICMP.initial.df %>%
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
@@ -51,27 +51,27 @@ ICMP.dump <- ICMP.dump.initial %>%
   filter(Deaccessioned == "FALSE")
 
 #how many cultures are public
-ICMP.public <- ICMP.dump.initial %>%
+ICMP.public <- ICMP.initial.df %>%
   filter(SpecimenSecurityLevelText == "Public")
 
 ```
 
 ## General statistics
 
-The ICMP database has `r count(ICMP.dump.initial)` entries, but after removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.dump)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
+The ICMP database has `r count(ICMP.initial.df)` entries, but after removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.df)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
 
-The table below lists the number of Bacterial, Chromist (e.g. *Phytophthora*), fungal, and yeast cultures in the collection.
+The table below lists the number of bacterial, chromist (e.g. *Phytophthora*), fungal, and yeast cultures in the collection; stats include the entire collection and split by type cultures and New Zealand cultures.
 
 ```{r tables, echo=TRUE, message=FALSE, warning=FALSE}
 
-total.table <- ICMP.dump %>% # this one gets a total count
+total.table <- ICMP.df %>% # this one gets a total count
   group_by(SpecimenType) %>%
   dplyr::summarize(
     All.ICMP = n(), 
     .groups = "drop"
   )
 
-types.table <- ICMP.dump %>% # this one gets a types count
+types.table <- ICMP.df %>% # this one gets a types count
   filter(TypeStatus != "") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
@@ -79,7 +79,7 @@ types.table <- ICMP.dump %>% # this one gets a types count
     .groups = "drop"
   )
 
-NZ.table <- ICMP.dump %>% # this one gets a New Zealand count
+NZ.table <- ICMP.df %>% # this one gets a New Zealand count
   filter(Country == "New Zealand") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
@@ -87,7 +87,7 @@ NZ.table <- ICMP.dump %>% # this one gets a New Zealand count
     .groups = "drop"
   )
 
-NZtype.table <- ICMP.dump %>% # NZ and types
+NZtype.table <- ICMP.df %>% # NZ and types
   filter(Country == "New Zealand" & TypeStatus != "") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
@@ -103,7 +103,7 @@ icmp.count.table <- left_join(total.table, types.table) %>%
                       across(where(is.character), ~"Total")))
 
 kable(icmp.count.table, digits=0, "html",
-      caption = "table of specimen types",
+      #caption = "table of specimen types",
       col.names = gsub("[.]", " ", names(icmp.count.table)))%>% #replaces dots in names with spaces
   kable_styling("striped", "bordered") %>%
   add_header_above(c(" " = 2,  "number of cultures" = 3))
@@ -114,7 +114,7 @@ kable(icmp.count.table, digits=0, "html",
 
 ```{r types, echo=TRUE}
 
-ICMP.types <- subset(ICMP.dump,!(TypeStatus == ""))
+ICMP.types <- subset(ICMP.df,!(TypeStatus == ""))
 
 ```
 
@@ -144,7 +144,7 @@ Extended specimen data is data beyond the basic taxonomic and and location. See:
 
 #sub set out the interesting columns using "select" in dpylr
 library(dplyr)
-only.ext.specimen <- select(ICMP.dump, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
+only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
 
 #create two new columns using "pivot_longer" into a tibble table
 library(tidyr)
@@ -184,7 +184,7 @@ Many ICMP cultures are associated with a host plant, for example rhizobia in leg
 
 #barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
 positions.10hosts <- c("Leguminosae", "Solanaceae", "Rosaceae", "Gramineae", "Actinidiaceae", "Myrtaceae", "Vitaceae", "Compositae", "Nothofagaceae",  "Cucurbitaceae")
-ICMP.10hosts <- subset(ICMP.dump, (Family_C2 == "Leguminosae" | Family_C2 == "Solanaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Gramineae" | Family_C2 == "Actinidiaceae" | Family_C2 == "Myrtaceae" | Family_C2 == "Vitaceae" | Family_C2 == "Compositae" | Family_C2 == "Nothofagaceae" | Family_C2 == "Cucurbitaceae"))
+ICMP.10hosts <- subset(ICMP.df, (Family_C2 == "Leguminosae" | Family_C2 == "Solanaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Gramineae" | Family_C2 == "Actinidiaceae" | Family_C2 == "Myrtaceae" | Family_C2 == "Vitaceae" | Family_C2 == "Compositae" | Family_C2 == "Nothofagaceae" | Family_C2 == "Cucurbitaceae"))
 
 ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
   labs(title = "Top 10 host plant Families in the ICMP culture collection") +
@@ -210,7 +210,7 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.dump, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
   coord_fixed(1.3)
   
 ```
@@ -221,7 +221,7 @@ The top 10 countries represented in the ICMP with type of samples are shown belo
 
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
 
-ICMP.10county <- subset(ICMP.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
+ICMP.10county <- subset(ICMP.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
 
 ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP") +
@@ -242,7 +242,7 @@ Each of the cultures from New Zealand that have a geocoordinate are plotted belo
 
 ```{r nz map, echo=FALSE, message=FALSE, warning=FALSE}
 
-#ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+#ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
 
 #ICMP.no.chat <- ICMP.NZ %>%
 #  filter(NZAreaCode != "Chatham Islands") %>%
@@ -261,7 +261,7 @@ nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) %>%
   st_transform(2193) #Setting map projection - NZGD2000
 
 #Transforming to an SF object
-rhizoNZ.sf <- ICMP.dump %>%
+rhizoNZ.sf <- ICMP.df %>%
   filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
   st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
   st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
@@ -286,7 +286,7 @@ There are various ways to divide Aotearoa New Zealand in regions. The ICMP uses 
 ```{r top NZ area codes, echo=TRUE, warning=FALSE}
 
 #New Zealand Area codes
-ICMP.NZ <- subset(ICMP.dump,(Country == "New Zealand"))
+ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
 
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 
@@ -303,19 +303,19 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 ## Timeline
 
-```{r calulate earliest culture dates, echo=TRUE}
+```{r calulate earliest culture dates, message=FALSE, include=FALSE}
 
-#this is just for data checking e.g. ranking the eary ones don't display in the final version
+#this is just for data checking e.g. ranking the early ones don't display in the final version
 
 #all cultures sorted by date. Add a new column date.isolated 
-ICMP.dump$date.isolated <- ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-arrange(ICMP.dump, date.isolated) %>%
+ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
+arrange(ICMP.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
   slice_head(n=5)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
-ICMP.dump$date.deposited <- ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-arrange(ICMP.dump, date.deposited) %>%
+ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+arrange(ICMP.df, date.deposited) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.deposited") %>%
   slice_head(n=5)
 
@@ -341,8 +341,8 @@ arrange(ICMP.NZ, date.isolated) %>%
 
 #standard all ICMP overtime stats faceted
 
-date.isolated <-ymd(ICMP.dump$IsolationDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
+date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -356,8 +356,8 @@ ggplot(ICMP.dump, aes(date.isolated, fill = SpecimenType)) +
 ```{r all deposited dates chart, echo=TRUE, warning=FALSE}
 
 #ICMP deposit date faceted
-date.deposited <-ymd(ICMP.dump$DepositedDateISO, truncated = 3)
-ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
+date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
   labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -369,7 +369,7 @@ ggplot(ICMP.dump, aes(date.deposited, fill = SpecimenType)) +
 ```
 
 ```{r bacteria deposits chart, echo=TRUE, warning=FALSE}
-ICMP.bacteria <- subset(ICMP.dump,(SpecimenType == "Bacterial Culture"))
+ICMP.bacteria <- subset(ICMP.df,(SpecimenType == "Bacterial Culture"))
 
 ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
 ggplot(ICMP.bacteria, aes(date.deposited)) +
@@ -409,13 +409,22 @@ ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
 
 Top 10 collectors, isolators, identifiers. This will be better once we get the agents module working, which will reduce the duplicates. Will convert to charts at that time.
 
-```{r}
+```{r top collectors etc.}
 
-sort(table(ICMP.dump$StandardCollector),decreasing=TRUE)[1:12] #top 12 StandardCollector
+#should combine these to a single table using full_join ?
 
-sort(table(ICMP.dump$StandardDeterminer),decreasing=TRUE)[1:11] #top 11 StandardDeterminer
+topCollector <- ICMP.df %>% 
+  count(StandardCollector, sort = TRUE) %>%
+  drop_na() %>%
+  slice_head(n=10)
 
-sort(table(ICMP.dump$DepositorName),decreasing=TRUE)[1:11] #top 11 DepositorName
+kable(topCollector, digits=0, "html",
+      caption = "top collectors") %>%
+  kable_styling("striped", "bordered")
+
+sort(table(ICMP.df$StandardDeterminer),decreasing=TRUE)[1:11] #top 11 StandardDeterminer
+
+sort(table(ICMP.df$DepositorName),decreasing=TRUE)[1:11] #top 11 DepositorName
 
 ```
 
@@ -428,16 +437,16 @@ These stats may be useful for curation or data checking for ICMP staff.
 ```{r last updated user chart, echo=TRUE}
 
 #pie chart by last updated user
-#ICMP.dump$LastUpdatedBy <- sapply(ICMP.dump$UpdatedBy, tolower)
-#ggplot(ICMP.dump, aes(x=factor(1), fill=LastUpdatedBy)) +
+#ICMP.df$LastUpdatedBy <- sapply(ICMP.df$UpdatedBy, tolower)
+#ggplot(ICMP.df, aes(x=factor(1), fill=LastUpdatedBy)) +
 #  labs(title = "Last user to update an ICMP record") +
 #  geom_bar(width = 1) +
 #  coord_polar("y") +
 #  theme_void() +
 #  scale_fill_brewer(palette = "Paired")
 
-ICMP.dump$LastUpdatedBy <- sapply(ICMP.dump$UpdatedBy, tolower)
-ggplot(ICMP.dump, aes(LastUpdatedBy, fill = SpecimenType)) +
+ICMP.df$LastUpdatedBy <- sapply(ICMP.df$UpdatedBy, tolower)
+ggplot(ICMP.df, aes(LastUpdatedBy, fill = SpecimenType)) +
   labs(title = "Last user to update an ICMP record") +
   labs(x = "User", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -453,7 +462,7 @@ ggplot(ICMP.dump, aes(LastUpdatedBy, fill = SpecimenType)) +
 ```{r table of security levels, echo=TRUE}
 
 #table of security levels
-table.security <- ICMP.dump %>% 
+table.security <- ICMP.df %>% 
   group_by(SpecimenSecurityLevelText) %>%
   tally()
 kable(table.security, caption = "table of security levels") #knitr
@@ -465,13 +474,13 @@ kable(table.security, caption = "table of security levels") #knitr
 ```{r table of biostatus, echo=TRUE}
 
 #table of security levels
-table.security <- ICMP.dump %>% 
+table.security <- ICMP.df %>% 
   group_by(OccurrenceDescription) %>%
   tally()
 kable(table.security, caption = "table of biostatus Occurrence") #knitr
 
 #table of security levels
-table.security <- ICMP.dump %>% 
+table.security <- ICMP.df %>% 
   group_by(BiostatusDescription) %>%
   tally()
 kable(table.security, caption = "table of biostatus description") #knitr
@@ -490,7 +499,7 @@ This table shows the first few rows of the full dataset. use the arrows to explo
 
 ```{r testing, echo=TRUE}
  
- rmarkdown::paged_table(head(ICMP.dump))
+ rmarkdown::paged_table(head(ICMP.df))
  
 ```
 
