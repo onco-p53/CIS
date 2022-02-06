@@ -106,7 +106,7 @@ kable(icmp.count.table, digits=0, "html",
       #caption = "table of specimen types",
       col.names = gsub("[.]", " ", names(icmp.count.table)))%>% #replaces dots in names with spaces
   kable_styling("striped", "bordered") %>%
-  add_header_above(c(" " = 2,  "number of cultures" = 3))
+  add_header_above(c(" " = 1,  "number of cultures" = 4))
 
 ```
 
@@ -413,18 +413,44 @@ Top 10 collectors, isolators, identifiers. This will be better once we get the a
 
 #should combine these to a single table using full_join ?
 
+#topCollector <- ICMP.df %>% 
+#  count(StandardCollector, sort = TRUE) %>%
+#  drop_na() %>%
+#  slice_head(n=10)
+#
+#kable(topCollector, digits=0, "html",
+#      caption = "top collectors") %>%
+#  kable_styling("striped", "bordered")
+
+#this works but is a bit shit till the agents modules matches names correctly
 topCollector <- ICMP.df %>% 
   count(StandardCollector, sort = TRUE) %>%
   drop_na() %>%
   slice_head(n=10)
 
-kable(topCollector, digits=0, "html",
-      caption = "top collectors") %>%
-  kable_styling("striped", "bordered")
+topDeterminer <- ICMP.df %>% 
+  count(StandardDeterminer, sort = TRUE) %>%
+  drop_na() %>%
+  slice_head(n=10)
 
-sort(table(ICMP.df$StandardDeterminer),decreasing=TRUE)[1:11] #top 11 StandardDeterminer
+topDepositor <- ICMP.df %>% 
+  count(DepositorName, sort = TRUE) %>%
+  drop_na() %>%
+  slice_head(n=10)
 
-sort(table(ICMP.df$DepositorName),decreasing=TRUE)[1:11] #top 11 DepositorName
+people.table <- full_join(topCollector, topDeterminer, 
+                          by = c("StandardCollector" = "StandardDeterminer" )) %>%
+  full_join(topDepositor,
+            by = c("StandardCollector" = "DepositorName" ))
+
+people.table
+
+kable(people.table, digits=0, #"html",
+      #caption = "table of specimen types",
+      col.names = c('Person name', 'Collected', 'Determined', 'Deposited')
+)%>% #replaces dots in names with spaces
+  kable_styling("striped", "bordered") %>%
+  add_header_above(c(" " = 1,  "number of events" = 3))
 
 ```
 
