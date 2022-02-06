@@ -64,14 +64,14 @@ The table below lists the number of Bacterial, Chromist (e.g. *Phytophthora*), f
 
 ```{r tables, echo=TRUE, message=FALSE, warning=FALSE}
 
-total.table <- ICMP.dump %>% # this one get a total count
+total.table <- ICMP.dump %>% # this one gets a total count
   group_by(SpecimenType) %>%
   dplyr::summarize(
-    AllICMP = n(), 
+    All.ICMP = n(), 
     .groups = "drop"
   )
 
-types.table <- ICMP.dump %>% # this one get a types count
+types.table <- ICMP.dump %>% # this one gets a types count
   filter(TypeStatus != "") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
@@ -79,7 +79,7 @@ types.table <- ICMP.dump %>% # this one get a types count
     .groups = "drop"
   )
 
-NZ.table <- ICMP.dump %>% # this one get a total count
+NZ.table <- ICMP.dump %>% # this one gets a New Zealand count
   filter(Country == "New Zealand") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
@@ -87,11 +87,11 @@ NZ.table <- ICMP.dump %>% # this one get a total count
     .groups = "drop"
   )
 
-NZtype.table <- ICMP.dump %>% # NZ types
+NZtype.table <- ICMP.dump %>% # NZ and types
   filter(Country == "New Zealand" & TypeStatus != "") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
-    NZtypes = n(), 
+    NZ.Types = n(), 
     .groups = "drop"
   )
 
@@ -103,15 +103,10 @@ icmp.count.table <- left_join(total.table, types.table) %>%
                       across(where(is.character), ~"Total")))
 
 kable(icmp.count.table, digits=0, "html",
-      caption = "table of specimen types")%>%
+      caption = "table of specimen types",
+      col.names = gsub("[.]", " ", names(icmp.count.table)))%>% #replaces dots in names with spaces
   kable_styling("striped", "bordered") %>%
   add_header_above(c(" " = 2,  "number of cultures" = 3))
-  
-
-
-#kbl(table.stypes, caption = "table of specimen types") %>% 
-#kable_paper("hover", full_width = F) #can use striped instead of hover
-
 
 ```
 
