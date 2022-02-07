@@ -30,10 +30,16 @@ ICMP.dupes <- ICMP.as.imported.df %>%
   write_csv(file='./ouputs/ICMP/ICMP.dupes.csv')
 
 
-#testing code to remove these:
-ICMP.as.imported.df %>% distinct(AccessionNumber, .keep_all= TRUE)
-#Seems to work
+#have a quick look at the data
+head(ICMP.df)
+h <- head(ICMP.df)
+capture.output(h, file = "ICMP-head.txt")
 
+#saves the head of the dataset to understand data structure
+ICMP.as.imported.df %>%
+  filter(SpecimenSecurityLevelText == "Public") %>%
+  head() %>%
+  write_csv(file='./ouputs/ICMP/ICMP-head.csv')
 
 
 #============Subset and massage the Data================
@@ -106,10 +112,7 @@ ICMP.df %>%
 
 
 #============Quick data check================
-#have a quick look at the data
-head(ICMP.df)
-h <- head(ICMP.df)
-capture.output(h, file = "ICMP-head.txt")
+
 
 summary(ICMP.as.imported.df, maxsum=25) #data before subsetting
 summary(ICMP.df, maxsum=20) #data after subsetting
