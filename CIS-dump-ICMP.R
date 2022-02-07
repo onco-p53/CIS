@@ -4,9 +4,11 @@
 #============Load all the packages needed================
 
 library(tidyverse)
+library(stringr)
 library(lubridate)
 library(RColorBrewer)
-library(svglite)
+#library(svglite)
+library(skimr)
 
 #versions
 R.version.string
@@ -29,19 +31,6 @@ ICMP.dupes <- ICMP.as.imported.df %>%
   filter(is.na(TaxonName_C2)) %>% #comment this out to get all
   write_csv(file='./ouputs/ICMP/ICMP.dupes.csv')
 
-
-#have a quick look at the data
-head(ICMP.df)
-h <- head(ICMP.df)
-capture.output(h, file = "ICMP-head.txt")
-
-#saves the head of the dataset to understand data structure
-ICMP.as.imported.df %>%
-  filter(SpecimenSecurityLevelText == "Public") %>%
-  head() %>%
-  write_csv(file='./ouputs/ICMP/ICMP-head.csv')
-
-
 #============Subset and massage the Data================
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
@@ -55,59 +44,27 @@ ICMP.df <- ICMP.as.imported.df %>%
   glimpse()
 
 
-#setting up per specimen type subsets, with summaries of each specimen type
-ICMP.bacteria <- subset(ICMP.df,(SpecimenType == "Bacterial Culture"))
-summary(ICMP.bacteria, maxsum=40)
-table(ICMP.bacteria$Phylum) #this is a validation check
+#============Data quality checks================
 
-ICMP.chromist <- subset(ICMP.df,(SpecimenType == "Chromist Culture"))
-summary(ICMP.chromist, maxsum=40)
-table(ICMP.chromist$Phylum) #this is a validation check
+#saves the head of the dataset (to GitHub) to understand data structure
+ICMP.as.imported.df %>%
+  filter(SpecimenSecurityLevelText == "Public") %>% #public only!
+  head() %>%
+  write_csv(file='./ouputs/ICMP/ICMP-head.csv')
 
-ICMP.fungi <- subset(ICMP.df,(SpecimenType == "Fungal Culture"))
-summary(ICMP.fungi, maxsum=40)
-table(ICMP.fungi$Phylum) #this is a validation check
-
-ICMP.yeast <- subset(ICMP.df,(SpecimenType == "Yeast Culture"))
-summary(ICMP.yeast, maxsum=40)
-table(ICMP.yeast$Phylum) #this is a validation check
-
-ICMP.types <- subset(ICMP.df,!(TypeStatus == ""))
-summary(ICMP.types, maxsum=40)
-
-#subset New Zealand specimens
-ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
-summary(ICMP.NZ, maxsum=40)
-head(ICMP.NZ)
-
-#counting various things
-
+#check specimen count before and after filtering
 count(ICMP.as.imported.df,SpecimenType)
 count(ICMP.df,SpecimenType)
-as.integer( count(ICMP.df) )
 
+#check security level
 count(ICMP.df,SpecimenSecurityLevelText)
 
 
+
+
 ICMP.df %>%
-  count(SpecimenType,TypeStatus) %>%
-  group_by(SpecimenType) %>%
-  group_by(TypeStatus, .add=TRUE) 
-
-
-
-summarise(ICMP.df, c(SpecimenType,TypeStatus))
-
-ICMP.df %>% 
-  group_by(SpecimenType)
-
-
-ICMP.df %>% 
-  add_tally(wt = TypeStatus) %>%
-  group_by(SpecimenType) %>%
-  tally()
-
-
+  skim()
+  
 
 
 
@@ -116,6 +73,10 @@ ICMP.df %>%
 
 summary(ICMP.as.imported.df, maxsum=25) #data before subsetting
 summary(ICMP.df, maxsum=20) #data after subsetting
+
+
+ICMP.df %>%
+  dplyr::summarize()
 
 capture.output(s, file = "ICMP-summary.txt")
 
@@ -128,10 +89,7 @@ capture.output(u, file = "ICMP-unique-count.txt")
 sapply(ICMP.NZ, function(x) length(unique(x)))
 
 
-head(ICMP.as.imported.df)
-tail(ICMP.as.imported.df)
-summary(ICMP.as.imported.df, maxsum=10)
-str(ICMP.as.imported.df)
+
 
 
 
@@ -149,15 +107,50 @@ str(ICMP.as.imported.df)
 
 #============General stats================
 
+#Table of number of cultures and types
+
+total.table <- ICMP.df %>% # this one gets a total count
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    All.ICMP = n(), 
+    .groups = "drop"
+  )
+
+types.table <- ICMP.df %>% # this one gets a types count
+  filter(TypeStatus != "") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    Types = n(), 
+    .groups = "drop"
+  )
+
+NZ.table <- ICMP.df %>% # this one gets a New Zealand count
+  filter(Country == "New Zealand") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    NZ = n(), 
+    .groups = "drop"
+  )
+
+NZtype.table <- ICMP.df %>% # NZ and types
+  filter(Country == "New Zealand" & TypeStatus != "") %>%
+  group_by(SpecimenType) %>%
+  dplyr::summarize(
+    NZ.Types = n(), 
+    .groups = "drop"
+  )
+
+icmp.count.table <- left_join(total.table, types.table) %>%
+  left_join(NZ.table) %>%
+  left_join(NZtype.table) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(where(is.character), ~"Total")))
+icmp.count.table
 
 
 
 
-
-# Total number of each organism
-
-
-as_tibble(ICMP.df) # likely not needed
 
 #This lists the number of different values for each column
 ICMP.df %>%
@@ -177,23 +170,17 @@ table(ICMP.NZ$SpecimenType)
 
 # Total number of each types for each organism
 
-?? as.numeric(length(unique(ICMP.df$SpecimenType)))
-?? lengths(lapply(ICMP.df$SpecimenType, unique))
 
 
-#this is useless for this dataset but could be ok for others
-library(psych)
-describeBy(
-  ICMP.df,
-  ICMP.df$SpecimenType # grouping variable
-)
+
+
 
 
 #create a genera column
 #i guess take taxonomic name and then take everyting left of the space,
 #would pick up higher levels if that all there is, e.g. Agaricales
 
-library(stringr)
+
 #prob a muteate to add acolum to teh dataset
 
 ICMP.df %>%
