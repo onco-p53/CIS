@@ -22,6 +22,7 @@ PDD.as.imported.df <- read_csv("PDD-export-2-dec-2021.csv",
 
 # get duplicates based due to component duplication
 # may need correction in CIS if TaxonName_C2 = NA, export as a CSV
+
 PDD.dupes <- PDD.as.imported.df %>%
   get_dupes(AccessionNumber) %>%
   select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%

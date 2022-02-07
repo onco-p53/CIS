@@ -19,7 +19,6 @@ subject: Nationally significant collections
 
 #load all packages needed
 library(tidyverse)
-library(ggplot2)
 library(lubridate)
 library(gridExtra)
 library(maps)
@@ -39,11 +38,14 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.initial.df <- read_csv("ICMP-export-2-dec-2021.csv")
-
+ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
+                                guess_max = Inf,
+                                show_col_types = FALSE
+                                )
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.df <- ICMP.initial.df %>%
+ICMP.df <- ICMP.as.imported.df %>%
+  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
@@ -143,11 +145,9 @@ Extended specimen data is data beyond the basic taxonomic and and location. See:
 ```{r Extended specimen data, echo=TRUE}
 
 #sub set out the interesting columns using "select" in dpylr
-library(dplyr)
 only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
 
 #create two new columns using "pivot_longer" into a tibble table
-library(tidyr)
 tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
 
 # ** Cultures with extended specimen data
@@ -268,7 +268,7 @@ rhizoNZ.sf <- ICMP.df %>%
   st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
 
-#Plotting - takes a second to execute
+#Plotting - quite slow
 ggplot() +
   geom_sf(data = nz.sf) +
   geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),

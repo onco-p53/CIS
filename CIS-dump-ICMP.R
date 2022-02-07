@@ -30,10 +30,17 @@ ICMP.dupes <- ICMP.as.imported.df %>%
   write_csv(file='./ouputs/ICMP/ICMP.dupes.csv')
 
 
+#testing code to remove these:
+ICMP.as.imported.df %>% distinct(AccessionNumber, .keep_all= TRUE)
+#Seems to work
+
+
+
 #============Subset and massage the Data================
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
 ICMP.df <- ICMP.as.imported.df %>%
+  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
