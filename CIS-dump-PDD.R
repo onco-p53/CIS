@@ -31,9 +31,36 @@ PDD.dupes <- PDD.as.imported.df %>%
 
 #============Subset and massage the Data================
 
+PDD.df <- PDD.as.imported.df %>%
+  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+  glimpse()
 
-#also sort into those categories as discussed by Peter Johnston in the past
-#mutate a new column based in if tehn???
+#list the classes in Basidiomycota
+PDD.df %>%
+  filter(Phylum == "Basidiomycota") %>%
+  group_by(Class) %>%
+  dplyr::summarize(
+    All.ICMP = n(), 
+    .groups = "drop"
+  )
+
+PDD.df <- PDD.df %>%
+mutate(specimen_kind = case_when(Phylum == 'Ascomycota' ~ 'ascomycetes',
+                                 Class == 'Agaricomycetes' ~ 'mushrooms',
+                                 Class == 'Agaricostilbomycetes' ~ 'rusts and smuts',
+                                 Class == 'Atractiellomycetes' ~ 'rusts and smuts',
+                                 Class == 'Basidiomycetes' ~ 'mushrooms',
+                                 Class == 'Classiculomycetes' ~ 'rusts and smuts',
+                                 Class == 'Cystobasidiomycetes' ~ 'rusts and smuts',
+                                 Class == 'Dacrymycetes' ~ 'mushrooms',
+                                 Class == 'Entorrhizomycetes' ~ 'other',
+                                 Class == 'Exobasidiomycetes' ~ 'rusts and smuts',
+                                 Class == 'Microbotryomycetes' ~ 'rusts and smuts',
+                                 Class == 'Pucciniomycetes' ~ 'rusts and smuts',
+                                 Class == 'Tremellomycetes' ~ 'mushrooms',
+                                 Class == 'Ustilaginomycetes' ~ 'rusts and smuts',
+                                 TRUE ~ 'other')) %>%
+  glimpse()
 
 
 #subset New Zealand specimens
@@ -102,16 +129,17 @@ p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='PDD.types.with.images.png', width=5, height=5)
 
-#============Kingdom Level barcharts================
+#============Specimen kind barcharts================
 
 #plain code for a kingdom barchart
-attach(PDD.df) 
-require(ggplot2)
-p <- ggplot(PDD.df, aes(SpecimenType)) + labs(title = "Specimens in the PDD by Specimen type") + labs(x = "Taxon", y = "number of isolates")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='PDD_specimen_types.png', width=5, height=5)
+
+ggplot(PDD.df, aes(specimen_kind)) +
+  labs(title = "Specimens in the PDD by 'Specimen kind'") +
+  labs(x = "kind", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip()
+ggsave(file='./ouputs/PDD/PDD_specimen_kind.png', width=5, height=5)
 
 #kingdoms in GenBank
 attach(PDD.df)
@@ -420,19 +448,19 @@ PDD.groups <- PDD.df %>%
   filter(Deaccessioned == "false")
 
 
-#ICMP isolation dates faceted
-attach(PDD.groups) 
-require(ggplot2)
-require(lubridate)
-date.collected <-ymd(PDD.groups$CollectionDateISO, truncated = 3)
-ggplot(PDD.groups, aes(date.collected, fill = Phylum)) +
+#Collection dates
+
+date.collected <-ymd(PDD.df$CollectionDateISO, truncated = 3)
+ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
   labs(title = "Collection dates of PDD specimens") +
   labs(x = "Date of collection", y =  "Number of specimens" , fill = "") +
+  theme_bw() +
   scale_fill_brewer(palette = "Set2") +
   geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
   scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
-  facet_grid(Phylum ~ .)
-ggsave(file='PDD-collection-dates-facet.png', width=8, height=5)
+  facet_grid(factor(specimen_kind, levels=c('ascomycetes','mushrooms','rusts and smuts','other')) ~ . , scales = "free")
+ggsave(file='./ouputs/PDD/PDD-collection-dates-facet.png', width=8, height=5)
+
 
 
 #Only basidios:
@@ -809,7 +837,6 @@ summary(PDD.df.nohost$AccessionNumber, maxsum=10)
 #Storage location main factor, colour by taxon
 
 #ggplot code for fungal Phylum
-require(ggplot2)
 ggplot(PDD.df, aes(FilingNumber, fill=Phylum)) +
   labs(title = "PDD Storage locations") +
   labs(x = "storage location", y = "number of specimens") +
