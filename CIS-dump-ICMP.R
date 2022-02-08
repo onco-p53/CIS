@@ -8,6 +8,7 @@ library(lubridate)
 library(RColorBrewer)
 #library(svglite)
 library(skimr)
+library(janitor)
 
 #versions
 R.version.string
@@ -15,7 +16,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-8-feb-2022.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -91,7 +92,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-2-dec-2021.csv",
+ICMP.string.factors <- read.csv("ICMP-export-8-feb-2022.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
