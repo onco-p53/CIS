@@ -1101,18 +1101,16 @@ ggplot() +
   coord_map(xlim = c(172, 178), ylim = c(-34, -40))
 ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=5, height=5, limitsize = FALSE)
 
+
 # Pseudomonas savastanoi  -----
-
-
 savastanoi.df <- ICMP.df %>% 
   filter(str_detect(CurrentName, "^Pseudomonas savastanoi")) %>% 
   filter(Country == "New Zealand") %>%
   rename(Host = TaxonName_C2) %>%
   mutate(date.isolated = ymd(IsolationDateISO, truncated = 3)) %>%
-  glimpse() %>%
+  glimpse()
 
-#ICMP isolation dates 
-
+#Calculate savastanoi isolation dates
 ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   labs(title = "Isolation dates of ICMP Pseudomonas savastanoi cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures") +
@@ -1123,4 +1121,4 @@ ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
 ggsave(file='./outputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
 
-str_view(CurrentName, "^M")
+
