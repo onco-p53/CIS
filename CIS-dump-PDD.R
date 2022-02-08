@@ -27,7 +27,7 @@ PDD.dupes <- PDD.as.imported.df %>%
   get_dupes(AccessionNumber) %>%
   select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
   filter(is.na(TaxonName_C2)) %>% #comment this out to get all
-  write_csv(file='./ouputs/PDD/PDD.dupes.csv')
+  write_csv(file='./outputs/PDD/PDD.dupes.csv')
 
 
 #============Subset and massage the Data================
@@ -78,7 +78,7 @@ head(PDD.df)
 PDD.string.factors <- read.csv("PDD-export-2-dec-2021.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
-  capture.output(file='./ouputs/PDD/PDD-summary.txt')
+  capture.output(file='./outputs/PDD/PDD-summary.txt')
 
 
 #Just do these as a big table??
@@ -100,7 +100,7 @@ ggplot(bsw, aes(Images, fill=GenBank)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(file='./ouputs/PDD/Bevans-with-images.png', width=5, height=5)
+ggsave(file='./outputs/PDD/Bevans-with-images.png', width=5, height=5)
 
 #bsws <- summary(bsw, maxsum=25)
 #bsws
@@ -140,7 +140,7 @@ ggplot(PDD.df, aes(specimen_kind)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(file='./ouputs/PDD/PDD_specimen_kind.png', width=5, height=5)
+ggsave(file='./outputs/PDD/PDD_specimen_kind.png', width=5, height=5)
 
 #kingdoms in GenBank
 attach(PDD.df)
@@ -460,7 +460,7 @@ ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
   geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
   scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
   facet_grid(factor(specimen_kind, levels=c('ascomycetes','mushrooms','rusts and smuts','other')) ~ . , scales = "free")
-ggsave(file='./ouputs/PDD/PDD-collection-dates-facet.png', width=8, height=5)
+ggsave(file='./outputs/PDD/PDD-collection-dates-facet.png', width=8, height=5)
 
 
 
@@ -817,7 +817,7 @@ ggplot(PDD.Gramineae, aes(date.collected, fill = "Family")) +
   theme(legend.position = c(0.1, 0.8)) +
   geom_histogram(binwidth=1461, show.legend = FALSE) + # 2y is 730, 4y = 
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
-ggsave(file='./ouputs/PDD/PDD-grass-pathogens.png', width=8, height=5)
+ggsave(file='./outputs/PDD/PDD-grass-pathogens.png', width=8, height=5)
 
 
 head(PDD.Gramineae)
