@@ -14,7 +14,7 @@ R.version.string
 
 #============Load data================
 
-
+#loaded as a tibble
 ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE)
@@ -24,12 +24,41 @@ ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
 
 
 # get duplicates based due to component duplication
-# may need correction in CIS if TaxonName_C2 = NA, export as a CSV
+# may need correction in CIS if TaxonName_C2 = NA, export as a CSV:
 ICMP.dupes <- ICMP.as.imported.df %>%
   get_dupes(AccessionNumber) %>%
   select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
   filter(is.na(TaxonName_C2)) %>% #comment this out to get all
   write_csv(file='./outputs/ICMP/ICMP.dupes.csv')
+
+
+#setting up per specimen type subsets, with summaries of each specimen type
+ICMP.bacteria <- ICMP.df %>%
+  filter(SpecimenType == "Bacterial Culture")
+table(ICMP.bacteria$Phylum) #this is a validation check for misclassified
+
+
+ICMP.chromist <- ICMP.df %>%
+  filter(SpecimenType == "Chromist Culture")
+table(ICMP.chromist$Phylum) #this is a validation check for misclassified
+
+
+ICMP.fungi <- ICMP.df %>%
+  filter(SpecimenType == "Fungal Culture")
+table(ICMP.fungi$Phylum) #this is a validation check for misclassified
+
+ICMP.yeast <- ICMP.df %>%
+  filter(SpecimenType == "Yeast Culture")
+table(ICMP.yeast$Phylum) #this is a validation check for misclassified
+
+#change this code below to find errors then fix in CIS
+ICMP.fungi %>%
+  select("AccessionNumber", "SpecimenType", "CurrentName", "Phylum" ) %>%
+  filter(Phylum == "Oomycota" | Phylum == "Amoebozoa")
+
+ICMP.chromist %>%
+  select("AccessionNumber", "SpecimenType", "CurrentName", "Phylum" ) %>%
+  filter(Phylum == "Ascomycota" | Phylum == "Basidiomycota")
 
 
 #============Subset and massage the Data================
@@ -79,31 +108,21 @@ ICMP.df %>%
   skim()
 
 # counts the number of unique values per column
-sapply(ICMP.df, function(x) length(unique(x)))
-u <- sapply(ICMP.df, function(x) length(unique(x)))
-capture.output(u, file = "./outputs/ICMP/ICMP-unique-count.txt")
+sapply(ICMP.df, function(x) length(unique(x))) %>%
+  capture.output(file = "./outputs/ICMP/ICMP-unique-count.txt")
 
 # counts the number of unique values per column for NZ
 sapply(ICMP.NZ.df, function(x) length(unique(x)))
 
 
-#if only the old summary worked!
-summary(ICMP.df)
-summary.data.frame(ICMP.df)
-summary.table(ICMP.df)
-Summary.ordered(ICMP.df)
-Summary.factor(ICMP.df)
 
 
 #============Colours and notes================
 
 
 # notes here: https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
-
-
 #display.brewer.all(colorblindFriendly = TRUE)
 #display.brewer.all(colorblindFriendly = FALSE)
-
 # OK ones are Paired if you have heaps of data. Others are: Set2
 
 
@@ -147,8 +166,8 @@ icmp.count.table <- left_join(total.table, types.table) %>%
   left_join(NZtype.table) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
-                      across(where(is.character), ~"Total")))
-icmp.count.table
+                      across(where(is.character), ~"Total"))) %>%
+write_csv(file='./outputs/ICMP/ICMP-count-table.csv') 
 
 
 #This lists the number of different values for each column
@@ -175,16 +194,6 @@ ICMP.df %>%
 #sorting plots:
 #  https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
 
-
-ICMP.types.sorted <- ICMP.types %>%
-  arrange(TypeStatus) %>%    # First sort by TypeStatus. This sort the dataframe but NOT the factor levels
-  mutate(TypeStatusSort = factor(TypeStatus, levels=TypeStatus))   # This trick update the factor levels
-
-#maybe need to make a count and make a new column?  
-  
-head(ICMP.types)
-head(ICMP.types.sorted)
-
 #barchart of all ICMP types sorted by 'kind' of type
 ggplot(ICMP.types, aes(TypeStatus)) +
   labs(title = "Types in the ICMP") +
@@ -199,6 +208,7 @@ positions <- c("Type strain", "Pathotype strain", "Neopathotype strain", "Type",
 ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
   labs(title = "Types in the ICMP culture collection") +
   labs(x = "'Kind' of type", y = "number of cultures") +
+  theme_bw()+
   geom_bar() + 
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
@@ -310,7 +320,7 @@ ggplot(ICMP.df, aes(SpecimenType)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() + 
   coord_flip()
-ggsave(file='./outputs/ICMP_kingdoms.png', width=7, height=7)
+ggsave(file='./outputs/ICMP/ICMP_kingdoms.png', width=7, height=7)
 
 
 #Occurrence in NZ
@@ -342,7 +352,7 @@ ggplot(ICMP.df, aes(SpecimenType, fill= LoanStatus)) +
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Set2")
-ggsave(file='./outputs/ICMP/ICMP_kingdoms_ LoanStatus.png', width=7, height=7)
+ggsave(file='./outputs/ICMP/ICMP_kingdoms_LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated
 #need to filter out low users and just as a bar or pie graph?
