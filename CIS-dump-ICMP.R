@@ -4,7 +4,6 @@
 #============Load all the packages needed================
 
 library(tidyverse)
-library(stringr)
 library(lubridate)
 library(RColorBrewer)
 #library(svglite)
@@ -15,6 +14,7 @@ R.version.string
 
 #============Load data================
 
+
 ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
@@ -22,6 +22,7 @@ ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
 
 
 #============Check imported data for issues================
+
 
 # get duplicates based due to component duplication
 # may need correction in CIS if TaxonName_C2 = NA, export as a CSV
@@ -31,7 +32,9 @@ ICMP.dupes <- ICMP.as.imported.df %>%
   filter(is.na(TaxonName_C2)) %>% #comment this out to get all
   write_csv(file='./ouputs/ICMP/ICMP.dupes.csv')
 
+
 #============Subset and massage the Data================
+
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
 ICMP.df <- ICMP.as.imported.df %>%
@@ -43,8 +46,15 @@ ICMP.df <- ICMP.as.imported.df %>%
   filter(Deaccessioned == "FALSE") %>%
   glimpse()
 
+ICMP.NZ.df <- ICMP.df %>%
+  filter(Country == "New Zealand")
+
+ICMP.types <- ICMP.df %>%
+  filter(TypeStatus != "")
+  
 
 #============Data quality checks================
+
 
 #saves the head of the dataset (to GitHub) to understand data structure
 ICMP.as.imported.df %>%
@@ -59,38 +69,25 @@ count(ICMP.df,SpecimenType)
 #check security level
 count(ICMP.df,SpecimenSecurityLevelText)
 
-
-
-
-ICMP.df %>%
+#skim the data for numerics on each column
+ICMP.df %>% 
   skim()
-  
-
-
-
-#============Quick data check================
-
-
-summary(ICMP.as.imported.df, maxsum=25) #data before subsetting
-summary(ICMP.df, maxsum=20) #data after subsetting
-
-
-ICMP.df %>%
-  dplyr::summarize()
-
-capture.output(s, file = "ICMP-summary.txt")
 
 # counts the number of unique values per column
 sapply(ICMP.df, function(x) length(unique(x)))
 u <- sapply(ICMP.df, function(x) length(unique(x)))
-capture.output(u, file = "ICMP-unique-count.txt")
+capture.output(u, file = "./ouputs/ICMP/ICMP-unique-count.txt")
 
 # counts the number of unique values per column for NZ
-sapply(ICMP.NZ, function(x) length(unique(x)))
+sapply(ICMP.NZ.df, function(x) length(unique(x)))
 
 
-
-
+#if only the old summary worked!
+summary(ICMP.df)
+summary.data.frame(ICMP.df)
+summary.table(ICMP.df)
+Summary.ordered(ICMP.df)
+Summary.factor(ICMP.df)
 
 
 #============Colours and notes================
@@ -149,9 +146,6 @@ icmp.count.table <- left_join(total.table, types.table) %>%
 icmp.count.table
 
 
-
-
-
 #This lists the number of different values for each column
 ICMP.df %>%
   map_int(n_distinct)
@@ -161,43 +155,14 @@ ICMP.df %>%
   select("AccessionNumber", "Country") %>%
   map_int(n_distinct)
 
+#create a Genus column
+#split out genus by matching everything up to the first space:
+str_view(ICMP.df$CurrentName, "^[a-zA-Z-]*")
 
-
-table(ICMP.df$SpecimenType)
-table(ICMP.NZ$SpecimenType)
-
-#should makea  summary tibble
-
-# Total number of each types for each organism
-
-
-
-
-
-
-
-#create a genera column
-#i guess take taxonomic name and then take everyting left of the space,
-#would pick up higher levels if that all there is, e.g. Agaricales
-
-
-#prob a muteate to add acolum to teh dataset
-
+#not perfect but ¯\_(ツ)_/¯ now add it as a mutate:
 ICMP.df %>%
-  
-select(ICMP.df, AccessionNumber, TaxonName) %>%
-
-str_split(ICMP.df$TaxonName, " ") %>% #this splits TaxonName by spaces
-  str_extract(strings, phone)
-
-
-transmute(mtcars, gpm = 1 / mpg)
-
-
-str_split(ICMP.df$TaxonName, "[a-zA-Z]+")
-
-ICMP.df %>% 
-  glimpse
+  mutate(Genus = str_extract(CurrentName, "^[a-zA-Z-]*")) %>%
+  glimpse()
 
 
 #============Type cultures================
@@ -208,7 +173,7 @@ ICMP.df %>%
 
 ICMP.types.sorted <- ICMP.types %>%
   arrange(TypeStatus) %>%    # First sort by TypeStatus. This sort the dataframe but NOT the factor levels
-  mutate(TypeStatusSort =factor(TypeStatus, levels=TypeStatus))   # This trick update the factor levels
+  mutate(TypeStatusSort = factor(TypeStatus, levels=TypeStatus))   # This trick update the factor levels
 
 #maybe need to make a count and make a new column?  
   
