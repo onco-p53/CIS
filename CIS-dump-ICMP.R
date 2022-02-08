@@ -376,7 +376,7 @@ ggsave(file='./outputs/ICMP/ICMP_kingdoms_updated_by.png', width=7, height=7)
 # ----- bacterial taxon grouping -----
 
 sort(table(ICMP.df$Family),decreasing=TRUE)[1:11] #top 11 families
-sort(table(ICMP.NZ$Family),decreasing=TRUE)[1:11] #top 11 NZ families
+sort(table(ICMP.NZ.df$Family),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
 #Bacterial Phylum
@@ -544,6 +544,7 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP") +
   labs(x = "Country", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  theme_bw() +
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
@@ -584,8 +585,7 @@ ggsave(file='./outputs/ICMP/ICMP_country_by_kind_not_nz.png', width=10, height=1
 # Do a trend line of growth. so do a scatterplot and fir a trend line to project growth.
 # Do a cumulative graph?
 
-## setting up the stats ##
-library(dplyr)
+
 #should make a tibble of the below
 
 #all cultures sorted by date. Add a new column date.isolated 
@@ -601,17 +601,17 @@ arrange(ICMP.df, date.deposited) %>%
   slice_head(n=10)
 
 #New Zealand cultures sorted by date. Add a new column date.isolated
-ICMP.NZ$date.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
-arrange(ICMP.NZ, date.isolated) %>%
+ICMP.NZ.df$date.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 3)
+arrange(ICMP.NZ.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
   slice_head(n=5)
 
 
 
 #new month ICMP culture isolated (in NZ)
-month.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 1)
+month.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 1)
 mergemonths <- floor_date(month.isolated, unit = "month")
-ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
+ggplot(ICMP.NZ.df, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
   labs(x = "Month of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
@@ -779,9 +779,9 @@ ICMP.df$topcontrib
 #======NZ Maps========
 
 #New Zealand Area codes bar chart
-ICMP.nz <- subset(ICMP.df,(Country == "New Zealand"))
+ICMP.NZ.df <- subset(ICMP.df,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
-ggplot(ICMP.nz, aes(NZAreaCode)) +
+ggplot(ICMP.NZ.df, aes(NZAreaCode)) +
   labs(title = "ICMP cultures by NZ region") +
   labs(x = "Crosby Region", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -836,7 +836,7 @@ ggsave(file='./outputs/NZ_map.png', width=8, height=6)
 
 #the map has an issue as a work around remove the Chatham islands
 
-ICMP.no.chat <- ICMP.NZ %>%
+ICMP.no.chat <- ICMP.NZ.df %>%
   filter(NZAreaCode != "Chatham Islands") %>%
   filter(NZAreaCode != "Kermadec Islands")
 
@@ -900,11 +900,11 @@ ggplot() +
 
 
 sort(table(ICMP.df$Family_C2),decreasing=TRUE)[1:11] #top 11 families
-sort(table(ICMP.NZ$Family_C2),decreasing=TRUE)[1:11] #top 11 NZ families
+sort(table(ICMP.NZ.df$Family_C2),decreasing=TRUE)[1:11] #top 11 NZ families
 
 #substrate does not work well as a controlled vocab.
 sort(table(ICMP.df$Substrate),decreasing=TRUE)[1:11] #top 11 substrates
-sort(table(ICMP.NZ$Substrate),decreasing=TRUE)[1:11] #top 11 NZ substrates
+sort(table(ICMP.NZ.df$Substrate),decreasing=TRUE)[1:11] #top 11 NZ substrates
 
 
 #barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
@@ -949,7 +949,7 @@ ggsave(file='ICMP-isolation-dates-kiwifruit.png', width=8, height=5)
 
 
 #NZ Myrtaceae cultures in ICMP with a sequence
-ICMP.df.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
+ICMP.df.Myrtaceae <- subset(ICMP.NZ.df,(Family_C2 == "Myrtaceae"))
 ggplot(ICMP.df.Myrtaceae, aes(SpecimenType, fill=GenBank)) + 
   labs(title = "NZ Myrtaceae cultures in ICMP with a sequence") +
   labs(x = "Taxonomic group", y = "Number of cultures") +
@@ -959,7 +959,7 @@ ggplot(ICMP.df.Myrtaceae, aes(SpecimenType, fill=GenBank)) +
 ggsave(file='ICMP_Myrtaceae-genbank.png', width=8, height=5)
 
 #Family of 'microbe' on NZ Myrtaceae in the ICMPt
-ICMP.df.Myrtaceae <- subset(ICMP.NZ,(Family_C2 == "Myrtaceae"))
+ICMP.df.Myrtaceae <- subset(ICMP.NZ.df,(Family_C2 == "Myrtaceae"))
 ggplot(ICMP.df.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
   labs(title = "Family of 'microbe' on NZ Myrtaceae in the ICMP") +
   labs(x = "Family", y = "number of isolates") +
@@ -1068,14 +1068,6 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   facet_grid(cols = vars(SpecimenType))
 
 
-ICMP.df %>%
-  group_by(species, sex) %>%
-  select(height, mass) %>%
-  summarise(
-    height = mean(height, na.rm = TRUE),
-    mass = mean(mass, na.rm = TRUE)
-  )
-
 
 #======Special cases========
 
@@ -1086,7 +1078,7 @@ ICMP.df %>%
 library(maps)
 library(mapdata)
 
-ICMP.Neofabraea <- ICMP.NZ %>%
+ICMP.Neofabraea <- ICMP.NZ.df %>%
   filter(NZAreaCode != "Chatham Islands") %>%
   filter(NZAreaCode != "Kermadec Islands") %>%
   filter(CurrentName == "Neofabraea actinidiae") %>%
