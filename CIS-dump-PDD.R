@@ -83,12 +83,12 @@ PDD.string.factors <- read.csv("PDD-export-2-dec-2021.csv",
 
 #Just do these as a big table??
 
-# counts the number of unique values per collumn
+# counts the number of unique values per column
 sapply(PDD.df, function(x) length(unique(x)))
 up <- sapply(PDD.df, function(x) length(unique(x)))
 capture.output(up, file = "PDD-unique-count.txt")
 
-# counts the number of unique values per collumn for NZ
+# counts the number of unique values per column for NZ
 sapply(PDD.NZ.df, function(x) length(unique(x)))
 
 #============Bevan's Specimens================
