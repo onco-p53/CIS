@@ -75,7 +75,7 @@ summary(PDD.NZ.df, maxsum=40)
 head(PDD.df)
 
 #save a summary of the data to txt
-PDD.string.factors <- read.csv("ICMP-export-2-dec-2021.csv",
+PDD.string.factors <- read.csv("PDD-export-2-dec-2021.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./ouputs/PDD/PDD-summary.txt')
