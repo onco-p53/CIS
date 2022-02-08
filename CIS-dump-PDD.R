@@ -74,11 +74,11 @@ summary(PDD.NZ.df, maxsum=40)
 #have a quick look at the data
 head(PDD.df)
 
-# summary(PDD.df.initial, maxsum=25) #data before subsetting, not implemented
-summary(PDD.df, maxsum=25) #data after subsetting
-
-s <- summary(PDD.df, maxsum=25)
-capture.output(s, file = "PDD-summary.txt")
+#save a summary of the data to txt
+PDD.string.factors <- read.csv("ICMP-export-2-dec-2021.csv",
+                                stringsAsFactors = TRUE) %>%
+  summary(maxsum=25) %>%
+  capture.output(file='./ouputs/PDD/PDD-summary.txt')
 
 
 #Just do these as a big table??

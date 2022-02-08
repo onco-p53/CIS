@@ -17,8 +17,7 @@ R.version.string
 
 ICMP.as.imported.df <- read_csv("ICMP-export-2-dec-2021.csv",
                                 guess_max = Inf,
-                                show_col_types = FALSE
-                                )
+                                show_col_types = FALSE)
 
 
 #============Check imported data for issues================
@@ -61,6 +60,12 @@ ICMP.as.imported.df %>%
   filter(SpecimenSecurityLevelText == "Public") %>% #public only!
   head() %>%
   write_csv(file='./ouputs/ICMP/ICMP-head.csv')
+
+#save a summary of the data to txt
+ICMP.string.factors <- read.csv("ICMP-export-2-dec-2021.csv",
+                                stringsAsFactors = TRUE) %>%
+  summary(maxsum=25) %>%
+  capture.output(file='./ouputs/ICMP/ICMP-summary.txt')
 
 #check specimen count before and after filtering
 count(ICMP.as.imported.df,SpecimenType)
