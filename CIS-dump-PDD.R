@@ -70,6 +70,23 @@ summary(PDD.NZ.df, maxsum=40)
 
 
 
+#all specimens sorted by date. Add a new column date.collected 
+PDD.df %>%
+  mutate(date.collected = ymd(CollectionDateISO, truncated = 3)) %>%
+  arrange(date.collected) %>%
+  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") %>%
+  slice_head(n=5)
+
+#New Zealand specimens sorted by date. Add a new column date.collected
+PDD.NZ.df %>%
+  mutate(date.collected = ymd(CollectionDateISO, truncated = 3)) %>%
+  arrange(date.collected) %>%
+  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") %>%
+  slice_head(n=30)
+
+  
+
+
 #============Quick data check================
 #have a quick look at the data
 head(PDD.df)
@@ -362,6 +379,17 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 
 
 #============Countries================
+
+sort(table(PDD.df$Country),decreasing=TRUE)[1:13] #top 11 countries
+
+positions <- c("New Zealand", "United States", "Australia", "Germany", "United Kingdom",
+               "Canada", "Austria", "Fiji", "Cook Islands",  "Solomon Islands")
+
+PDD.10county <- subset(PDD.df, (Country == "New Zealand" | Country == "United States" |
+                                  Country == "Australia" | Country == "Germany" |
+                                  Country == "United Kingdom" | Country == "Canada" |
+                                  Country == "Austria" | Country == "Fiji" |
+                                  Country == "Cook Islands" | Country == "Solomon Islands"))
 
 
 PDD.NZ.df <- subset(PDD.df,(Country == "New Zealand"))
@@ -787,6 +815,11 @@ ggsave(print_bars, file='PDD_Habitat.png', width=15, height=49)
 
 #======On Hosts========
 
+sort(table(PDD.df$Family_C2),decreasing=TRUE)[1:11] #top 11 families
+
+#barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
+positions.10hosts <- c("Nothofagaceae", "Gramineae", "Myrtaceae", "Compositae", "Leguminosae", "Pinaceae", "Rosaceae", "Cyperaceae", "Podocarpaceae",  "Lauraceae")
+PDD.10hosts <- subset(PDD.df, (Family_C2 == "Nothofagaceae" | Family_C2 == "Gramineae" | Family_C2 == "Compositae" | Family_C2 == "Leguminosae" | Family_C2 == "Pinaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Cyperaceae" | Family_C2 == "Compositae" | Family_C2 == "Podocarpaceae" | Family_C2 == "Lauraceae"))
 
 
 #Order of 'microbe' on NZ Myrtaceae in the ICMPt

@@ -1,0 +1,513 @@
+---
+title: "PDD data visualisation"
+author: 
+  name: "Bevan Weir"
+  affiliation: "Manaaki Whenua - Landcare Research"
+date: "data as of 8 February 2022"
+output:
+  html_document:
+    code_folding: hide
+    df_print: default
+    toc: TRUE
+    toc_float: TRUE
+  pdf_document: default
+always_allow_html: true
+subject: Nationally significant collections
+---
+
+```{r setup, include=FALSE}
+
+#load all packages needed
+library(tidyverse)
+library(lubridate)
+library(gridExtra)
+library(maps)
+library(mapdata)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(sf) #Simple feature
+library(ggspatial) #Add's fancy shit to the map
+
+```
+
+## Introduction
+
+This is an R Markdown document for statistics derived from specimen data of the PDD Fungarium <https://www.landcareresearch.co.nz/pdd>. This is an experimental showcase of presenting visualisations of data analysed in R in a user-friendly format. The PDD is the national fungal collection of Aotearoa New Zealand with a focus on plant pathogens and fungi including 'mushrooms'.
+
+```{r import, echo=TRUE, message=FALSE, warning=FALSE}
+
+#import the files
+PDD.as.imported.df <- read_csv("PDD-export-8-feb-2022.csv",
+                                guess_max = Inf,
+                                show_col_types = FALSE
+                                ) %>%
+  distinct(AccessionNumber, .keep_all= TRUE) #remove dupes
+
+PDD.df <- PDD.as.imported.df %>%
+mutate(specimen_kind = case_when(Phylum == 'Ascomycota' ~ 'ascomycetes',
+                                 Class == 'Agaricomycetes' ~ 'mushrooms',
+                                 Class == 'Agaricostilbomycetes' ~ 'rusts and smuts',
+                                 Class == 'Atractiellomycetes' ~ 'rusts and smuts',
+                                 Class == 'Basidiomycetes' ~ 'mushrooms',
+                                 Class == 'Classiculomycetes' ~ 'rusts and smuts',
+                                 Class == 'Cystobasidiomycetes' ~ 'rusts and smuts',
+                                 Class == 'Dacrymycetes' ~ 'mushrooms',
+                                 Class == 'Entorrhizomycetes' ~ 'other',
+                                 Class == 'Exobasidiomycetes' ~ 'rusts and smuts',
+                                 Class == 'Microbotryomycetes' ~ 'rusts and smuts',
+                                 Class == 'Pucciniomycetes' ~ 'rusts and smuts',
+                                 Class == 'Tremellomycetes' ~ 'mushrooms',
+                                 Class == 'Ustilaginomycetes' ~ 'rusts and smuts',
+                                 TRUE ~ 'other')) %>%
+  filter(Deaccessioned == "FALSE") %>%
+  mutate(date.collected = ymd(CollectionDateISO, truncated = 3))
+
+
+#how many specimens are public
+PDD.public <- PDD.as.imported.df %>%
+  filter(SpecimenSecurityLevelText == "Public")
+
+#create a NZ filter
+PDD.NZ.df <- PDD.df %>%
+  filter(Country == "New Zealand")
+
+```
+
+## General statistics
+
+The PDD database has `r count(PDD.as.imported.df)` entries, but after removing specimens those that are 'deaccessioned' there are **`r count(PDD.df)` specimens**. The total number of publicly available specimens is `r count(PDD.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
+
+The table below lists the number of *Ascomycetes*; *'mushrooms'* as a broad category including mushrooms, brackets, paint-splash, clubs, puffballs, stinkhorns and allies (subphylum agaricomycotina); *rusts and smuts*, and *'other'* including chromists, slime moulds, bacteria... These stats include the entire collection and split by type specimens and New Zealand specimens.
+
+```{r tables, echo=TRUE, message=FALSE, warning=FALSE}
+
+total.table <- PDD.df %>% # this one gets a total count
+  group_by(specimen_kind) %>%
+  dplyr::summarize(
+    All.PDD = n(), 
+    .groups = "drop"
+  )
+
+types.table <- PDD.df %>% # this one gets a types count
+  filter(TypeStatus != "") %>%
+  group_by(specimen_kind) %>%
+  dplyr::summarize(
+    Types = n(), 
+    .groups = "drop"
+  )
+
+NZ.table <- PDD.df %>% # this one gets a New Zealand count
+  filter(Country == "New Zealand") %>%
+  group_by(specimen_kind) %>%
+  dplyr::summarize(
+    NZ = n(), 
+    .groups = "drop"
+  )
+
+NZtype.table <- PDD.df %>% # NZ and types
+  filter(Country == "New Zealand" & TypeStatus != "") %>%
+  group_by(specimen_kind) %>%
+  dplyr::summarize(
+    NZ.Types = n(), 
+    .groups = "drop"
+  )
+
+PDD.count.table <- left_join(total.table, types.table) %>%
+  left_join(NZ.table) %>%
+  left_join(NZtype.table) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(where(is.character), ~"Total")))
+
+kable(PDD.count.table, digits=0, "html",
+      #caption = "table of specimen types",
+      col.names = gsub("[.]", " ", names(PDD.count.table)))%>% #replaces dots in names with spaces
+  kable_styling("striped", "bordered") %>%
+  add_header_above(c(" " = 1,  "number of specimens" = 4))
+
+```
+
+## Type specimens
+
+```{r types, echo=TRUE}
+
+PDD.types <- subset(PDD.df,!(TypeStatus == ""))
+
+```
+
+The PDD has **`r count(PDD.types)` type specimens** specimens. There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type specimens may have been isolated from (*ex*) a type specimen (e.g. from PDD) and are thus 'ex types'.
+
+```{r types chart, eval=FALSE, include=FALSE}
+
+#barchart of all PDD types sorted by 'kind' of type, coloured by kind of organism
+positions <- c("Type strain", "Pathotype strain", "Neopathotype strain", "Type", "ex Type",  "Holotype", "ex Holotype", "Paratype", "ex Paratype", "Isotype", "Neotype", "ex Neotype", "Epitype", "ex Epitype", "Syntype", "Reference strain")
+ggplot(PDD.types, aes(TypeStatus, fill=specimen_kind)) +
+  labs(title = "Types in the PDD collection") +
+  labs(x = "'Kind' of type", y = "number of specimens") +
+  geom_bar() + 
+  coord_flip() +
+  theme_bw()+
+  theme(legend.position = c(0.85, 0.75)) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions)
+
+#breaks = c("0","25","50","100","200","300","350")
+
+```
+
+## Extended specimen data
+
+Extended specimen data is data beyond the basic taxonomic and and location. See: <https://academic.oup.com/bioscience/article/70/1/23/5637849> The charts below show the proportion of PDD specimens that have DNA sequences lodged in GenBank global repository, images (usually of specimen plates), and when a specimen is specifically cited in literature.
+
+```{r Extended specimen data, echo=TRUE}
+
+#sub set out the interesting columns using "select" in dpylr
+only.ext.specimen <- select(PDD.df, "AccessionNumber","specimen_kind", "GenBank", "Literature", "Images")
+
+#create two new columns using "pivot_longer" into a tibble table
+tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
+
+# ** specimens with extended specimen data
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "specimens with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "extended specimen data", y = "proportion of specimens with this data") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position = "fill")
+
+```
+
+This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast) to show the relative proportions of extended specimen data for each of these.
+
+```{r Extended specimen data 2, echo=TRUE}
+
+# ** specimens with extended specimen data by ExtendedSpecimen with specimen_kind facet
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "specimens with GenBank DNA sequences, images, and citations in literature") +
+  labs(x = "Taxon", y = "number of specimens") +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar() +
+  theme_bw() +
+  theme(legend.position = c(0.92, 0.6)) +
+  facet_grid(cols = vars(specimen_kind))
+
+```
+
+## Host plants
+
+Many PDD specimens are associated with a host plant, for example ectomycorrhiza or plant pathogens. Below are the top 10 most common host plant families in the PDD with type of organism. The large number of Nothofagaceae hosts likely relates to the abundant ectomycorrhizal mushrooms on these trees.
+
+```{r top 10 host families, echo=TRUE}
+
+#barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
+positions.10hosts <- c("Nothofagaceae", "Gramineae", "Myrtaceae", "Compositae", "Leguminosae", "Pinaceae", "Rosaceae", "Cyperaceae", "Podocarpaceae",  "Lauraceae")
+
+PDD.10hosts <- subset(PDD.df, (Family_C2 == "Nothofagaceae" | Family_C2 == "Gramineae" | Family_C2 == "Myrtaceae" | Family_C2 == "Compositae" | Family_C2 == "Leguminosae" | Family_C2 == "Pinaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Cyperaceae" | Family_C2 == "Podocarpaceae" | Family_C2 == "Lauraceae"))
+
+
+ggplot(PDD.10hosts, aes(Family_C2, fill=specimen_kind)) +
+  labs(title = "Top 10 host plant Families in the PDD specimen collection") +
+  labs(x = "Host plant Family", y = "number of specimens") +
+  geom_bar() + 
+  coord_flip() +
+  theme_bw() +
+  theme(legend.position = c(0.85, 0.75)) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions.10hosts)
+
+```
+
+## Geography
+
+PDD specimens have been collected from around the world.
+
+### World distribution
+
+```{r world map, echo=TRUE, warning=FALSE}
+
+world <- map_data("world")
+ggplot() + 
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
+  theme_void() +
+  geom_point(data = PDD.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  coord_fixed(1.3)
+  
+```
+
+The top 10 countries represented in the PDD with type of samples are shown below.
+
+```{r top countries, echo=TRUE}
+
+positions <- c("United States", "Australia", "Germany", "United Kingdom",
+               "Canada", "Austria", "Fiji", "Cook Islands",  "Solomon Islands", "Vanuatu")
+
+PDD.10county <- subset(PDD.df, (Country == "United States" |
+                                  Country == "Australia" | Country == "Germany" |
+                                  Country == "United Kingdom" | Country == "Canada" |
+                                  Country == "Austria" | Country == "Fiji" |
+                                  Country == "Cook Islands" | Country == "Solomon Islands" |
+                       Country == "Vanuatu"))
+
+ggplot(PDD.10county, aes(Country, fill=specimen_kind)) +
+  labs(title = "Top 10 Countries in the PDD (other than NZ)") +
+  labs(x = "Country", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  coord_flip() +
+  theme_bw() +
+  theme(legend.position = c(0.85, 0.75)) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_discrete(limits = positions)
+  
+```
+
+### New Zealand distribution
+
+Each of the specimens from New Zealand that have a geocoordinate are plotted below. An interactive map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
+
+```{r nz map, echo=TRUE, message=FALSE, warning=FALSE}
+
+#PDD.no.chat <- PDD.NZ.df %>%
+#  filter(NZAreaCode != "Chatham Islands") %>%
+#  filter(NZAreaCode != "Kermadec Islands")
+
+#nz <- map_data("nzHires")
+#ggplot() + 
+#  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+#  theme_void() +
+#  geom_point(data = PDD.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = #1, alpha = 0.2, show.legend = FALSE) +
+#  coord_fixed(1.3)
+
+# Loading in data 
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) %>%
+  st_transform(2193) #Setting map projection - NZGD2000
+
+#Transforming to an SF object
+rhizoNZ.sf <- PDD.df %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
+
+#Plotting - quite slow
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+          size = 1, alpha = 0.2, show.legend = FALSE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal()
+  
+```
+
+There are various ways to divide Aotearoa New Zealand in regions. The PDD uses 'Crosby Codes' which were developed for for recording specimen localities in the New Zealand. The PDD is based in Auckland explaining the large number of collections from this region.
+
+```{r top NZ area codes, echo=TRUE, warning=FALSE}
+
+#New Zealand Area codes
+
+positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
+
+ggplot(PDD.NZ.df, aes(NZAreaCode)) +
+  labs(title = "PDD specimens by NZ region") +
+  labs(x = "Crosby Region", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  geom_bar() +
+  theme_bw() +
+  coord_flip() +
+  scale_x_discrete(limits = positions)
+
+```
+
+## Timeline
+
+```{r calulate earliest specimen dates, echo=TRUE, message=FALSE}
+
+#this is just for data checking e.g. ranking the early ones don't display in the final version
+
+#all specimens sorted by date. Add a new column date.collected 
+PDD.df %>%
+  arrange(date.collected) %>%
+  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") %>%
+  slice_head(n=5)
+
+
+#New Zealand specimens sorted by date. Add a new column date.collected
+PDD.NZ.df %>%
+  arrange(date.collected) %>%
+  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") %>%
+  slice_head(n=5)
+
+```
+
+-   The earliest specimen in PDD is [*Neodictyopus dictyopus* PDD 28052](https://scd.landcareresearch.co.nz/Specimen/PDD_28052) collected in 1840 from Canada
+
+-   The earliest New Zealand ascomycete specimen is [*Pseudocyphellaria billardierei* PDD 71605](https://scd.landcareresearch.co.nz/Specimen/PDD_71605) collected in 1843
+
+-   The earliest New Zealand mushroom specimen is [*Peniophora polygonia* PDD 39832](https://scd.landcareresearch.co.nz/Specimen/PDD_39832) collected in 1848
+
+-   The earliest New Zealand rust specimen is [*Puccinia geranii-pilosi* PDD 40803](https://scd.landcareresearch.co.nz/Specimen/PDD_40803) collected in 1850
+
+### Collections and deposits over time
+
+```{r all collected dates chart, echo=TRUE, warning=FALSE}
+
+#standard all PDD overtime stats faceted
+
+ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
+  labs(title = "Collection dates of PDD specimens") +
+  labs(x = "Date of Collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  theme_bw() +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) +
+  facet_grid(specimen_kind ~ ., scales = "free")
+
+```
+
+
+
+### Collection month
+
+In the New Zealand autumn, May is the peak mushroom fruiting season explain the number of fungi collected in this month. In general there is a trend of fewer Collections in Winter and more in Summer. The high numbers in January may be an artifact of a prior way recording the data in the database which if the month was unknown it would be recorded as January.
+
+less in winter, more in summer trend.
+
+```{r NZ collected month chart, echo=TRUE, message=FALSE, warning=FALSE}
+
+#new month PDD specimen collected (in NZ)
+attach(PDD.NZ.df) 
+month.collected <- ymd(PDD.NZ.df$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(month.collected, unit = "month")
+ggplot(PDD.NZ.df, aes(month(mergemonths, label = TRUE), fill = specimen_kind)) +
+  labs(title = "Collection month of PDD specimens from NZ") + 
+  labs(x = "Month of Collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw() +
+  geom_bar() + 
+  scale_x_discrete(na.translate = FALSE)  # this removes NAs
+
+```
+
+## People
+
+Top 10 collectors, and identifiers. This will be better once we get the agents module working, which will reduce the duplicates and name string variants.
+
+```{r top collectors etc., echo=TRUE, message=FALSE, warning=FALSE}
+
+#should combine these to a single table using full_join ?
+
+#topCollector <- PDD.df %>% 
+#  count(StandardCollector, sort = TRUE) %>%
+#  drop_na() %>%
+#  slice_head(n=10)
+#
+#kable(topCollector, digits=0, "html",
+#      caption = "top collectors") %>%
+#  kable_styling("striped", "bordered")
+
+#this works but is a bit shit till the agents modules matches names correctly
+topCollector <- PDD.df %>% 
+  count(StandardCollector, sort = TRUE) %>%
+  drop_na() %>%
+  slice_head(n=10)
+
+topDeterminer <- PDD.df %>% 
+  count(StandardDeterminer, sort = TRUE) %>%
+  drop_na() %>%
+  slice_head(n=10)
+
+people.table <- full_join(topCollector, topDeterminer, 
+                          by = c("StandardCollector" = "StandardDeterminer" ))
+
+
+kable(people.table, digits=0, #"html",
+      #caption = "table of specimen types",
+      col.names = c('Person name', 'Collected', 'Determined')
+)%>% #replaces dots in names with spaces
+  kable_styling("striped", "bordered") %>%
+  add_header_above(c(" " = 1,  "number of events" = 2))
+
+```
+
+## Curation stats
+
+These stats may be useful for curation or data checking for PDD staff.
+
+### Last updated user
+
+```{r last updated user chart, echo=TRUE}
+
+#pie chart by last updated user
+#PDD.df$LastUpdatedBy <- sapply(PDD.df$UpdatedBy, tolower)
+#ggplot(PDD.df, aes(x=factor(1), fill=LastUpdatedBy)) +
+#  labs(title = "Last user to update an PDD record") +
+#  geom_bar(width = 1) +
+#  coord_polar("y") +
+#  theme_void() +
+#  scale_fill_brewer(palette = "Paired")
+
+PDD.df$LastUpdatedBy <- sapply(PDD.df$UpdatedBy, tolower)
+ggplot(PDD.df, aes(LastUpdatedBy, fill = specimen_kind)) +
+  labs(title = "Last user to update an PDD record") +
+  labs(x = "User", y = "number of specimens") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
+  theme_bw() +
+  geom_bar() +
+  scale_fill_brewer(palette = "Set2") +
+  coord_flip()
+
+```
+
+### Security levels
+
+```{r table of security levels, echo=TRUE}
+
+#table of security levels
+table.security <- PDD.df %>% 
+  group_by(SpecimenSecurityLevelText) %>%
+  tally()
+kable(table.security, caption = "table of security levels") #knitr
+
+```
+
+### Biostatus
+
+```{r table of biostatus, echo=TRUE}
+
+#table of security levels
+table.security <- PDD.df %>% 
+  group_by(OccurrenceDescription) %>%
+  tally()
+kable(table.security, caption = "table of biostatus Occurrence") #knitr
+
+#table of security levels
+table.security <- PDD.df %>% 
+  group_by(BiostatusDescription) %>%
+  tally()
+kable(table.security, caption = "table of biostatus description") #knitr
+
+```
+
+```{r testing3, echo=TRUE}
+
+#knitr::include_url("https://public.flourish.studio/visualisation/7745803/")
+
+```
+
+### Head of the dataset
+
+This table shows the first few rows of the full dataset. use the arrows to explore across the columns.
+
+```{r testing, echo=TRUE}
+ 
+ rmarkdown::paged_table(head(PDD.df))
+ 
+```
+
+This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.
