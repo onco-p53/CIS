@@ -1,34 +1,56 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017-2019)
+# Author: B.S. Weir (2017-2022)
+
+#============Load all the packages needed================
+
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+library(janitor)
+
 
 #============Load and subset data================
-NZAC.dump <- read.csv("NZAC-export-29-jul-2019.csv")
 
-# subset out "Deaccessioned=True", not implemented
-# NZAC.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
+NZAC.as.imported.df <- read_csv("NZAC-export-29-jul-2019.csv",
+                               guess_max = Inf, #assign column types
+                               show_col_types = FALSE) %>%
+  glimpse()
 
 
-#setting up per specimen type subsets, with summaries of each specimen type
-NZAC.alcohol <- subset(NZAC.dump,(SpecimenType == "Alcohol"))
-summary(NZAC.alcohol, maxsum=40)
+NZAC.df <- NZAC.as.imported.df %>%
+  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+  glimpse()
+
+
+#============Check imported data for issues================
+
+# get duplicates based due to component duplication
+# may need correction in CIS if TaxonName_C2 = NA, export as a CSV
+
+NZAC.dupes <- NZAC.as.imported.df %>%
+  get_dupes(AccessionNumber) %>%
+  select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  #filter(is.na(TaxonName_C2)) %>% #comment this out to get all
+  write_csv(file='./outputs/NZAC/NZAC.dupes.csv')
 
 
 
 #============Quick data check================
 #have a quick look at the data
-head(NZAC.dump)
+head(NZAC.df)
 
-# summary(NZAC.dump.initial, maxsum=20) #data before subsetting, not implemented
-summary(NZAC.dump, maxsum=20) #data after subsetting
 
-s <- summary(NZAC.dump, maxsum=20)
-capture.output(s, file = "NZAC-summary.txt")
+#save a summary of the data to txt
+NZAC.string.factors <- read.csv("NZAC-export-29-jul-2019.csv",
+                               stringsAsFactors = TRUE) %>%
+  summary(maxsum=25) %>%
+  capture.output(file='./outputs/NZAC/NZAC-summary.txt')
 
 
 #============Type Specimens================
 
 #ggplot code for type Specimens
-d <- subset(NZAC.dump,!(TypeStatus == ""))
+d <- subset(NZAC.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the NZAC") + labs(x = "'Kind' of type", y = "number of isolates")
@@ -40,7 +62,7 @@ ggsave(print_bars, file='NZAC_types.png', width=10, height=10)
 #another one showing just the number of types in each kind of culture?
 
 #ggplot code for type Specimens factored by Specimen type
-d <- subset(NZAC.dump,!(TypeStatus == ""))
+d <- subset(NZAC.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the NZAC") + labs(x = "'Kind' of type", y = "number of isolates")
@@ -52,36 +74,36 @@ ggsave(print_bars, file='NZAC.types.by.kind.png', width=10, height=10)
 #============Kingdom Level barcharts================
 
 #plain code for a kingdom barchart
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType)) + labs(title = "Specimens in the NZAC by Specimen type") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType)) + labs(title = "Specimens in the NZAC by Specimen type") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_kingdoms.png', width=7, height=7)
 
 #kingdoms in GenBank
-attach(NZAC.dump)
+attach(NZAC.df)
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill=GenBank)) + labs(title = "Specimens in the NZAC in GenBank") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill=GenBank)) + labs(title = "Specimens in the NZAC in GenBank") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 #ggsave(print_bars, file='NZAC_kingdoms_genbank.png', width=7, height=7)
 
 #kingdoms with literature
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Specimens in the NZAC in Literature") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill=Literature)) + labs(title = "Specimens in the NZAC in Literature") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_kingdoms_Literature.png', width=7, height=7)
 
 #kingdoms with images
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill=Images)) + labs(title = "Specimens in the NZAC with images") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill=Images)) + labs(title = "Specimens in the NZAC with images") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -90,27 +112,27 @@ ggsave(print_bars, file='NZAC_kingdoms_images.png', width=7, height=7)
 #could also do a stacked bar chart with images, genbank, literature all on one chart.
 
 #kingdoms by Occurrence Description
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Specimens in the NZAC by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Specimens in the NZAC by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_kingdoms_occurrence.png', width=7, height=7)
 
 #CollectionEventMethod
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(CollectionEventMethod)) + labs(title = "Specimens in the NZAC by Collection Event Method") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(CollectionEventMethod)) + labs(title = "Specimens in the NZAC by Collection Event Method") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_CollectionEventMethod.png', width=7, height=7)
 
 #kingdoms by Occurrence Description
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(OccurrenceDescription)) + labs(title = "Specimens in the NZAC by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(OccurrenceDescription)) + labs(title = "Specimens in the NZAC by occurrence in NZ") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -119,18 +141,18 @@ ggsave(print_bars, file='NZAC_kingdoms_occurrence2.png', width=7, height=7)
 
 
 #kingdoms by Order Status
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill= LoanStatus)) + labs(title = "NZAC Order Status") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill= LoanStatus)) + labs(title = "NZAC Order Status") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_kingdoms_ LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated by
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "NZAC Last updated by") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "NZAC Last updated by") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -144,45 +166,45 @@ ggsave(print_bars, file='NZAC_kingdoms_updated_by.png', width=7, height=7)
 
 
 #Phylum
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Phylum)) + labs(title = "NZAC by phylum") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(Phylum)) + labs(title = "NZAC by phylum") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_phylum.png', width=10, height=10)
 
 #ggplot code for Class
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Class)) + labs(title = "NZAC by class") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(Class)) + labs(title = "NZAC by class") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_class.png', width=10, height=10)
 
 #ggplot code for Order
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Order)) + labs(title = "NZAC by order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(Order)) + labs(title = "NZAC by order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_order.png', width=10, height=10)
 
 #ggplot code for Order
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Order, fill=SpecimenType)) + labs(title = "NZAC by order") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(Order, fill=SpecimenType)) + labs(title = "NZAC by order") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='NZAC_order-speciemtype.png', width=10, height=10)
 
 #ggplot code for Family
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(Family)) + labs(title = "NZAC by family") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(Family)) + labs(title = "NZAC by family") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -191,7 +213,7 @@ print_bars <- p + geom_bar()+ coord_flip()
 
 # -----  fungal taxon grouping ----- 
 
-f <- subset(NZAC.dump, SpecimenType == "Fungal Culture")
+f <- subset(NZAC.df, SpecimenType == "Fungal Culture")
 
 #ggplot code for fungal Phylum
 attach(f) 
@@ -232,7 +254,7 @@ ggsave(print_bars, file='NZAC_fungal-family.png', width=20, height=10)
 #============Other names================
 
 # error Kingdom is missing
-names.present.fungi <- subset(NZAC.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+names.present.fungi <- subset(NZAC.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum
@@ -284,10 +306,10 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 #============Countries================
 
 
-NZAC.dump.NZ <- subset(NZAC.dump,(Country == "New Zealand"))
-attach(NZAC.dump.NZ) 
+NZAC.df.NZ <- subset(NZAC.df,(Country == "New Zealand"))
+attach(NZAC.df.NZ) 
 require(ggplot2)
-p <- ggplot(NZAC.dump, aes(NZAreaCode)) + labs(title = "NZ Specimens in the NZAC by Area Code") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df, aes(NZAreaCode)) + labs(title = "NZ Specimens in the NZAC by Area Code") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -297,7 +319,7 @@ ggsave(print_bars, file='NZAC_NZAreaCode.png', width=7, height=7)
 
 
 #ggplot code for country
-cy <- subset(NZAC.dump,!(Country == ""))
+cy <- subset(NZAC.df,!(Country == ""))
 require(ggplot2)
 con <- ggplot(cy, aes(Country)) + labs(title = "Top 10 Countries") + labs(x = "Country", y = "number")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -308,7 +330,7 @@ ggsave(print_bars, file='NZAC_country.png', width=10, height=10)
 
 #ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "Italy", "France")
-c <- subset(NZAC.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(NZAC.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the NZAC") + labs(x = "Country", y = "number of isolates")
@@ -320,7 +342,7 @@ ggsave(print_bars, file='NZAC_country_by_kind.svg', width=6, height=5)
 ggsave(print_bars, file='NZAC_country_by_kind.eps', width=6, height=5)
 
 #ggplot code for pacific country
-c <- subset(NZAC.dump, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
+c <- subset(NZAC.df, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the NZAC") + labs(x = "Country", y = "number of isolates")
@@ -332,7 +354,7 @@ ggsave(print_bars, file='NZAC-pacific-countries.png', width=10, height=10)
 
 #ggplot code for country
 positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy", "Canada")
-c <- subset(NZAC.dump, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(NZAC.df, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the NZAC (not including NZ)") + labs(x = "Country", y = "number of isolates")
@@ -352,9 +374,9 @@ ggsave(print_bars, file='NZAC_country_by_kind_not_nz.png', width=10, height=10)
 #can do a culmalative graph?
 
 
-attach(NZAC.dump) 
+attach(NZAC.df) 
 require(ggplot2)
-di <- ggplot(NZAC.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Collection dates of NZAC Specimens") + labs(x = "Date of collection", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(NZAC.df, aes(as.Date(CollectionDateISO))) + labs(title = "Collection dates of NZAC Specimens") + labs(x = "Date of collection", y =  "Number of Specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -365,12 +387,12 @@ ggsave(dip, file='NZAC-collection-dates.eps', width=5, height=5)
 
 
 
-NZAC.dump$topcontrib <- ifelse(NZAC.dump$Contributor == "NZP", "NZP", "other")
-NZAC.dump$topcontrib
+NZAC.df$topcontrib <- ifelse(NZAC.df$Contributor == "NZP", "NZP", "other")
+NZAC.df$topcontrib
 
-attach(NZAC.dump) #this means we don't need the $ sign
+attach(NZAC.df) #this means we don't need the $ sign
 require(ggplot2)
-ditc <- ggplot(NZAC.dump, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+ditc <- ggplot(NZAC.df, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of NZAC Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 ditc <- ditc + scale_x_date()
 ditc + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 ditcp <- ditc + geom_histogram(binwidth=365.25)
@@ -379,9 +401,9 @@ ggsave(dip, file='NZAC-isolation-dates2.png', width=4, height=3)
 
 
 
-attach(NZAC.dump) #this means we don't need the $ sign
+attach(NZAC.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of NZAC Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(NZAC.df, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of NZAC Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -389,9 +411,9 @@ ggsave(drp, file='NZAC-received-dates.png', width=10, height=10)
 
 ## CAN we do this by organism too?
 
-attach(NZAC.dump) #this means we don't need the $ sign
+attach(NZAC.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of NZAC Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(NZAC.df, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of NZAC Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -402,21 +424,21 @@ sum2 <- ggplot_build(drp) #this extracts the values from the histogram
 sum2
 
 
-attach(NZAC.dump) #this means we don't need the $ sign
+attach(NZAC.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(NZAC.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the NZAC collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(NZAC.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the NZAC collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='NZAC-received-dates-contributor.png', width=15, height=10)
 
 
-NZAC.dump$topcontrib <- ifelse(NZAC.dump$Contributor == "NZP", "NZP", "other")
+NZAC.df$topcontrib <- ifelse(NZAC.df$Contributor == "NZP", "NZP", "other")
 
-NZAC.dump$topcontrib
+NZAC.df$topcontrib
 
 #ggplot code for collections over the years
-attach(NZAC.dump) #this means we don't need the $ sign
+attach(NZAC.df) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the NZAC") + labs(x = "Country", y = "number of isolates")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -425,7 +447,7 @@ print_bars <- con + geom_histogram()+ coord_flip()
 ggsave(print_bars, file='NZAC-pacific-countries.png', width=10, height=10)
 
 #ggplot code for collections over the years in NZ
-c <- subset(NZAC.dump, (Country == "New Zealand"))
+c <- subset(NZAC.df, (Country == "New Zealand"))
 
 #also need something that plots monthly e.g. fungi versus collection month.
 
@@ -445,12 +467,12 @@ mp
 #======On Hosts========
 
 # subset out kiwifruit
-NZAC.dump.kiwifruit <- subset(NZAC.dump,(TaxonName_C2 == "Actinidia deliciosa"))
+NZAC.df.kiwifruit <- subset(NZAC.df,(TaxonName_C2 == "Actinidia deliciosa"))
 
 #ggplot code for bacterial Class
 attach(b) 
 require(ggplot2)
-p <- ggplot(NZAC.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the NZAC") + labs(x = "Taxon", y = "number of isolates")
+p <- ggplot(NZAC.df.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the NZAC") + labs(x = "Taxon", y = "number of isolates")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
