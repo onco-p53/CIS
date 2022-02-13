@@ -5,12 +5,12 @@ author:
   affiliation: "Manaaki Whenua - Landcare Research"
 date: "data as of 8 February 2022"
 output:
+  pdf_document: default
   html_document:
     code_folding: hide
     df_print: default
     toc: TRUE
     toc_float: TRUE
-  pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
 ---
@@ -136,12 +136,12 @@ PDD.types <- subset(PDD.df,!(TypeStatus == ""))
 
 ```
 
-The PDD has **`r count(PDD.types)` type specimens** specimens. There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type specimens may have been isolated from (*ex*) a type specimen (e.g. from PDD) and are thus 'ex types'.
+The PDD has **`r count(PDD.types)` type specimens** specimens. There are different 'kinds' of types listed below:
 
-```{r types chart, eval=FALSE, include=FALSE}
+```{r types chart, echo=TRUE}
 
 #barchart of all PDD types sorted by 'kind' of type, coloured by kind of organism
-positions <- c("Type strain", "Pathotype strain", "Neopathotype strain", "Type", "ex Type",  "Holotype", "ex Holotype", "Paratype", "ex Paratype", "Isotype", "Neotype", "ex Neotype", "Epitype", "ex Epitype", "Syntype", "Reference strain")
+positions <- c("Type", "Holotype", "Paratype", "Isotype", "Neotype", "Isoneotype", "Epitype", "Isoepitype", "Syntype", "Lectotype", "Isolectotype")
 ggplot(PDD.types, aes(TypeStatus, fill=specimen_kind)) +
   labs(title = "Types in the PDD collection") +
   labs(x = "'Kind' of type", y = "number of specimens") +
@@ -426,7 +426,7 @@ people.table <- full_join(topCollector, topDeterminer,
                           by = c("StandardCollector" = "StandardDeterminer" ))
 
 
-kable(people.table, digits=0, #"html",
+kable(people.table, digits=0, "pdf",
       #caption = "table of specimen types",
       col.names = c('Person name', 'Collected', 'Determined')
 )%>% #replaces dots in names with spaces
