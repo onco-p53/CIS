@@ -426,7 +426,7 @@ people.table <- full_join(topCollector, topDeterminer,
                           by = c("StandardCollector" = "StandardDeterminer" ))
 
 
-kable(people.table, digits=0, "pdf",
+kable(people.table, digits=0, "html",
       #caption = "table of specimen types",
       col.names = c('Person name', 'Collected', 'Determined')
 )%>% #replaces dots in names with spaces
