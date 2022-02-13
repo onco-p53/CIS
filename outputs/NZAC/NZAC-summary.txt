@@ -1,54 +1,71 @@
-     AccessionNumber                 SpecimenType              FilingNumber   SpecimenSecurityLevel
- NZAC02000110:     1   Envelope            :  2481   Cicadellidae    :12122   Min.   :10.00        
- NZAC02000203:     1   Ethanol 70% Specimen:  9453   Miridae         :11896   1st Qu.:40.00        
- NZAC02000289:     1   Pinned              :111005   Carabidae       : 9797   Median :40.00        
- NZAC02000319:     1   Slide               :  5131   Rhyparochromidae: 8388   Mean   :39.54        
- NZAC02000399:     1                                 Saldidae        : 6983   3rd Qu.:40.00        
- NZAC02001464:     1                                 Lygaeidae       : 5914   Max.   :40.00        
- NZAC02001465:     1                                 Aradidae        : 5437                        
- NZAC02001466:     1                                 Cixiidae        : 4444                        
- NZAC02001467:     1                                 Cicadidae       : 4146                        
- NZAC02001468:     1                                 Hydrophilidae   : 3815                        
- NZAC02001469:     1                                                 : 3453                        
- NZAC02001470:     1                                 Braconidae      : 2763                        
- NZAC02001471:     1                                 Gripopterygidae : 2374                        
- NZAC02001472:     1                                 Ichneumonidae   : 2243                        
- NZAC02001473:     1                                 Delphacidae     : 2076                        
- NZAC02001474:     1                                 Thripidae       : 1832                        
-         SpecimenSecurityLevelText Deaccessioned  IsMissing       LoanStatus        Quantity     
- Collection Staff Only:  1980      false:128050   false:128062         :128062   Min.   :  1.00  
- Public               :126090      true :    20   true :     8   Active:     8   1st Qu.:  1.00  
-                                                                                 Median :  1.00  
-                                                                                 Mean   :  1.16  
-                                                                                 3rd Qu.:  1.00  
-                                                                                 Max.   :128.00  
-                                                                                 NA's   :1378    
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                                                                                                 
-                CreatedBy                       CreatedDate                   UpdatedBy     
- LANDCARE\\cluniel    :  5590   17/06/2003 12:00:00 AM:  2618   LANDCARE\\rhodeb    :92520  
- LANDCARE\\hallgr     :   402   23/06/2003 12:00:00 AM:  1022                       :17072  
- LANDCARE\\hendersonr :   286   30/09/2003 12:00:00 AM:   760   WorkingNamesUpdate  : 8636  
- LANDCARE\\larivierem :     2   11/11/2003 12:00:00 AM:   575   LANDCARE\\cluniel   : 2821  
- LANDCARE\\MalyshevaS :     4   8/05/2003 12:00:00 AM :   565   LANDCARE\\RhodeB    : 1292  
- LANDCARE\\rhodeb     :110588   4/07/2003 12:00:00 AM :   506   LANDCARE\\TassellS  : 1203  
- LANDCARE\\RhodeB     :   636   17/07/2003 12:00:00 AM:   502   Admin CIS-419       : 1165  
- LANDCARE\\schnitzlerr:     1   20/06/2003 12:00:00 AM:   501   LANDCARE\\WardDA    :  762  
- LANDCARE\\tassells   :     7   2/10/2003 12:00:00 AM :   484   Sysadmin - Datafix  :  730  
- LANDCARE\\TassellS   :    40   8/07/2003 12:00:00 AM :   483   Administrator       :  570  
- LANDCARE\\wardda     :     2   14/07/2003 12:00:00 AM:   473   LANDCARE\\tassells  :  332  
- LANDCARE\\WardDA     :   316   18/07/2003 12:00:00 AM:   453   LANDCARE\\hendersonr:  253  
- Migration            : 10196   11/04/2007 12:00:00 AM:   356   LANDCARE\\hallgr    :  213  
-                                6/05/2003 12:00:00 AM :   294   CIS-965             :  160  
-                                11/06/2004 12:00:00 AM:    53   LANDCARE\\LariviereM:  146  
-                                18/06/2004 12:00:00 AM:    53   Admin               :   91  
+     AccessionNumber                 SpecimenType                       FilingNumber  
+ NZAC02000110:     1   Envelope            :  2481   Cicadellidae             :12122  
+ NZAC02000203:     1   Ethanol 70% Specimen:  9453   Miridae                  :11896  
+ NZAC02000289:     1   Pinned              :111005   Carabidae                : 9797  
+ NZAC02000319:     1   Slide               :  5131   Rhyparochromidae         : 8388  
+ NZAC02000399:     1                                 Saldidae                 : 6983  
+ NZAC02001464:     1                                 Lygaeidae                : 5914  
+ NZAC02001465:     1                                 Aradidae                 : 5437  
+ NZAC02001466:     1                                 Cixiidae                 : 4444  
+ NZAC02001467:     1                                 Cicadidae                : 4146  
+ NZAC02001468:     1                                 Hydrophilidae            : 3815  
+ NZAC02001469:     1                                                          : 3453  
+ NZAC02001470:     1                                 Braconidae               : 2763  
+ NZAC02001471:     1                                 Gripopterygidae          : 2374  
+ NZAC02001472:     1                                 Ichneumonidae            : 2243  
+ NZAC02001473:     1                                 Delphacidae              : 2076  
+ NZAC02001474:     1                                 Thripidae                : 1832  
+ SpecimenSecurityLevel         SpecimenSecurityLevelText Deaccessioned  IsMissing     
+ Min.   :10.00         Collection Staff Only:  1980      false:128050   false:128062  
+ 1st Qu.:40.00         Public               :126090      true :    20   true :     8  
+ Median :40.00                                                                        
+ Mean   :39.54                                                                        
+ 3rd Qu.:40.00                                                                        
+ Max.   :40.00                                                                        
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+                                                                                      
+  LoanStatus        Quantity                     CreatedBy      
+       :128062   Min.   :  1.00   LANDCARE\\cluniel    :  5590  
+ Active:     8   1st Qu.:  1.00   LANDCARE\\hallgr     :   402  
+                 Median :  1.00   LANDCARE\\hendersonr :   286  
+                 Mean   :  1.16   LANDCARE\\larivierem :     2  
+                 3rd Qu.:  1.00   LANDCARE\\MalyshevaS :     4  
+                 Max.   :128.00   LANDCARE\\rhodeb     :110588  
+                 NA's   :1378     LANDCARE\\RhodeB     :   636  
+                                  LANDCARE\\schnitzlerr:     1  
+                                  LANDCARE\\tassells   :     7  
+                                  LANDCARE\\TassellS   :    40  
+                                  LANDCARE\\wardda     :     2  
+                                  LANDCARE\\WardDA     :   316  
+                                  Migration            : 10196  
+                                                                
+                                                                
+                                                                
+                 CreatedDate                    UpdatedBy    
+ 17/06/2003 12:00:00 AM:  2618                       :17072  
+ 23/06/2003 12:00:00 AM:  1022   Admin               :   91  
+ 30/09/2003 12:00:00 AM:   760   Admin CIS-419       : 1165  
+ 11/11/2003 12:00:00 AM:   575   Administrator       :  570  
+ 8/05/2003 12:00:00 AM :   565   CIS-965             :  160  
+ 4/07/2003 12:00:00 AM :   506   LANDCARE\\cluniel   : 2821  
+ 17/07/2003 12:00:00 AM:   502   LANDCARE\\gattom    :    1  
+ 20/06/2003 12:00:00 AM:   501   LANDCARE\\hallgr    :  213  
+ 2/10/2003 12:00:00 AM :   484   LANDCARE\\hendersonr:  253  
+ 8/07/2003 12:00:00 AM :   483   LANDCARE\\larivierem:    3  
+ 14/07/2003 12:00:00 AM:   473   LANDCARE\\LariviereM:  146  
+ 18/07/2003 12:00:00 AM:   453   LANDCARE\\MalyshevaS:    3  
+ 11/04/2007 12:00:00 AM:   356   LANDCARE\\rhodeb    :92520  
+ 6/05/2003 12:00:00 AM :   294   LANDCARE\\RhodeB    : 1292  
+ 11/06/2004 12:00:00 AM:    53   LANDCARE\\tassells  :  332  
+ 18/06/2004 12:00:00 AM:    53   LANDCARE\\TassellS  : 1203  
                  UpdatedDate                               TypeStatus    
                        : 12372                                  :116452  
  2/06/2010 5:17:37 PM  :  4700   Allotype                       :   251  
@@ -66,242 +83,327 @@
  27/03/2018 12:00:00 AM:    98   Paratype                       :  7320  
  22/11/2013 4:54:50 PM :    91   Plesiotype                     :     8  
  26/01/2018 12:00:00 AM:    53   Syntype                        :    45  
-                                    VerbatimName                                    TaxonName     
- Miridae                                  :  2010   Targarema stali                      :  2285  
- Anzygina zealandica                      :  1882   Miridae                              :  2010  
- Oliarus oppositus                        :  1589   Anzygina zealandica                  :  1883  
- Targarema stali White, 1878              :  1552   Zeoliarus oppositus                  :  1591  
- Nysius sp.                               :  1483   Nysius                               :  1484  
- Zemacrosaldula australis (White, 1876)   :  1483   Zemacrosaldula australis             :  1483  
- Neadenocoris sp.                         :  1408   Neadenocoris                         :  1426  
- Limotettix awae                          :  1232   Kiwisaldula                          :  1371  
- Zemacrosaldula sp                        :  1042   Lasioglossum (Austrevylaeus) sordidum:  1362  
- Diomocoris maoricus                      :  1004   Limotettix awae                      :  1233  
- Veliidae                                 :   977   Zemacrosaldula                       :  1042  
- Typhlocybinae                            :   959   Diomocoris maoricus                  :  1004  
- Kiwisaldula Larivière & Larochelle, 2016:   940   Veliidae                             :   977  
- Rhypodes sp.                             :   933   Typhlocybinae                        :   959  
- Lasioglossum (Austrevylaeus) sordidum    :   885   Rhypodes                             :   933  
- Corixidae                                :   871   Corixidae                            :   871  
-                                CurrentName                                   SourceNameId   
- Targarema stali                      :  2285                                       :  4288  
- Miridae                              :  2010   12D01C89-4DD6-4B06-BBB7-8EA09A508327:  2285  
- Anzygina zealandica                  :  1883   57F4147F-B946-4AE5-B051-92D7DF04A30D:  2010  
- Zeoliarus oppositus                  :  1591   1A9D398A-C017-4171-AFCB-870E37D985CC:  1883  
- Nysius                               :  1484   4CF3AC1D-427E-4E86-8312-82E9762056F1:  1591  
- Zemacrosaldula australis             :  1483   24210C17-EC89-497C-BF9A-A5053DA1E463:  1484  
- Neadenocoris                         :  1426   6FACF60C-B5CC-4B1D-91D0-38495A93EF38:  1483  
- Kiwisaldula                          :  1371   FAB0E072-9459-4A65-AEA9-C26D6A099CDC:  1426  
- Lasioglossum (Austrevylaeus) sordidum:  1362   A6419B1A-9CAE-4519-8CFA-93640D002421:  1371  
- Limotettix awae                      :  1233   D474EFB9-02AE-48E7-B4D1-A385DE9F5C3F:  1362  
- Zemacrosaldula                       :  1042   FA4D864E-7A6E-4658-A2F0-D004758AF38C:  1233  
- Diomocoris maoricus                  :  1004   B47DA578-10D3-4B2F-A839-98FBE63C8D51:  1042  
- Veliidae                             :   977   83E1E0AE-FD54-4134-9CA4-64BA9D544D11:  1004  
- Typhlocybinae                        :   959   1CA0598A-0E45-4C3C-8A51-425695A24AC6:   977  
- Rhypodes                             :   933   B2C3BA8F-3848-415B-8B82-90F78FA18514:   959  
- Corixidae                            :   871   28220266-C8DC-4036-85A0-0FF731042625:   933  
-              VerbatimDeterminer       StandardDeterminer         Phylum                Class       
-                       :67902                   :70072               :   275               :   525  
- Larivière            : 6850    Larivière, M-C: 8348    Annelida   :   100   Adenophorea :   101  
- W.J. Knight           : 6289    Larivière     : 6870    Arthropoda :127380   Arachnida   :   233  
- M-C Larivière        : 5390    Knight, WJ     : 6341    Mollusca   :    58   Cephalopoda :     4  
- M.B. Malipatil        : 4283    Malipatil, MB  : 4289    Nematoda   :   210   Chilopoda   :     4  
- A. Larochelle         : 3666    Larochelle, A  : 3726    Onychophora:    47   Clitellata  :   100  
- M.-C. Larivière      : 2759    Thorpe, S      : 2929                         Diplopoda   :   259  
- G.B. Monteith         : 2578    Monteith, GB   : 2578                         Gastropoda  :    54  
- S. Thorpe             : 2432    Eyles          : 1670                         Insecta     :125931  
- Eyles                 : 1705    1998, AC       : 1601                         Malacostraca:   730  
- A.C. Eyles, 1998      : 1601    Donovan, BJ    : 1512                         Pauropoda   :     5  
- A.C. Eyles            : 1492    Eyles, AC      : 1491                         Secernentea :   106  
- M-C Larivière 2018   : 1423    2018, M-C      : 1423                         Symphyla    :    18  
- B.J. Donovan          : 1300    1993, M-C      : 1156                                              
- C.F. Butcher          : 1097    Butcher, CF    : 1098                                              
- M.-C. Larivière, 1993:  845    Larochelle     :  831                                              
-              Order                    Family        PartAffected    Substrate       BiostatusDescription
- Hemiptera       :79876   Cicadellidae    :12122           :128069   Mode:logical              :64637    
- Coleoptera      :19525   Miridae         :11896   Oothecae:     1   NA's:128070    Endemic    :37585    
- Hymenoptera     :13815   Carabidae       : 9795                                    Exotic     : 5537    
- Plecoptera      : 3792   Rhyparochromidae: 8388                                    Indigenous :12551    
- Diptera         : 2503   Saldidae        : 6983                                    Non-endemic: 7760    
- Lepidoptera     : 2338   Lygaeidae       : 5914                                                         
- Thysanoptera    : 2046   Aradidae        : 5437                                                         
- Phasmatodea     : 1096   Cixiidae        : 4444                                                         
-                 :  926   Cicadidae       : 4146                                                         
- Amphipoda       :  612   Hydrophilidae   : 3815                                                         
- Phthiraptera    :  402                   : 3567                                                         
- Orthoptera      :  174   Braconidae      : 2763                                                         
- Araneae         :  150   Gripopterygidae : 2374                                                         
- Isopoda         :  118   Ichneumonidae   : 2243                                                         
- Opisthopora     :   97   Delphacidae     : 2076                                                         
- Trichoptera     :   90   Thripidae       : 1832                                                         
-       OccurrenceDescription                                                              VerbatimTaxonName_C2
-                  :64552                                                                            :127641   
- Absent           :   52     elaterid larva                                                         :    20   
- Present          :   31     Sterna fuscata (Charadriiformes; Sternidae)                            :    12   
- Sometimes present:    1     Procelsterna cerulea albivittata (Charadriiformes; Sternidae)          :    10   
- Uncertain        :    5     Pachyptila turtur (Procellariiformes; Procellariidae)                  :     9   
- Wild             :63429     Puffinus griseus (Procellariiformes; Procellariidae)                   :     9   
-                             Daption capense (Procellariiformes; Procellariidae)                    :     8   
-                             Pterodroma neglecta (Procellariiformes; Procellariidae)                :     8   
-                             Puffinus bulleri (Procellariiformes; Procellariidae)                   :     8   
-                             Sterna striata (Charadriiformes; Sternidae)                            :     8   
-                             Stictocarbo punctatus (Pelecaniformes; Phalacrocoracidae)              :     8   
-                             Sula bassana serrator (Pelecaniformes; Sulidae)                        :     8   
-                             parasites on Ambeodontus tristis                                       :     7   
-                             Pelecanoides urinatrix chathamensis (Procellariiformes; Pelecanoididae):     7   
-                             Pelecanoides urinatrix urinatrix (Procellariiformes; Pelecanoididae)   :     7   
-                             Puffinus carneipes hullianus (Procellariiformes; Procellariidae)       :     7   
-             TaxonName_C2    Vernacular_C2                                   HostId               Family_C2     
-                   :128068   Mode:logical                                       :128068                :128068  
- Orthodera         :     1   NA's:128070    81D81ED2-DB4A-4A4B-A2AA-880E25CA6883:     1   Curculionidae:     1  
- Psepholax sulcatus:     1                  AB8C5668-76A1-40BF-B9EF-AE7221FEE065:     1   Mantidae     :     1  
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
-                                                                                                                
- PartAffected_C2   Substrate_C2   CollectionEventContext             CollectionEventMethod
-         :128069   Mode:logical          :58167                                 :98001    
- Oothecae:     1   NA's:128070    Field  :69472          Sweeping               :14653    
-                                  Reared :  423          Malaise trap           : 4920    
-                                  Unknown:    8          Beating                : 3500    
-                                                         Pitfall trap           : 1476    
-                                                         Pan trap               : 1090    
-                                                         To light               :  910    
-                                                         Reared                 :  807    
-                                                         Sifting                :  665    
-                                                         Light trap             :  389    
-                                                         At night               :  364    
-                                                         Beating at night       :  341    
-                                                         Sweeping at night      :  293    
-                                                         Water splashing        :  138    
-                                                         Branch trap            :  120    
-                                                         Suction trap           :  110    
-                                   StandardCollector  CollectionDateISO   CollectorsRefNumber
- LarivièreLarochelle;                      :14493   2010-12-05:  3629              :126788  
-                                            : 7081             :  2998   (3)        :    35  
- Deitz, LL                                  : 6815   1970-01   :   807   (6)        :    28  
- Dugdale, JS                                : 6442   1976-02-27:   708   C21        :    19  
- Butcher, CF                                : 5531   1976-02-16:   595   (5)        :    17  
- Eyles, AC                                  : 4204   1970-11   :   560   OMC04      :    16  
- Townsend, JI                               : 4111   1971-02   :   461   (4)        :    15  
- J.C. Watt                                  : 3957   1980-12-02:   423   K29 087 369:    15  
- Kuschel, G                                 : 3726   1976-02-19:   395   4          :    14  
- Stevens, MNewcomb, R;Drummond, A;Nelson, N;: 3629   1967-02-22:   393   CPP01      :    13  
- Ramsay, GW                                 : 3607   1976-02-22:   368   RL2020     :    13  
- Gourlay, ES                                : 3356   1976-03-02:   365   (1)        :    11  
- Walker, AK                                 : 2723   1970-11-01:   357   RL 1367    :    11  
- Townsend, J.I.                             : 1722   1976-02-11:   333   DSS 084    :    10  
- May, BM                                    : 1398   1998-01-07:   299   SM 32      :    10  
- McBurney, J                                : 1292   1970-01-01:   282   (2)        :     9  
-                              VerbatimCountry                                    Country                 NZAreaCode   
- New Zealand                          :107620   New Zealand                          :126758   Auckland       :13862  
-                                      : 19274                                        :   701   Nelson         :13010  
- NZ                                   :   538   Fiji                                 :    88   Northland      : 8532  
- Fiji                                 :    88   Australia                            :    85   Coromandel     : 7384  
- Australia                            :    83   New Caledonia                        :    72   Buller         : 6392  
- New Caledonia                        :    72   Congo, the Democratic Republic of the:    53   Central Otago  : 5390  
- Congo                                :    37   French Polynesia                     :    31   Mid Canterbury : 4876  
- French Polynesia                     :    31   Cook Islands                         :    23   Bay of Plenty  : 4736  
- Cook Islands                         :    23   Zambia                               :    21   Taupo          : 4582  
- Zambia                               :    21   Chile                                :    20   Wellington     : 4483  
- USA                                  :    17   South Africa                         :    16   Otago Lakes    : 4398  
- Chile                                :    16   India                                :    15   Southland      : 4375  
- South Africa                         :    16   Mexico                               :    13   Westland       : 4251  
- India                                :    15   Niue                                 :    12   Fiordland      : 3983  
- Congo, the Democratic Republic of the:    14   Norfolk Island                       :    11                  : 2898  
- Mexico                               :    13   China                                :    10   Hawkes Bay     : 2888  
-                                         StandardLocality                            VerbatimLocality 
- Little Barrier Island                           :  3820   Little Barrier Island             :  3777  
- Nelson                                          :  1539   Nelson                            :  1481  
-                                                 :  1250   Poor Knights Islands, Tawhiti Rahi:   969  
- Poor Knights Islands, Tawhiti Rahi              :  1105   Stephens Island                   :   685  
- Stephens Island                                 :   875                                     :   673  
- Auckland, Titirangi                             :   701   Hokitika, 1km N                   :   594  
- Hokitika, 1 km N                                :   597   Lewis Pass                        :   588  
- Mt Arthur                                       :   594   Titirangi                         :   583  
- Lewis Pass                                      :   590   Alexandra                         :   581  
- Alexandra                                       :   581   Old Man Range                     :   521  
- Old Man Range                                   :   567   Auckland                          :   463  
- Dun Mountain                                    :   482   Lincoln                           :   418  
- Auckland                                        :   467   Dun Mountain                      :   407  
- Queenstown, Coronet Peak                        :   466   Lake Rotoiti                      :   397  
- Three Kings Islands, Great Island, Castaway Camp:   466   Huapai                            :   394  
- Auckland, Lynfield, Tropicana Drive             :   452   Pureora, Waipapa Reserve          :   392  
-                            MapSheet      MapSheet1         Easting           Northing         DecimalLat    
-                                :111622   Mode:logical   Min.   :2030874   Min.   :5315570   Min.   :-54.94  
- New Zealand Geodetic Datum 2000:     3   NA's:128070    1st Qu.:2219170   1st Qu.:5574322   1st Qu.:-43.63  
- World Geodetic System 1984     : 16445                  Median :2393205   Median :5814430   Median :-41.07  
-                                                         Mean   :2396088   Mean   :5826007   Mean   :-38.05  
-                                                         3rd Qu.:2505285   3rd Qu.:5997530   3rd Qu.:-37.59  
-                                                         Max.   :2976450   Max.   :6684620   Max.   : 48.03  
-                                                         NA's   :124486    NA's   :124486    NA's   :91729   
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-                                                                                                             
-  DecimalLong        Altitude     AltitudeInMeters                                            MicroHabitat  
- Min.   :-178.4          :95890   Min.   :   -70.0                                                  :80965  
- 1st Qu.: 170.6   0      : 1065   1st Qu.:   300.0   Litter                                         : 3103  
- Median : 173.3   100 m  : 1010   Median :   610.0   grass                                          :  954  
- Mean   : 169.1   200 m  :  804   Mean   :   711.1   tussock                                        :  914  
- 3rd Qu.: 175.1   400 m  :  592   3rd Qu.:  1066.8   Moss                                           :  373  
- Max.   : 179.1   300 m  :  469   Max.   :305305.0   legumes                                        :  372  
- NA's   :91729    350 m  :  461   NA's   :99581      Astelia banksii                                :  307  
-                  640m   :  459                      Leptocarpus similis and Plagianthus divaricatus:  232  
-                  250 m  :  451                      rushes                                         :  229  
-                  700 m  :  450                      grasses                                        :  215  
-                  600 m  :  441                      Litter of Senecio stewartiae                   :  210  
-                  570 m  :  419                      moss                                           :  195  
-                  1250 m :  386                      ex Hebe barkeri                                :  188  
-                  150 m  :  354                      Leaf litter                                    :  172  
-                  2000'  :  342                      sedges                                         :  166  
-                  1300 m :  334                      under stones                                   :  160  
-                        Habitat                                      CollectionEventNotes  GenBank       Literature    
-                            :89873                                             :118239    false:128070   false:128004  
- paddock                    :  722   NZAC East Cape Survey 1992-93             :   514                   true :    66  
- grassland                  :  395   Plot10E                                   :   360                                 
- Forest                     :  329   Sweeping, beating                         :   269                                 
- rushes                     :  297   Plot9L                                    :   268                                 
- in shrublands              :  269   Beech Forest Utilization Project          :   265                                 
- Estuary stream             :  209   Plot1L                                    :   248                                 
- Nothofagus forest          :  207   Plot7M                                    :   223                                 
- in bush                    :  202   East Cape Survey 1992-93                  :   190                                 
- wet paddock                :  172   NZAC East Cape Survey 1992-1993           :   186                                 
- on gravelly-sandy riverbank:  148   Plot5I                                    :   167                                 
- under logs                 :  146   Chatham Island Expedition Feb 1967; W67/33:   158                                 
- edge of Nothofagus forest  :  145   Plot8O                                    :   156                                 
- pit trap                   :  144   at night                                  :   132                                 
- Well                       :  141   Gregarious                                :   105                                 
- Nothofagus                 :  138   Chatham Island Expedition Feb 1967; W67/49:   103                                 
-   Images      
- false:126546  
- true :  1524  
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
- [ reached getOption("max.print") -- omitted 4 rows ]
+                                    VerbatimName   
+ Miridae                                  :  2010  
+ Anzygina zealandica                      :  1882  
+ Oliarus oppositus                        :  1589  
+ Targarema stali White, 1878              :  1552  
+ Nysius sp.                               :  1483  
+ Zemacrosaldula australis (White, 1876)   :  1483  
+ Neadenocoris sp.                         :  1408  
+ Limotettix awae                          :  1232  
+ Zemacrosaldula sp                        :  1042  
+ Diomocoris maoricus                      :  1004  
+ Veliidae                                 :   977  
+ Typhlocybinae                            :   959  
+ Kiwisaldula Larivière & Larochelle, 2016:   940  
+ Rhypodes sp.                             :   933  
+ Lasioglossum (Austrevylaeus) sordidum    :   885  
+ Corixidae                                :   871  
+                                 TaxonName     
+ Targarema stali                      :  2285  
+ Miridae                              :  2010  
+ Anzygina zealandica                  :  1883  
+ Zeoliarus oppositus                  :  1591  
+ Nysius                               :  1484  
+ Zemacrosaldula australis             :  1483  
+ Neadenocoris                         :  1426  
+ Kiwisaldula                          :  1371  
+ Lasioglossum (Austrevylaeus) sordidum:  1362  
+ Limotettix awae                      :  1233  
+ Zemacrosaldula                       :  1042  
+ Diomocoris maoricus                  :  1004  
+ Veliidae                             :   977  
+ Typhlocybinae                        :   959  
+ Rhypodes                             :   933  
+ Corixidae                            :   871  
+                                CurrentName                                   SourceNameId  
+ Targarema stali                      :  2285                                       : 4288  
+ Miridae                              :  2010   12D01C89-4DD6-4B06-BBB7-8EA09A508327: 2285  
+ Anzygina zealandica                  :  1883   57F4147F-B946-4AE5-B051-92D7DF04A30D: 2010  
+ Zeoliarus oppositus                  :  1591   1A9D398A-C017-4171-AFCB-870E37D985CC: 1883  
+ Nysius                               :  1484   4CF3AC1D-427E-4E86-8312-82E9762056F1: 1591  
+ Zemacrosaldula australis             :  1483   24210C17-EC89-497C-BF9A-A5053DA1E463: 1484  
+ Neadenocoris                         :  1426   6FACF60C-B5CC-4B1D-91D0-38495A93EF38: 1483  
+ Kiwisaldula                          :  1371   FAB0E072-9459-4A65-AEA9-C26D6A099CDC: 1426  
+ Lasioglossum (Austrevylaeus) sordidum:  1362   A6419B1A-9CAE-4519-8CFA-93640D002421: 1371  
+ Limotettix awae                      :  1233   D474EFB9-02AE-48E7-B4D1-A385DE9F5C3F: 1362  
+ Zemacrosaldula                       :  1042   FA4D864E-7A6E-4658-A2F0-D004758AF38C: 1233  
+ Diomocoris maoricus                  :  1004   B47DA578-10D3-4B2F-A839-98FBE63C8D51: 1042  
+ Veliidae                             :   977   83E1E0AE-FD54-4134-9CA4-64BA9D544D11: 1004  
+ Typhlocybinae                        :   959   1CA0598A-0E45-4C3C-8A51-425695A24AC6:  977  
+ Rhypodes                             :   933   B2C3BA8F-3848-415B-8B82-90F78FA18514:  959  
+ Corixidae                            :   871   28220266-C8DC-4036-85A0-0FF731042625:  933  
+              VerbatimDeterminer       StandardDeterminer         Phylum      
+                       :67902                   :70072               :   275  
+ Larivière            : 6850    Larivière, M-C: 8348    Annelida   :   100  
+ W.J. Knight           : 6289    Larivière     : 6870    Arthropoda :127380  
+ M-C Larivière        : 5390    Knight, WJ     : 6341    Mollusca   :    58  
+ M.B. Malipatil        : 4283    Malipatil, MB  : 4289    Nematoda   :   210  
+ A. Larochelle         : 3666    Larochelle, A  : 3726    Onychophora:    47  
+ M.-C. Larivière      : 2759    Thorpe, S      : 2929                        
+ G.B. Monteith         : 2578    Monteith, GB   : 2578                        
+ S. Thorpe             : 2432    Eyles          : 1670                        
+ Eyles                 : 1705    1998, AC       : 1601                        
+ A.C. Eyles, 1998      : 1601    Donovan, BJ    : 1512                        
+ A.C. Eyles            : 1492    Eyles, AC      : 1491                        
+ M-C Larivière 2018   : 1423    2018, M-C      : 1423                        
+ B.J. Donovan          : 1300    1993, M-C      : 1156                        
+ C.F. Butcher          : 1097    Butcher, CF    : 1098                        
+ M.-C. Larivière, 1993:  845    Larochelle     :  831                        
+          Class                     Order                    Family        PartAffected   
+             :   525   Hemiptera       :79876   Cicadellidae    :12122           :128069  
+ Adenophorea :   101   Coleoptera      :19525   Miridae         :11896   Oothecae:     1  
+ Arachnida   :   233   Hymenoptera     :13815   Carabidae       : 9795                    
+ Cephalopoda :     4   Plecoptera      : 3792   Rhyparochromidae: 8388                    
+ Chilopoda   :     4   Diptera         : 2503   Saldidae        : 6983                    
+ Clitellata  :   100   Lepidoptera     : 2338   Lygaeidae       : 5914                    
+ Diplopoda   :   259   Thysanoptera    : 2046   Aradidae        : 5437                    
+ Gastropoda  :    54   Phasmatodea     : 1096   Cixiidae        : 4444                    
+ Insecta     :125931                   :  926   Cicadidae       : 4146                    
+ Malacostraca:   730   Amphipoda       :  612   Hydrophilidae   : 3815                    
+ Pauropoda   :     5   Phthiraptera    :  402                   : 3567                    
+ Secernentea :   106   Orthoptera      :  174   Braconidae      : 2763                    
+ Symphyla    :    18   Araneae         :  150   Gripopterygidae : 2374                    
+                       Isopoda         :  118   Ichneumonidae   : 2243                    
+                       Opisthopora     :   97   Delphacidae     : 2076                    
+                       Trichoptera     :   90   Thripidae       : 1832                    
+ Substrate       BiostatusDescription       OccurrenceDescription
+ Mode:logical              :64637                      :64552    
+ NA's:128070    Endemic    :37585     Absent           :   52    
+                Exotic     : 5537     Present          :   31    
+                Indigenous :12551     Sometimes present:    1    
+                Non-endemic: 7760     Uncertain        :    5    
+                                      Wild             :63429    
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                                 
+                                                              VerbatimTaxonName_C2
+                                                                        :127641   
+ elaterid larva                                                         :    20   
+ Sterna fuscata (Charadriiformes; Sternidae)                            :    12   
+ Procelsterna cerulea albivittata (Charadriiformes; Sternidae)          :    10   
+ Pachyptila turtur (Procellariiformes; Procellariidae)                  :     9   
+ Puffinus griseus (Procellariiformes; Procellariidae)                   :     9   
+ Daption capense (Procellariiformes; Procellariidae)                    :     8   
+ Pterodroma neglecta (Procellariiformes; Procellariidae)                :     8   
+ Puffinus bulleri (Procellariiformes; Procellariidae)                   :     8   
+ Sterna striata (Charadriiformes; Sternidae)                            :     8   
+ Stictocarbo punctatus (Pelecaniformes; Phalacrocoracidae)              :     8   
+ Sula bassana serrator (Pelecaniformes; Sulidae)                        :     8   
+ parasites on Ambeodontus tristis                                       :     7   
+ Pelecanoides urinatrix chathamensis (Procellariiformes; Pelecanoididae):     7   
+ Pelecanoides urinatrix urinatrix (Procellariiformes; Pelecanoididae)   :     7   
+ Puffinus carneipes hullianus (Procellariiformes; Procellariidae)       :     7   
+             TaxonName_C2    Vernacular_C2                                   HostId      
+                   :128068   Mode:logical                                       :128068  
+ Orthodera         :     1   NA's:128070    81D81ED2-DB4A-4A4B-A2AA-880E25CA6883:     1  
+ Psepholax sulcatus:     1                  AB8C5668-76A1-40BF-B9EF-AE7221FEE065:     1  
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+                                                                                         
+         Family_C2      PartAffected_C2   Substrate_C2   CollectionEventContext
+              :128068           :128069   Mode:logical          :58167         
+ Curculionidae:     1   Oothecae:     1   NA's:128070    Field  :69472         
+ Mantidae     :     1                                    Reared :  423         
+                                                         Unknown:    8         
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+                                                                               
+             CollectionEventMethod                                   StandardCollector
+                        :98001     LarivièreLarochelle;                      :14493  
+ Sweeping               :14653                                                : 7081  
+ Malaise trap           : 4920     Deitz, LL                                  : 6815  
+ Beating                : 3500     Dugdale, JS                                : 6442  
+ Pitfall trap           : 1476     Butcher, CF                                : 5531  
+ Pan trap               : 1090     Eyles, AC                                  : 4204  
+ To light               :  910     Townsend, JI                               : 4111  
+ Reared                 :  807     J.C. Watt                                  : 3957  
+ Sifting                :  665     Kuschel, G                                 : 3726  
+ Light trap             :  389     Stevens, MNewcomb, R;Drummond, A;Nelson, N;: 3629  
+ At night               :  364     Ramsay, GW                                 : 3607  
+ Beating at night       :  341     Gourlay, ES                                : 3356  
+ Sweeping at night      :  293     Walker, AK                                 : 2723  
+ Water splashing        :  138     Townsend, J.I.                             : 1722  
+ Branch trap            :  120     May, BM                                    : 1398  
+ Suction trap           :  110     McBurney, J                                : 1292  
+  CollectionDateISO   CollectorsRefNumber                              VerbatimCountry  
+ 2010-12-05:  3629              :126788   New Zealand                          :107620  
+           :  2998   (3)        :    35                                        : 19274  
+ 1970-01   :   807   (6)        :    28   NZ                                   :   538  
+ 1976-02-27:   708   C21        :    19   Fiji                                 :    88  
+ 1976-02-16:   595   (5)        :    17   Australia                            :    83  
+ 1970-11   :   560   OMC04      :    16   New Caledonia                        :    72  
+ 1971-02   :   461   (4)        :    15   Congo                                :    37  
+ 1980-12-02:   423   K29 087 369:    15   French Polynesia                     :    31  
+ 1976-02-19:   395   4          :    14   Cook Islands                         :    23  
+ 1967-02-22:   393   CPP01      :    13   Zambia                               :    21  
+ 1976-02-22:   368   RL2020     :    13   USA                                  :    17  
+ 1976-03-02:   365   (1)        :    11   Chile                                :    16  
+ 1970-11-01:   357   RL 1367    :    11   South Africa                         :    16  
+ 1976-02-11:   333   DSS 084    :    10   India                                :    15  
+ 1998-01-07:   299   SM 32      :    10   Congo, the Democratic Republic of the:    14  
+ 1970-01-01:   282   (2)        :     9   Mexico                               :    13  
+                                  Country                    NZAreaCode   
+ New Zealand                          :126758   Auckland          :13862  
+                                      :   701   Nelson            :13010  
+ Fiji                                 :    88   Northland         : 8532  
+ Australia                            :    85   Coromandel        : 7384  
+ New Caledonia                        :    72   Buller            : 6392  
+ Congo, the Democratic Republic of the:    53   Central Otago     : 5390  
+ French Polynesia                     :    31   Mid Canterbury    : 4876  
+ Cook Islands                         :    23   Bay of Plenty     : 4736  
+ Zambia                               :    21   Taupo             : 4582  
+ Chile                                :    20   Wellington        : 4483  
+ South Africa                         :    16   Otago Lakes       : 4398  
+ India                                :    15   Southland         : 4375  
+ Mexico                               :    13   Westland          : 4251  
+ Niue                                 :    12   Fiordland         : 3983  
+ Norfolk Island                       :    11                     : 2898  
+ China                                :    10   Hawkes Bay        : 2888  
+                                         StandardLocality 
+ Little Barrier Island                           :  3820  
+ Nelson                                          :  1539  
+                                                 :  1250  
+ Poor Knights Islands, Tawhiti Rahi              :  1105  
+ Stephens Island                                 :   875  
+ Auckland, Titirangi                             :   701  
+ Hokitika, 1 km N                                :   597  
+ Mt Arthur                                       :   594  
+ Lewis Pass                                      :   590  
+ Alexandra                                       :   581  
+ Old Man Range                                   :   567  
+ Dun Mountain                                    :   482  
+ Auckland                                        :   467  
+ Queenstown, Coronet Peak                        :   466  
+ Three Kings Islands, Great Island, Castaway Camp:   466  
+ Auckland, Lynfield, Tropicana Drive             :   452  
+                           VerbatimLocality                             MapSheet     
+ Little Barrier Island             :  3777                                  :111622  
+ Nelson                            :  1481   New Zealand Geodetic Datum 2000:     3  
+ Poor Knights Islands, Tawhiti Rahi:   969   World Geodetic System 1984     : 16445  
+ Stephens Island                   :   685                                           
+                                   :   673                                           
+ Hokitika, 1km N                   :   594                                           
+ Lewis Pass                        :   588                                           
+ Titirangi                         :   583                                           
+ Alexandra                         :   581                                           
+ Old Man Range                     :   521                                           
+ Auckland                          :   463                                           
+ Lincoln                           :   418                                           
+ Dun Mountain                      :   407                                           
+ Lake Rotoiti                      :   397                                           
+ Huapai                            :   394                                           
+ Pureora, Waipapa Reserve          :   392                                           
+ MapSheet1         Easting           Northing         DecimalLat      DecimalLong    
+ Mode:logical   Min.   :2030874   Min.   :5315570   Min.   :-54.94   Min.   :-178.4  
+ NA's:128070    1st Qu.:2219170   1st Qu.:5574322   1st Qu.:-43.63   1st Qu.: 170.6  
+                Median :2393205   Median :5814430   Median :-41.07   Median : 173.3  
+                Mean   :2396088   Mean   :5826007   Mean   :-38.05   Mean   : 169.1  
+                3rd Qu.:2505285   3rd Qu.:5997530   3rd Qu.:-37.59   3rd Qu.: 175.1  
+                Max.   :2976450   Max.   :6684620   Max.   : 48.03   Max.   : 179.1  
+                NA's   :124486    NA's   :124486    NA's   :91729    NA's   :91729   
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+                                                                                     
+    Altitude     AltitudeInMeters                                            MicroHabitat  
+        :95890   Min.   :   -70.0                                                  :80965  
+ 0      : 1065   1st Qu.:   300.0   Litter                                         : 3103  
+ 100 m  : 1010   Median :   610.0   grass                                          :  954  
+ 200 m  :  804   Mean   :   711.1   tussock                                        :  914  
+ 400 m  :  592   3rd Qu.:  1066.8   Moss                                           :  373  
+ 300 m  :  469   Max.   :305305.0   legumes                                        :  372  
+ 350 m  :  461   NA's   :99581      Astelia banksii                                :  307  
+ 640m   :  459                      Leptocarpus similis and Plagianthus divaricatus:  232  
+ 250 m  :  451                      rushes                                         :  229  
+ 700 m  :  450                      grasses                                        :  215  
+ 600 m  :  441                      Litter of Senecio stewartiae                   :  210  
+ 570 m  :  419                      moss                                           :  195  
+ 1250 m :  386                      ex Hebe barkeri                                :  188  
+ 150 m  :  354                      Leaf litter                                    :  172  
+ 2000'  :  342                      sedges                                         :  166  
+ 1300 m :  334                      under stones                                   :  160  
+                                           Habitat     
+                                               :89873  
+ paddock                                       :  722  
+ grassland                                     :  395  
+ Forest                                        :  329  
+ rushes                                        :  297  
+ in shrublands                                 :  269  
+ Estuary stream                                :  209  
+ Nothofagus forest                             :  207  
+ in bush                                       :  202  
+ wet paddock                                   :  172  
+ on gravelly-sandy riverbank                   :  148  
+ under logs                                    :  146  
+ edge of Nothofagus forest                     :  145  
+ pit trap                                      :  144  
+ Well                                          :  141  
+ Nothofagus                                    :  138  
+                                             CollectionEventNotes  GenBank      
+                                                       :118239    false:128070  
+ NZAC East Cape Survey 1992-93                         :   514                  
+ Plot10E                                               :   360                  
+ Sweeping, beating                                     :   269                  
+ Plot9L                                                :   268                  
+ Beech Forest Utilization Project                      :   265                  
+ Plot1L                                                :   248                  
+ Plot7M                                                :   223                  
+ East Cape Survey 1992-93                              :   190                  
+ NZAC East Cape Survey 1992-1993                       :   186                  
+ Plot5I                                                :   167                  
+ Chatham Island Expedition Feb 1967; W67/33            :   158                  
+ Plot8O                                                :   156                  
+ at night                                              :   132                  
+ Gregarious                                            :   105                  
+ Chatham Island Expedition Feb 1967; W67/49            :   103                  
+ Literature       Images      
+ false:128004   false:126546  
+ true :    66   true :  1524  
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+ [ reached getOption("max.print") -- omitted 9 rows ]
