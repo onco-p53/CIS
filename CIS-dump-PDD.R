@@ -607,6 +607,22 @@ ggsave(drp, file='PDD-collection-dates-collector.png', width=15, height=10)
 
 #============Over months================
 
+PDD.Wellington.df <- subset(PDD.NZ.df,(NZAreaCode == "Wellington"))
+glimpse(PDD.Wellington.df)
+
+#new month PDD specimen collected (in NZ)
+month.collected <- ymd(PDD.Wellington.df$CollectionDateISO, truncated = 1)
+mergemonths <- floor_date(month.collected, unit = "month")
+ggplot(PDD.Wellington.df, aes(month(mergemonths, label = TRUE), fill = specimen_kind)) +
+  labs(title = "Collection month of PDD specimens from Wellington") + 
+  labs(x = "Month of Collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw() +
+  geom_bar() + 
+  scale_x_discrete(na.translate = FALSE)  # this removes NAs
+ggsave(file='./outputs/PDD/PDD-Wellington-month.png', width=8, height=5)
+
+
 #Collection month of NZ PDD specimens
 attach(PDD.NZ.df) 
 require(ggplot2)
