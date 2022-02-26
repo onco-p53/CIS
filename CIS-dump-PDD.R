@@ -98,6 +98,13 @@ PDD.string.factors <- read.csv("PDD-export-8-feb-2022.csv",
   capture.output(file='./outputs/PDD/PDD-summary.txt')
 
 
+#does this work:
+output<-capture.output(summary(PDD.string.factors), file=NULL,append=FALSE)
+output_df <-as.data.frame(output)
+
+glimpse(output_df)
+
+
 #Just do these as a big table??
 
 # counts the number of unique values per column

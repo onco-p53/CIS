@@ -9,6 +9,8 @@ library(RColorBrewer)
 #library(svglite)
 library(skimr)
 library(janitor)
+library(sf) #Simple feature
+library(ggspatial) #make maps fancy
 
 #versions
 R.version.string
@@ -19,6 +21,25 @@ R.version.string
 ICMP.as.imported.df <- read_csv("ICMP-export-8-feb-2022.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
+
+#============Subset and massage the Data================
+
+
+#tidyverse way of sub setting - remove viruses and deaccessioned cultures
+ICMP.df <- ICMP.as.imported.df %>%
+  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+  filter(SpecimenType == "Bacterial Culture" | 
+           SpecimenType == "Chromist Culture" | 
+           SpecimenType == "Fungal Culture" | 
+           SpecimenType == "Yeast Culture") %>%
+  filter(Deaccessioned == "FALSE") %>%
+  glimpse()
+
+ICMP.NZ.df <- ICMP.df %>%
+  filter(Country == "New Zealand")
+
+ICMP.types <- ICMP.df %>%
+  filter(TypeStatus != "")
 
 
 #============Check imported data for issues================
@@ -62,24 +83,7 @@ ICMP.chromist %>%
   filter(Phylum == "Ascomycota" | Phylum == "Basidiomycota")
 
 
-#============Subset and massage the Data================
 
-
-#tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.df <- ICMP.as.imported.df %>%
-  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
-  filter(SpecimenType == "Bacterial Culture" | 
-           SpecimenType == "Chromist Culture" | 
-           SpecimenType == "Fungal Culture" | 
-           SpecimenType == "Yeast Culture") %>%
-  filter(Deaccessioned == "FALSE") %>%
-  glimpse()
-
-ICMP.NZ.df <- ICMP.df %>%
-  filter(Country == "New Zealand")
-
-ICMP.types <- ICMP.df %>%
-  filter(TypeStatus != "")
   
 
 #============Data quality checks================
@@ -1123,5 +1127,42 @@ ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   geom_histogram(binwidth=365.25, show.legend = TRUE) +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
 ggsave(file='./outputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
+
+
+
+# magic mushrooms -----
+
+# Loading in data 
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/nz-coastlines-topo-150k/nz-coastlines-topo-150k.shp", quiet = FALSE) %>%
+  st_transform(2193) #Setting map projection - NZGD2000
+
+#Transforming to an SF object
+Psilocybe.sf <- ICMP.df %>%
+  filter(str_detect(CurrentName, "^Psilocybe")) %>%
+  filter(OccurrenceDescription == "Present") %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
+
+#Plotting - takes a second to execute
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = Psilocybe.sf, aes(colour = CurrentName),
+          size = 2, alpha = 0.8, show.legend = TRUE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal() +
+  labs(title = "Collection location of ICMP Psilocybe cultures",
+       caption = "Bevan Weir - 25 Feb 2022 - CC BY 4.0"
+       
+  )
+#this is too slow so need to build in a delay
+ggsave(file='./outputs/ICMP/Psilocybe-ICMP.pdf', width=8, height=10)
+
 
 

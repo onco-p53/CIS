@@ -202,74 +202,57 @@
  9B4178FB-E7EE-4C1A-9956-7FD571F4357E:  726   Fagaceae     : 1254  
  F1F09B4D-6B35-41F8-93BF-6D53C3A3EFDA:  676   Salicaceae   : 1254  
  0CE8F69B-9BDC-469C-A5FD-CC59B401D738:  596   Ericaceae    : 1228  
-                             PartAffected_C2  
-                                     :109000  
- ascocarp in bark of dead twig       :     1  
- bark                                :     1  
- base of stem of frond               :     1  
- damaged seeds                       :     1  
- fallen leaf                         :     1  
- fallen log                          :     6  
- fruit rot                           :     1  
- growing inside hollow of willow tree:     1  
- leaf                                :     1  
- leaf spot                           :     1  
- leaves                              :     1  
- living leaf                         :     1  
- on bark of fallen branch            :     1  
- root rot                            :     1  
- seed                                :     1  
-                                                 Substrate_C2    CollectionEventContext CollectionEventMethod
-                                                       :108989             : 4133       Mode:logical         
- leaf                                                  :     3   Cultivated:    9       NA's:109024          
- leaves                                                :     3   Field     :10354                            
- soil                                                  :     3   Reared    :   32                            
- wood                                                  :     3   Unknown   :94496                            
- dead wood                                             :     2                                               
- bark                                                  :     1                                               
- climbing on Coprosma                                  :     1                                               
- dead leaf                                             :     1                                               
- Dead stump                                            :     1                                               
- dead tree                                             :     1                                               
- decort wood                                           :     1                                               
- decorticated decaying branch, approx. 2 cm in diameter:     1                                               
- fallen branch                                         :     1                                               
- fallen cones                                          :     1                                               
- living leaf                                           :     1                                               
-         StandardCollector  CollectionDateISO  CollectorsRefNumber                       VerbatimCountry 
- Dingley, JM      : 8171             :  2239          :70279       New Zealand                   :80196  
- McKenzie, EHC    : 4857   1956-04   :   221   -      :  131       Australia                     : 2962  
- Cooper, JA       : 4684   1955-04   :   202   EHCM 18:   18       USA                           : 2832  
- Johnston, PR     : 3972   2007-05-10:   187   EHCM 1 :   16       Germany                       : 2658  
-                  : 2528   1928-01   :   186   EHCM 10:   15       United Kingdom                : 2344  
- Beever, RE       : 2383   2010-05-03:   184   EHCM 16:   15       Canada                        : 1610  
- Austwick, PKC    : 2301   2008-05-13:   172   EHCM 40:   14       Austria                       : 1228  
- Cunningham, GH   : 2072   2008-05-15:   167   EHCM 14:   13       Fiji                          : 1101  
- Leonard, P       : 1985   2004-05-14:   165   EHCM 38:   13       Cook Islands                  :  999  
- McNabb, RFR      : 1967   2009-05-14:   160   EHCM 49:   13       Solomon Islands               :  886  
- Stephenson, SL   : 1285   2007-05-08:   158   EHCM 62:   13       Vanuatu                       :  883  
- Latch, GCM       : 1153   1946-11   :   157   EHCM 19:   12       Samoa                         :  782  
- Shirley, C       : 1096   1954-02   :   157   EHCM 21:   12       India                         :  736  
- Siegel, N        : 1010   1954-11   :   152   EHCM 26:   12       Tonga                         :  702  
- Taylor, GM       : 1002   2018-05-07:   151   EHCM 27:   12       Federated States of Micronesia:  458  
- Hughes, SJ       :  971   2018-05-08:   149   EHCM 35:   12       Czechoslovakia                :  457  
-                            Country                 NZAreaCode   
- New Zealand                    :80203                   :29504  
- United States                  : 3302   Auckland        :19703  
- Australia                      : 2967   Mid Canterbury  : 6064  
- Germany                        : 2676   Wellington      : 5867  
- United Kingdom                 : 2345   Nelson          : 5095  
- Canada                         : 1610   Taupo           : 4293  
- Austria                        : 1228   Bay of Plenty   : 3944  
- Fiji                           : 1101   Northland       : 3932  
- Cook Islands                   : 1000   Buller          : 3804  
- Solomon Islands                :  886   Coromandel      : 2710  
- Vanuatu                        :  883   Westland        : 2308  
- Samoa                          :  782   Waikato         : 2176  
- India                          :  736   Gisborne        : 2073  
- Tonga                          :  703   North Canterbury: 1976  
- Micronesia, Federated States Of:  458   Southland       : 1751  
- Czechoslovakia                 :  453   Fiordland       : 1529  
+                             PartAffected_C2                                                   Substrate_C2   
+                                     :109000                                                         :108989  
+ ascocarp in bark of dead twig       :     1   leaf                                                  :     3  
+ bark                                :     1   leaves                                                :     3  
+ base of stem of frond               :     1   soil                                                  :     3  
+ damaged seeds                       :     1   wood                                                  :     3  
+ fallen leaf                         :     1   dead wood                                             :     2  
+ fallen log                          :     6   bark                                                  :     1  
+ fruit rot                           :     1   climbing on Coprosma                                  :     1  
+ growing inside hollow of willow tree:     1   dead leaf                                             :     1  
+ leaf                                :     1   Dead stump                                            :     1  
+ leaf spot                           :     1   dead tree                                             :     1  
+ leaves                              :     1   decort wood                                           :     1  
+ living leaf                         :     1   decorticated decaying branch, approx. 2 cm in diameter:     1  
+ on bark of fallen branch            :     1   fallen branch                                         :     1  
+ root rot                            :     1   fallen cones                                          :     1  
+ seed                                :     1   living leaf                                           :     1  
+ CollectionEventContext CollectionEventMethod         StandardCollector  CollectionDateISO  CollectorsRefNumber
+           : 4133       Mode:logical          Dingley, JM      : 8171             :  2239          :70279      
+ Cultivated:    9       NA's:109024           McKenzie, EHC    : 4857   1956-04   :   221   -      :  131      
+ Field     :10354                             Cooper, JA       : 4684   1955-04   :   202   EHCM 18:   18      
+ Reared    :   32                             Johnston, PR     : 3972   2007-05-10:   187   EHCM 1 :   16      
+ Unknown   :94496                                              : 2528   1928-01   :   186   EHCM 10:   15      
+                                              Beever, RE       : 2383   2010-05-03:   184   EHCM 16:   15      
+                                              Austwick, PKC    : 2301   2008-05-13:   172   EHCM 40:   14      
+                                              Cunningham, GH   : 2072   2008-05-15:   167   EHCM 14:   13      
+                                              Leonard, P       : 1985   2004-05-14:   165   EHCM 38:   13      
+                                              McNabb, RFR      : 1967   2009-05-14:   160   EHCM 49:   13      
+                                              Stephenson, SL   : 1285   2007-05-08:   158   EHCM 62:   13      
+                                              Latch, GCM       : 1153   1946-11   :   157   EHCM 19:   12      
+                                              Shirley, C       : 1096   1954-02   :   157   EHCM 21:   12      
+                                              Siegel, N        : 1010   1954-11   :   152   EHCM 26:   12      
+                                              Taylor, GM       : 1002   2018-05-07:   151   EHCM 27:   12      
+                                              Hughes, SJ       :  971   2018-05-08:   149   EHCM 35:   12      
+                       VerbatimCountry                             Country                 NZAreaCode   
+ New Zealand                   :80196   New Zealand                    :80203                   :29504  
+ Australia                     : 2962   United States                  : 3302   Auckland        :19703  
+ USA                           : 2832   Australia                      : 2967   Mid Canterbury  : 6064  
+ Germany                       : 2658   Germany                        : 2676   Wellington      : 5867  
+ United Kingdom                : 2344   United Kingdom                 : 2345   Nelson          : 5095  
+ Canada                        : 1610   Canada                         : 1610   Taupo           : 4293  
+ Austria                       : 1228   Austria                        : 1228   Bay of Plenty   : 3944  
+ Fiji                          : 1101   Fiji                           : 1101   Northland       : 3932  
+ Cook Islands                  :  999   Cook Islands                   : 1000   Buller          : 3804  
+ Solomon Islands               :  886   Solomon Islands                :  886   Coromandel      : 2710  
+ Vanuatu                       :  883   Vanuatu                        :  883   Westland        : 2308  
+ Samoa                         :  782   Samoa                          :  782   Waikato         : 2176  
+ India                         :  736   India                          :  736   Gisborne        : 2073  
+ Tonga                         :  702   Tonga                          :  703   North Canterbury: 1976  
+ Federated States of Micronesia:  458   Micronesia, Federated States Of:  458   Southland       : 1751  
+ Czechoslovakia                :  457   Czechoslovakia                 :  453   Fiordland       : 1529  
                                     StandardLocality                                    VerbatimLocality
                                             :11795                                              : 3151  
  Mt Albert Research Centre                  :  677   Mt Albert Research Centre                  :  675  
@@ -355,38 +338,38 @@
  Nothofagus-broadleaved forest      :  249  
  Miscellaneous                      :  245  
  Wetland communities                :  231  
-                                                                            CollectionEventNotes
-                                                                                      :108755   
- S side of tree 0.75m away from tree                                                  :    21   
- W side of tree - 0.5m away from tree                                                 :    19   
- BioBlitz 2012                                                                        :    17   
- Uncommon                                                                             :    15   
- SE side of tree - 0.25m away from tree                                               :    11   
- E side of tree - 0.5m away from tree                                                 :     8   
- N side of tree - 1m away from tree                                                   :     7   
- Moist Chamber Incubated                                                              :     6   
- NE side of tree - 0.5m away from tree                                                :     5   
- same as 78                                                                           :     4   
- Locally common                                                                       :     3   
- many other species present including grasses ferns and tree-ferns                    :     2   
- MTB 3032/3.3                                                                         :     2   
- MTB 3132/1.1                                                                         :     2   
- MTB 4736/4                                                                           :     2   
-  GenBank       Literature       Images     
- false:105816   false:105120   false:92257  
- true :  3208   true :  3904   true :16767  
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
+                                                                            CollectionEventNotes  GenBank      
+                                                                                      :108755    false:105816  
+ S side of tree 0.75m away from tree                                                  :    21    true :  3208  
+ W side of tree - 0.5m away from tree                                                 :    19                  
+ BioBlitz 2012                                                                        :    17                  
+ Uncommon                                                                             :    15                  
+ SE side of tree - 0.25m away from tree                                               :    11                  
+ E side of tree - 0.5m away from tree                                                 :     8                  
+ N side of tree - 1m away from tree                                                   :     7                  
+ Moist Chamber Incubated                                                              :     6                  
+ NE side of tree - 0.5m away from tree                                                :     5                  
+ same as 78                                                                           :     4                  
+ Locally common                                                                       :     3                  
+ many other species present including grasses ferns and tree-ferns                    :     2                  
+ MTB 3032/3.3                                                                         :     2                  
+ MTB 3132/1.1                                                                         :     2                  
+ MTB 4736/4                                                                           :     2                  
+ Literature       Images     
+ false:105120   false:92257  
+ true :  3904   true :16767  
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
+                             
  [ reached getOption("max.print") -- omitted 9 rows ]

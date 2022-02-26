@@ -381,7 +381,6 @@ less in winter, more in summer trend.
 ```{r NZ collected month chart, echo=TRUE, message=FALSE, warning=FALSE}
 
 #new month PDD specimen collected (in NZ)
-attach(PDD.NZ.df) 
 month.collected <- ymd(PDD.NZ.df$CollectionDateISO, truncated = 1)
 mergemonths <- floor_date(month.collected, unit = "month")
 ggplot(PDD.NZ.df, aes(month(mergemonths, label = TRUE), fill = specimen_kind)) +
