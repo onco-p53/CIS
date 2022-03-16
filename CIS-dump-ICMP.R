@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-8-feb-2022.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-8-mar-2022.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-8-feb-2022.csv",
+ICMP.string.factors <- read.csv("ICMP-export-8-mar-2022.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -877,6 +877,51 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 #will have to melt and add the fudge factor somehow to only Chatams ones
 
 
+library(leaflet)
+
+#factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
+
+factpal <- colorFactor(palette = "Dark2", domain = ICMP.df$SpecimenType)
+
+#Using leaflet
+ICMP.NZ.leaf <- leaflet(ICMP.NZ.df) %>%
+  addTiles() %>% 
+  addCircleMarkers(lng = ~DecimalLong, 
+                   lat = ~DecimalLat, 
+                   popup = ~AccessionNumber,
+                   label = ~CurrentName,
+                   color = ~factpal(SpecimenType))
+
+#Opening up viewer
+ICMP.NZ.leaf
+
+
+
+library(leaflet)
+
+factpal <- colorFactor(topo.colors(19), ICMP.NZ.df$NZAreaCode)
+#factpal <- colorFactor(palette = "Dark2", domain = ICMP.NZ.df$NZAreaCode)
+
+
+
+ICMP.NZ.df <- ICMP.NZ.df %>%
+filter(NZAreaCode == "Taranaki")
+  
+  
+#Using leaflet
+ICMP.crosby.leaf <- leaflet(ICMP.NZ.df) %>%
+  addTiles() %>% 
+  addCircleMarkers(lng = ~DecimalLong, 
+                   lat = ~DecimalLat, 
+                   popup = ~AccessionNumber,
+                   label = ~CurrentName,
+                   color = blues9)
+
+#Opening up viewer
+ICMP.crosby.leaf
+
+
+
 #======World Maps========
 
 world <- map_data("world")
@@ -1158,11 +1203,58 @@ ggplot() +
                          style = north_arrow_fancy_orienteering) +
   theme_minimal() +
   labs(title = "Collection location of ICMP Psilocybe cultures",
-       caption = "Bevan Weir - 25 Feb 2022 - CC BY 4.0"
-       
-  )
+       caption = "Bevan Weir - 25 Feb 2022 - CC BY 4.0")
+
 #this is too slow so need to build in a delay
 ggsave(file='./outputs/ICMP/Psilocybe-ICMP.pdf', width=8, height=10)
+
+
+#now need to filter and make a csv for sharing
+
+ICMP.df %>%
+  filter(Country == "New Zealand") %>%
+  select("AccessionNumber",
+         "StandardCollector",
+         "CollectionDateISO",
+         "CurrentName",
+         "VerbatimLocality",
+         "DecimalLat", 
+         "DecimalLong", 
+         "BiostatusDescription", 
+         "OccurrenceDescription") %>%
+  filter(str_detect(CurrentName, "^Psilocybe")) %>%
+  write_csv(file='./outputs/ICMP/NZPsilocybe.csv')
+
+
+## leaflet html map -----------------------------------------------------------
+
+library(leaflet)
+
+#Reading in csv data
+magic.df <- read.csv("./outputs/ICMP/NZPsilocybe.csv")
+
+#factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
+
+factpal <- colorFactor(palette = "Dark2", domain = magic.df$CurrentName)
+
+#To show
+head(magic.df)
+
+#Using leaflet
+magic.leaf <- leaflet(magic.df) %>%
+  addTiles() %>% 
+  addCircleMarkers(lng = ~DecimalLong, 
+                   lat = ~DecimalLat, 
+                   popup = ~AccessionNumber,
+                   label = ~CurrentName,
+                   color = ~factpal(CurrentName))
+
+#Opening up viewer
+magic.leaf
+
+#use save as a webpage function in Rstudio to save
+
+psilocybe-html-map.html
 
 
 

@@ -822,6 +822,33 @@ mp <- ggplot() +   mapWorld
 mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3) 
 mp
 
+## leaflet html map -----------------------------------------------------------
+
+library(leaflet)
+
+#factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
+
+factpal <- colorFactor(palette = "Dark2", domain = PDD.df$specimen_kind)
+
+#Using leaflet
+PDD.NZ.leaf <- leaflet(PDD.NZ.df) %>%
+  addTiles() %>% 
+  addCircleMarkers(lng = ~DecimalLong, 
+                   lat = ~DecimalLat, 
+                   popup = ~AccessionNumber,
+                   label = ~CurrentName,
+                   color = ~factpal(specimen_kind))
+
+#Opening up viewer
+PDD.NZ.leaf
+
+
+
+
+
+
+
+
 #======Habitat========
 
 #too many to work
