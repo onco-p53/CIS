@@ -625,6 +625,18 @@ ggplot(ICMP.NZ.df, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
 ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
+#new week ICMP culture isolated (in NZ)
+week.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 0)
+mergeweeks <- round_date(week.isolated, unit = "week")
+ggplot(ICMP.NZ.df, aes(isoweek(mergeweeks), fill = SpecimenType)) +
+  labs(title = "Isolation month of ICMP cultures from NZ") + 
+  labs(x = "Week of isolation", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  geom_bar() + 
+  scale_x_discrete(na.translate = FALSE)  # this removes NAs
+ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
+
+
 #years test, this works and produces a bar chart but not super useful
 ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
   floor_date(ICMP.df$date.isolated, unit = "year")
