@@ -5,12 +5,12 @@ author:
   affiliation: "Manaaki Whenua - Landcare Research"
 date: "data as of 8 February 2022"
 output:
-  pdf_document: default
   html_document:
     code_folding: hide
     df_print: default
     toc: TRUE
     toc_float: TRUE
+  pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
 ---
@@ -267,17 +267,6 @@ ggplot(PDD.10county, aes(Country, fill=specimen_kind)) +
 Each of the specimens from New Zealand that have a geocoordinate are plotted below. An interactive map can be found on GBIF at: <https://www.gbif.org/dataset/3c6e7390-3b56-11dc-8c19-b8a03c50a862>.
 
 ```{r nz map, echo=TRUE, message=FALSE, warning=FALSE}
-
-#PDD.no.chat <- PDD.NZ.df %>%
-#  filter(NZAreaCode != "Chatham Islands") %>%
-#  filter(NZAreaCode != "Kermadec Islands")
-
-#nz <- map_data("nzHires")
-#ggplot() + 
-#  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
-#  theme_void() +
-#  geom_point(data = PDD.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = #1, alpha = 0.2, show.legend = FALSE) +
-#  coord_fixed(1.3)
 
 # Loading in data 
 #Reading in a NZ specific map

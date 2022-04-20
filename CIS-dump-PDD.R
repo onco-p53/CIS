@@ -637,9 +637,19 @@ ggplot(PDD.NZ.df, aes(isoweek(week.collected), fill = specimen_kind)) +
   labs(x = "Week of Collection", y =  "Number of specimens" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
   theme_bw() +
+  geom_bar()
+ggsave(file='./outputs/PDD/PDD-week.png', width=8, height=5)
+
+#Collection week NZ PDD specimen collected (in NZ)
+week.collected <- ymd(PDD.NZ.df$CollectionDateISO, truncated = 3)
+ggplot(PDD.NZ.df, aes(isoweek(week.collected), fill = specimen_kind)) +
+  labs(title = "Collection week of New Zealand PDD specimens") + 
+  labs(x = "Week of Collection", y =  "Number of specimens" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_bw() +
   geom_bar() +
   facet_wrap(vars(NZAreaCode), scales = "free")
-ggsave(file='./outputs/PDD/PDD-week.png', width=8, height=8)
+ggsave(file='./outputs/PDD/PDD-week-crosby.png', width=8, height=8)
 
 
 #Collection month of NZ PDD specimens
