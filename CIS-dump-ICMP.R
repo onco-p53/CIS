@@ -131,6 +131,18 @@ sapply(ICMP.NZ.df, function(x) length(unique(x)))
 # OK ones are Paired if you have heaps of data. Others are: Set2
 
 
+#============Unseqeunced strains================
+
+ICMP.df %>%
+  filter(Country == "New Zealand") %>%
+  filter(GenBank == "FALSE") %>%
+  
+  
+# de-duplicate on CurrentName where TRUE overrides false
+
+  write_csv(file='./outputs/ICMP/ICMP-unseqeunced-species.csv') 
+
+
 #============General stats================
 
 #Table of number of cultures and types

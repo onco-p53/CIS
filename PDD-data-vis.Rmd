@@ -3,7 +3,7 @@ title: "PDD data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 8 February 2022"
+date: "data as of 29 June 2022"
 output:
   html_document:
     code_folding: hide
@@ -38,7 +38,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-PDD.as.imported.df <- read_csv("PDD-export-8-feb-2022.csv",
+PDD.as.imported.df <- read_csv("PDD-export-29-jun-2022.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 ) %>%
