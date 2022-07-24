@@ -937,6 +937,43 @@ PDD.df.nohost <- subset(PDD.df,(Family_C2 == ""))
 summary(PDD.df.nohost$AccessionNumber, maxsum=10)
 
 
+#======Maps of rusts========
+
+library(sf) #Simple feature
+library(ggspatial) #make maps fancy
+
+# Loading in data 
+#Reading in a NZ specific map
+nz.sf <- st_read(dsn = "./data/nz-coastlines-topo-150k/nz-coastlines-topo-150k.shp", quiet = FALSE) %>%
+  st_transform(2193) #Setting map projection - NZGD2000
+
+#Transforming to an SF object
+rusts.sf <- PDD.df %>%
+  filter(str_detect(CurrentName, "^Puccinia oxalidis")) %>%
+  filter(OccurrenceDescription == "Present") %>%
+  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
+  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+  st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
+
+#Plotting - takes a second to execute
+ggplot() +
+  geom_sf(data = nz.sf) +
+  geom_sf(data = rusts.sf, aes(colour = CurrentName),
+          size = 2, alpha = 0.8, show.legend = TRUE) +
+  annotation_scale(location = "br") +
+  annotation_north_arrow(location = "tl",
+                         which_north = "true",
+                         style = north_arrow_fancy_orienteering) +
+  theme_minimal() +
+  labs(title = "Collection location of Puccinia oxalidis",
+       caption = "data from PDD")
+
+#this is too slow so need to build in a delay
+ggsave(file='./outputs/PDD/Puccinia-oxalidis-map.pdf', width=8, height=10)
+
+
 #======Validations========
 
 #plot higher order taxon against storage location
