@@ -64,6 +64,19 @@ mutate(specimen_kind = case_when(Phylum == 'Ascomycota' ~ 'ascomycetes',
   glimpse()
 
 
+# NOTES on classification
+# In the Agaricomycetes for instance the grouping of the subclass
+# Phallomycetidae is meaningful and useful – as a reminder that
+# Ramarias, Earthstars and stinkhorns are related, and an old lineage.
+
+# Mushrooms, brackets, paint-splash, clubs, puffballs, stinkhorns and allies
+# = subphylum agaricomycotina
+# Rusts & smuts = subphyla pucciniomycotina & subphylum ustilagomycotina
+# it's why subphyla (and subclasses within the agarics) are very useful ranks
+
+
+
+
 #subset New Zealand specimens
 PDD.NZ.df <- subset(PDD.df,(Country == "New Zealand"))
 summary(PDD.NZ.df, maxsum=40)

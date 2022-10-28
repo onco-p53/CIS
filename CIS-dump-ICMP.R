@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-8-mar-2022.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-8-sep-2022.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -609,7 +609,7 @@ ggsave(file='./outputs/ICMP/ICMP_country_by_kind_not_nz.png', width=10, height=1
 ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
 arrange(ICMP.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
-  slice_head(n=5)
+  slice_head(n=25)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
 ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
@@ -621,7 +621,7 @@ arrange(ICMP.df, date.deposited) %>%
 ICMP.NZ.df$date.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 3)
 arrange(ICMP.NZ.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
-  slice_head(n=5)
+  slice_head(n=25)
 
 
 
@@ -704,13 +704,14 @@ ggsave(file='./outputs/ICMP/ICMP-bacteria-depost-dates-smoothed.png', width=8, h
 #ICMP isolation dates 
 date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
+  theme_bw()+
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   scale_fill_brewer(palette = "Set2") +
   theme(legend.position = c(0.1, 0.8)) +
-  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+    geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
-ggsave(file='./outputs/ICMP/ICMP-isolation-dates.png', width=12, height=7.5)
+ggsave(file='./outputs/ICMP/ICMP-isolation-dates.png', width=8, height=5)
 
 
 #ICMP isolation dates faceted
@@ -811,13 +812,14 @@ ICMP.df$topcontrib
 ICMP.NZ.df <- subset(ICMP.df,(Country == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 ggplot(ICMP.NZ.df, aes(NZAreaCode)) +
+  theme_bw() +
   labs(title = "ICMP cultures by NZ region") +
   labs(x = "Crosby Region", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip() +
   scale_x_discrete(limits = positions)
-ggsave(file='./outputs/ICMP/ICMP_NZAreaCode.png', width=8, height=4.5)
+ggsave(file='./outputs/ICMP/ICMP_NZAreaCode.png', width=8, height=5)
 
 
 #require(ggplot2)
@@ -1281,4 +1283,8 @@ magic.leaf
 psilocybe-html-map.html
 
 
+ICMP.df |> 
+  select("VerbatimName") |> 
+  head(n=22) |> 
+  print(n = 22)
 
