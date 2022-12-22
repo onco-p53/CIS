@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-8-mar-2022.csv",
+ICMP.string.factors <- read.csv("ICMP-export-8-sep-2022.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -736,6 +736,17 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   geom_histogram(binwidth=365.25, show.legend = FALSE) + # this is a bin of two years: binwidth=730
   facet_grid(SpecimenType ~ .)
 ggsave(file='./outputs/ICMP/ICMP-deposit-dates-facet.png', width=8, height=5)
+
+
+#ICMP deposit date faceted
+date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
+  labs(title = "Deposit dates of ICMP cultures") +
+  labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, show.legend = FALSE) # this is a bin of two years: binwidth=730
+ggsave(file='./outputs/ICMP/ICMP-deposit-dates.png', width=8, height=5)
 
 #testing some new code
 ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
