@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-8-feb-2022.csv",
+PDD.as.imported.df <- read_csv("PDD-export-15-apr-2023.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) %>%
   glimpse()
@@ -127,6 +127,17 @@ capture.output(up, file = "PDD-unique-count.txt")
 
 # counts the number of unique values per column for NZ
 sapply(PDD.NZ.df, function(x) length(unique(x)))
+
+#============Missing biostatus================
+
+#filters for black occurrence description
+#then deduplicate
+PDD.df |>
+  select(CurrentName, Country, OccurrenceDescription, BiostatusDescription) |> 
+  filter(is.na(OccurrenceDescription)) |> 
+  #filter(Country == "New Zealand") |> 
+  distinct() |> 
+  write_csv(file='./outputs/PDD/PDD-missing-occurrence.csv')
 
 #============Bevan's Specimens================
 
@@ -857,7 +868,7 @@ mp <- ggplot() +   mapWorld
 mp <- mp+ geom_point(aes(x=visit.x, y=visit.y) ,color="blue", size=3) 
 mp
 
-## leaflet html map -----------------------------------------------------------
+#---leaflet html map -----------------------------------------------------------
 
 library(leaflet)
 
@@ -1012,6 +1023,21 @@ ggplot(PDD.df, aes(Phylum, fill=FilingNumber)) +
   coord_flip() +
   scale_fill_brewer(palette = "Paired")
 ggsave(file='PDD-storagelocation2.png', width=10, height=10)
+
+
+#============Over months================
+
+PDD.colletot <- PDD.df %>% 
+  filter (CurrentName == "Colletotrichum gloeosporioides (Penz.) Penz. & Sacc.")
+
+PDD.colletot
+
+unique(PDD.colletot$FilingNumber)
+unique(PDD.colletot$TaxonName)
+
+
+
+
 
 
 

@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-8-sep-2022.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-15-apr-2023.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -129,6 +129,17 @@ sapply(ICMP.NZ.df, function(x) length(unique(x)))
 #display.brewer.all(colorblindFriendly = TRUE)
 #display.brewer.all(colorblindFriendly = FALSE)
 # OK ones are Paired if you have heaps of data. Others are: Set2
+
+
+#============Missing biostatus================
+
+#filters for black occurrence description
+#then deduplicate
+ICMP.df |>
+  select(CurrentName, Country, OccurrenceDescription, BiostatusDescription) |> 
+  filter(is.na(OccurrenceDescription)) |> 
+  distinct() |> 
+  write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
 
 
 #============Unseqeunced strains================
