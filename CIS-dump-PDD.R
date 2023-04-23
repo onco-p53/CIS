@@ -130,13 +130,14 @@ sapply(PDD.NZ.df, function(x) length(unique(x)))
 
 #============Missing biostatus================
 
-#filters for black occurrence description
-#then deduplicate
+#filters for blank occurrence description
+#then de-duplicate
 PDD.df |>
   select(CurrentName, Country, OccurrenceDescription, BiostatusDescription) |> 
   filter(is.na(OccurrenceDescription)) |> 
   #filter(Country == "New Zealand") |> 
   distinct() |> 
+  arrange(CurrentName) |> 
   write_csv(file='./outputs/PDD/PDD-missing-occurrence.csv')
 
 #============Bevan's Specimens================

@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 24 January 2023"
+date: "data as of 15 April 2023"
 output:
   html_document:
     code_folding: hide
@@ -38,7 +38,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-24-jan-2023.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-15-apr-2023.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )

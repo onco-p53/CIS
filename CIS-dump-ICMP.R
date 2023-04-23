@@ -133,12 +133,13 @@ sapply(ICMP.NZ.df, function(x) length(unique(x)))
 
 #============Missing biostatus================
 
-#filters for black occurrence description
-#then deduplicate
+#filters for blank occurrence description
+#then de-duplicate
 ICMP.df |>
   select(CurrentName, Country, OccurrenceDescription, BiostatusDescription) |> 
   filter(is.na(OccurrenceDescription)) |> 
   distinct() |> 
+  arrange(CurrentName) |> 
   write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
 
 
