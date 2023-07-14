@@ -3,14 +3,13 @@ title: "PDD data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 8 September 2022"
+date: "data as of 29 April 2022"
 output:
   html_document:
     code_folding: hide
     df_print: default
     toc: TRUE
     toc_float: TRUE
-  pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
 ---
@@ -38,29 +37,29 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-PDD.as.imported.df <- read_csv("PDD-export-8-sep-2022.csv",
+PDD.as.imported.df <- read_csv("PDD-export-29-apr-2023.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 ) %>%
   distinct(AccessionNumber, .keep_all= TRUE) #remove dupes
 
 PDD.df <- PDD.as.imported.df %>%
-mutate(specimen_kind = case_when(Phylum == 'Ascomycota' ~ 'ascomycetes',
-                                 Class == 'Agaricomycetes' ~ 'mushrooms',
-                                 Class == 'Agaricostilbomycetes' ~ 'rusts and smuts',
-                                 Class == 'Atractiellomycetes' ~ 'rusts and smuts',
-                                 Class == 'Basidiomycetes' ~ 'mushrooms',
-                                 Class == 'Classiculomycetes' ~ 'rusts and smuts',
+mutate(specimen_kind = case_when(Phylum == 'Ascomycota Caval.-Sm.' ~ 'ascomycetes',
+                                 Class == 'Agaricomycetes Doweld' ~ 'mushrooms',
+                                 Class == 'Agaricostilbomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
+                                 Class == 'Atractiellomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
+                                 Class == 'Basidiomycetes G. Winter' ~ 'mushrooms',
+                                 Class == 'Classiculomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss, & Oberw.' ~ 'rusts and smuts',
                                  Class == 'Cystobasidiomycetes' ~ 'rusts and smuts',
-                                 Class == 'Dacrymycetes' ~ 'mushrooms',
+                                 Class == 'Dacrymycetes Doweld' ~ 'mushrooms',
                                  Class == 'Entorrhizomycetes' ~ 'other',
-                                 Class == 'Exobasidiomycetes' ~ 'rusts and smuts',
-                                 Class == 'Microbotryomycetes' ~ 'rusts and smuts',
-                                 Class == 'Pucciniomycetes' ~ 'rusts and smuts',
-                                 Class == 'Tremellomycetes' ~ 'mushrooms',
-                                 Class == 'Ustilaginomycetes' ~ 'rusts and smuts',
-                                 TRUE ~ 'other')) %>%
-  filter(Deaccessioned == "FALSE") %>%
+                                 Class == 'Exobasidiomycetes Begerow, Stoll & R. Bauer' ~ 'rusts and smuts',
+                                 Class == 'Microbotryomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
+                                 Class == 'Pucciniomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
+                                 Class == 'Tremellomycetes Doweld' ~ 'mushrooms',
+                                 Class == 'Ustilaginomycetes R. Bauer, Oberw. & Vánky' ~ 'rusts and smuts',
+                                 TRUE ~ 'other')) |>
+  filter(Deaccessioned == "FALSE")  |> 
   mutate(date.collected = ymd(CollectionDateISO, truncated = 3))
 
 
@@ -334,7 +333,7 @@ PDD.NZ.df %>%
 
 ```
 
--   The earliest specimen in PDD is [*Neodictyopus dictyopus* PDD 28052](https://scd.landcareresearch.co.nz/Specimen/PDD_28052) collected in 1840 from Canada
+-   The earliest specimen in PDD is [*Neodictyopus dictyopus* PDD 28052](https://scd.landcareresearch.co.nz/Specimen/PDD_28052) collected in 1840 from Brazil
 
 -   The earliest New Zealand ascomycete specimen is [*Pseudocyphellaria billardierei* PDD 71605](https://scd.landcareresearch.co.nz/Specimen/PDD_71605) collected in 1843
 
@@ -358,8 +357,6 @@ ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
   facet_grid(specimen_kind ~ ., scales = "free")
 
 ```
-
-
 
 ### Collection month
 
