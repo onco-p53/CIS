@@ -3,14 +3,13 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 15 April 2023"
+date: "data as of 4 July 2023"
 output:
   html_document:
     code_folding: hide
     df_print: default
     toc: TRUE
     toc_float: TRUE
-  pdf_document: default
 always_allow_html: true
 subject: Nationally significant collections
 ---
@@ -38,7 +37,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-15-apr-2023.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-4-jul-2023.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )
@@ -146,15 +145,18 @@ Extended specimen data is data beyond the basic taxonomic and and location. See:
 
 ```{r Extended specimen data, echo=TRUE}
 
+#make a new column called GeoRef true false off DecimalLat
+ICMP.df$GeoRef <- ifelse(!is.na(ICMP.df$DecimalLat), TRUE, FALSE)
+
 #sub set out the interesting columns using "select" in dpylr
-only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images")
+only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images", "GeoRef")
 
 #create two new columns using "pivot_longer" into a tibble table
-tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
+tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:6, names_to="ExtendedSpecimen", values_to="present")
 
 # ** Cultures with extended specimen data
 ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
-  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(title = "Cultures with DNA sequences, georeferences, images, and citations in literature") +
   labs(x = "extended specimen data", y = "proportion of cultures with this data") +
   theme_bw() +
   scale_fill_brewer(palette = "Paired") +
@@ -166,9 +168,17 @@ This data can be split by the type of specimen (Bacteria, Fungi, Chromist, Yeast
 
 ```{r Extended specimen data 2, echo=TRUE}
 
+#in the pivoted tibble shorten the names so the text does not overlap
+tibble.ext.specimen <- tibble.ext.specimen |> 
+  mutate(ExtendedSpecimen = recode(ExtendedSpecimen,
+                                   "GenBank" = "DNA",
+                                   "Literature" = "Lit",
+                                   "Images" = "Image",
+                                   "GeoRef" = "Geo"))
+
 # ** Cultures with extended specimen data by ExtendedSpecimen with SpecimenType facet
 ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
-  labs(title = "Cultures with GenBank DNA sequences, images, and citations in literature") +
+  labs(title = "Cultures with DNA sequences, georeferences, images, and citations in literature") +
   labs(x = "Taxon", y = "number of isolates") +
   scale_fill_brewer(palette = "Paired") +
   geom_bar() +
@@ -202,7 +212,21 @@ ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
 
 ## Geography
 
-ICMP cultures have been isolated from around the world.
+```{r how many NZ, echo=TRUE, warning=FALSE}
+
+#count the number of NZ cultures
+countNZ <- ICMP.df |> 
+  filter(Country == "New Zealand") |> 
+  count()
+
+#convert to a percentage
+
+countNZp <- (countNZ / count(ICMP.df))*100
+countNZp <- round(countNZp, digits = 0)
+
+```
+
+ICMP cultures have been isolated from around the world, in total New Zealand cultures comprise `r countNZp`% of the collection.
 
 ### World distribution
 

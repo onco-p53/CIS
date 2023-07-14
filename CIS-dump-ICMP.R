@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-15-apr-2023.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-29-apr-2023.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-8-sep-2022.csv",
+ICMP.string.factors <- read.csv("ICMP-export-29-apr-2023.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -340,6 +340,29 @@ ggsave(file='./outputs/ICMP/extended-specimen-images.png', width=7, height=7)
 #Add code here from the rmd file for faceted graph
 
 
+```{r Extended specimen data, echo=TRUE}
+
+#make a new column called GeoRef true false off DecimalLat
+ICMP.df$GeoRef <- ifelse(!is.na(ICMP.df$DecimalLat), TRUE, FALSE)
+
+#sub set out the interesting columns using "select" in dpylr
+only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images", "GeoRef")
+
+#create two new columns using "pivot_longer" into a tibble table
+tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:6, names_to="ExtendedSpecimen", values_to="present")
+
+# ** Cultures with extended specimen data
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
+  labs(title = "Cultures with DNA sequences, georeferences, images, and citations in literature") +
+  labs(x = "extended specimen data", y = "proportion of cultures with this data") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Paired") +
+  geom_bar(position = "fill")
+
+```
+
+
+
 #============Sample kind Level barcharts================
 
 #Simple sample type barchart
@@ -563,6 +586,28 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 
 #============Countries================
 
+count(ICMP.df)
+
+ICMP.df |> 
+  count(Country == "New Zealand")
+
+ICMP.df |> 
+  filter(Country == "New Zealand") |> 
+  count()
+
+
+countNZ <- ICMP.df |>
+  count(Country == "New Zealand")
+
+#convert to a percentage
+
+countNZp <-(countNZ / count(ICMP.df))*100
+
+
+
+
+
+
 sort(table(ICMP.df$Country),decreasing=TRUE)[1:12] #top 11 countries
 
 #ggplot code for top ten countries by specimen type
@@ -711,6 +756,18 @@ ggplot(ICMP.bacteria, aes(date.deposited)) +
   geom_histogram(binwidth=365.25, alpha = 0.2) +
   geom_density(aes(y=500 * ..count..), size = 2) #multiplies the density by 500x so it is visible
 ggsave(file='./outputs/ICMP/ICMP-bacteria-depost-dates-smoothed.png', width=8, height=5)
+
+
+#deposits over time
+ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.deposited)) +
+  theme_bw() +
+  labs(title = "Date cultures were deposited in ICMP") +
+  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
+  scale_x_date(date_breaks = "5 years", date_labels = "%Y") +
+  geom_histogram(binwidth=365.25, alpha = 0.2) +
+  geom_density(aes(y=500 * ..count..), size = 2) #multiplies the density by 500x so it is visible
+ggsave(file='./outputs/ICMP/ICMP-total-deposits-smoothed.png', width=8, height=5)
 
 
 #ICMP isolation dates 

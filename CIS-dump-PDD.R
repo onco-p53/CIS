@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-15-apr-2023.csv",
+PDD.as.imported.df <- read_csv("PDD-export-29-apr-2023.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) %>%
   glimpse()
@@ -23,44 +23,44 @@ PDD.as.imported.df <- read_csv("PDD-export-15-apr-2023.csv",
 # get duplicates based due to component duplication
 # may need correction in CIS if TaxonName_C2 = NA, export as a CSV
 
-PDD.dupes <- PDD.as.imported.df %>%
-  get_dupes(AccessionNumber) %>%
+PDD.dupes <- PDD.as.imported.df  |>
+  get_dupes(AccessionNumber) |>
   select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
-  filter(is.na(TaxonName_C2)) %>% #comment this out to get all
+  filter(is.na(TaxonName_C2)) |> #comment this out to get all
   write_csv(file='./outputs/PDD/PDD.dupes.csv')
 
 
 #============Subset and massage the Data================
 
-PDD.df <- PDD.as.imported.df %>%
-  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+PDD.df <- PDD.as.imported.df |>
+  distinct(AccessionNumber, .keep_all= TRUE) |> #remove dupes
   glimpse()
 
 #list the classes in Basidiomycota
-PDD.df %>%
-  filter(Phylum == "Basidiomycota") %>%
-  group_by(Class) %>%
+PDD.df  |>
+  filter(Phylum == "Basidiomycota R.T. Moore") |>
+  group_by(Class) |>
   dplyr::summarize(
     All.ICMP = n(), 
     .groups = "drop"
   )
 
-PDD.df <- PDD.df %>%
-mutate(specimen_kind = case_when(Phylum == 'Ascomycota' ~ 'ascomycetes',
-                                 Class == 'Agaricomycetes' ~ 'mushrooms',
-                                 Class == 'Agaricostilbomycetes' ~ 'rusts and smuts',
-                                 Class == 'Atractiellomycetes' ~ 'rusts and smuts',
-                                 Class == 'Basidiomycetes' ~ 'mushrooms',
-                                 Class == 'Classiculomycetes' ~ 'rusts and smuts',
+PDD.df <- PDD.df |>
+mutate(specimen_kind = case_when(Phylum == 'Ascomycota Caval.-Sm.' ~ 'ascomycetes',
+                                 Class == 'Agaricomycetes Doweld' ~ 'mushrooms',
+                                 Class == 'Agaricostilbomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
+                                 Class == 'Atractiellomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
+                                 Class == 'Basidiomycetes G. Winter' ~ 'mushrooms',
+                                 Class == 'Classiculomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss, & Oberw.' ~ 'rusts and smuts',
                                  Class == 'Cystobasidiomycetes' ~ 'rusts and smuts',
-                                 Class == 'Dacrymycetes' ~ 'mushrooms',
+                                 Class == 'Dacrymycetes Doweld' ~ 'mushrooms',
                                  Class == 'Entorrhizomycetes' ~ 'other',
-                                 Class == 'Exobasidiomycetes' ~ 'rusts and smuts',
-                                 Class == 'Microbotryomycetes' ~ 'rusts and smuts',
-                                 Class == 'Pucciniomycetes' ~ 'rusts and smuts',
-                                 Class == 'Tremellomycetes' ~ 'mushrooms',
-                                 Class == 'Ustilaginomycetes' ~ 'rusts and smuts',
-                                 TRUE ~ 'other')) %>%
+                                 Class == 'Exobasidiomycetes Begerow, Stoll & R. Bauer' ~ 'rusts and smuts',
+                                 Class == 'Microbotryomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
+                                 Class == 'Pucciniomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
+                                 Class == 'Tremellomycetes Doweld' ~ 'mushrooms',
+                                 Class == 'Ustilaginomycetes R. Bauer, Oberw. & Vánky' ~ 'rusts and smuts',
+                                 TRUE ~ 'other')) |>
   glimpse()
 
 
