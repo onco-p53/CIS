@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-29-apr-2023.csv",
+PDD.as.imported.df <- read_csv("PDD-export-30-aug-2023.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) %>%
   glimpse()
@@ -105,7 +105,7 @@ PDD.NZ.df %>%
 head(PDD.df)
 
 #save a summary of the data to txt
-PDD.string.factors <- read.csv("PDD-export-8-feb-2022.csv",
+PDD.string.factors <- read.csv("PDD-export-30-aug-2023.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/PDD/PDD-summary.txt')
@@ -875,7 +875,7 @@ library(leaflet)
 
 #factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
 
-factpal <- colorFactor(palette = "Dark2", domain = PDD.df$specimen_kind)
+factpal <- colorFactor(palette = "Paired", domain = PDD.df$specimen_kind)
 
 #Using leaflet
 PDD.NZ.leaf <- leaflet(PDD.NZ.df) %>%
@@ -1035,6 +1035,40 @@ PDD.colletot
 
 unique(PDD.colletot$FilingNumber)
 unique(PDD.colletot$TaxonName)
+
+
+# leaflet map for checking geo-cords --------------------------------------
+
+library(leaflet)
+
+#Transforming to an SF object
+Psilocybe.both.leaf.df <- ICMP.PDD.df |> 
+  filter(str_detect(CurrentName, "^Psilocybe")) |> 
+  filter(Country == "New Zealand") |> 
+  filter(OccurrenceDescription == "Present")
+
+
+
+factpal <- colorFactor(palette = "Paired", domain = Psilocybe.both.leaf.df$CurrentName)
+
+#To show
+head(Psilocybe.both.leaf.df)
+
+#Using leaflet
+magic.leaf <- leaflet(Psilocybe.both.leaf.df) %>%
+  addTiles() %>% 
+  addCircleMarkers(lng = ~DecimalLong, 
+                   lat = ~DecimalLat, 
+                   popup = ~AccessionNumber,
+                   label = ~CurrentName,
+                   color = ~factpal(CurrentName))
+
+#Opening up viewer
+magic.leaf
+
+#use save as a webpage function in Rstudio to save
+
+psilocybe-html-map.html
 
 
 

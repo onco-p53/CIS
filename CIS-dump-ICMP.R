@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-29-apr-2023.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-28-feb-2024.csv", #also line 94
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -1309,7 +1309,7 @@ ggplot() +
                          style = north_arrow_fancy_orienteering) +
   theme_minimal() +
   labs(title = "Collection location of ICMP Psilocybe cultures",
-       caption = "Bevan Weir - 25 Feb 2022 - CC BY 4.0")
+       caption = "Bevan Weir - 30 Aug 2022 - CC BY 4.0")
 
 #this is too slow so need to build in a delay
 ggsave(file='./outputs/ICMP/Psilocybe-ICMP.pdf', width=8, height=10)

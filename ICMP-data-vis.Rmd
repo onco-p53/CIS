@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 4 July 2023"
+date: "data as of 26 Feburary 2024"
 output:
   html_document:
     code_folding: hide
@@ -37,22 +37,22 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-4-jul-2023.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-26-feb-2024.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )
 #subset the data
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.df <- ICMP.as.imported.df %>%
-  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+ICMP.df <- ICMP.as.imported.df |>
+  distinct(AccessionNumber, .keep_all= TRUE) |> #remove dupes
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
-           SpecimenType == "Yeast Culture") %>%
+           SpecimenType == "Yeast Culture") |>
   filter(Deaccessioned == "FALSE")
 
 #how many cultures are public
-ICMP.public <- ICMP.as.imported.df %>%
+ICMP.public <- ICMP.as.imported.df |>
   filter(SpecimenSecurityLevelText == "Public")
 
 ```
@@ -61,42 +61,44 @@ ICMP.public <- ICMP.as.imported.df %>%
 
 The ICMP database has `r count(ICMP.as.imported.df)` entries, but after removing cultures that have died and are no longer available ('deaccessioned') there are **`r count(ICMP.df)` cultures**. This total includes cultures stored privately not available to the public, and those in the process of storage. The total number of publicly available cultures is `r count(ICMP.public)`. Most of the stats below use the 'total minus deaccessioned' number as the base data.
 
+### Cultures
+
 The table below lists the number of bacterial, chromist (e.g. *Phytophthora*), fungal, and yeast cultures in the collection; stats include the entire collection and split by type cultures and New Zealand cultures.
 
 ```{r tables, echo=TRUE, message=FALSE, warning=FALSE}
 
-total.table <- ICMP.df %>% # this one gets a total count
-  group_by(SpecimenType) %>%
+total.table <- ICMP.df |> # this one gets a total count
+  group_by(SpecimenType) |>
   dplyr::summarize(
     All.ICMP = n(), 
     .groups = "drop"
   )
 
-types.table <- ICMP.df %>% # this one gets a types count
-  filter(TypeStatus != "") %>%
-  group_by(SpecimenType) %>%
+types.table <- ICMP.df |> # this one gets a types count
+  filter(TypeStatus != "") |>
+  group_by(SpecimenType) |>
   dplyr::summarize(
     Types = n(), 
     .groups = "drop"
   )
 
-NZ.table <- ICMP.df %>% # this one gets a New Zealand count
-  filter(Country == "New Zealand") %>%
-  group_by(SpecimenType) %>%
+NZ.table <- ICMP.df |> # this one gets a New Zealand count
+  filter(Country == "New Zealand") |>
+  group_by(SpecimenType) |>
   dplyr::summarize(
     NZ = n(), 
     .groups = "drop"
   )
 
-NZtype.table <- ICMP.df %>% # NZ and types
-  filter(Country == "New Zealand" & TypeStatus != "") %>%
-  group_by(SpecimenType) %>%
+NZtype.table <- ICMP.df |> # NZ and types
+  filter(Country == "New Zealand" & TypeStatus != "") |>
+  group_by(SpecimenType) |>
   dplyr::summarize(
     NZ.Types = n(), 
     .groups = "drop"
   )
 
-icmp.count.table <- left_join(total.table, types.table) %>%
+icmp.count.table <- left_join(total.table, types.table) %>% #need old pipe due to extract left dot
   left_join(NZ.table) %>%
   left_join(NZtype.table) %>%
   bind_rows(summarise(.,
@@ -105,9 +107,38 @@ icmp.count.table <- left_join(total.table, types.table) %>%
 
 kable(icmp.count.table, digits=0, "html",
       #caption = "table of specimen types",
-      col.names = gsub("[.]", " ", names(icmp.count.table)))%>% #replaces dots in names with spaces
-  kable_styling("striped", "bordered") %>%
+      col.names = gsub("[.]", " ", names(icmp.count.table))) |>  #replaces dots in names with spaces
+  kable_styling("striped", "bordered") |> 
   add_header_above(c(" " = 1,  "number of cultures" = 4))
+
+```
+
+### Species
+
+This is a count of unique taxa in the collection. Normally this will be the number of species, but also includes and subspecific taxa such as pathovars, or genera if a culture is only identified to genus level.
+
+```{r species, echo=TRUE, message=FALSE, warning=FALSE}
+
+
+all_species <- ICMP.df |>
+  group_by(SpecimenType) |>
+  summarise(Total.taxa = n_distinct(CurrentName))
+
+NZ_species <- ICMP.df |>
+  filter(Country == "New Zealand") |>
+  group_by(SpecimenType) |>
+  summarise(NZ.taxa = n_distinct(CurrentName))
+
+icmp.species.table <- left_join(all_species, NZ_species) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(where(is.character), ~"Total")))
+
+kable(icmp.species.table, digits=0, "html",
+      #caption = "table of specimen types",
+      col.names = gsub("[.]", " ", names(icmp.species.table)))|> #replaces dots in names with spaces
+  kable_styling("striped", "bordered") |>
+  add_header_above(c(" " = 1,  "number of taxa (species, pathovars)" = 2))
 
 ```
 
@@ -131,7 +162,7 @@ ggplot(ICMP.types, aes(TypeStatus, fill=SpecimenType)) +
   geom_bar() + 
   coord_flip() +
   theme_bw()+
-  theme(legend.position = c(0.85, 0.75)) +
+  theme(legend.position.inside = c(0.85, 0.75)) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions)
 
@@ -183,7 +214,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
   scale_fill_brewer(palette = "Paired") +
   geom_bar() +
   theme_bw() +
-  theme(legend.position = c(0.92, 0.6)) +
+  theme(legend.position.inside = c(0.92, 0.6)) +
   facet_grid(cols = vars(SpecimenType))
 
 ```
@@ -204,7 +235,7 @@ ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
   geom_bar() + 
   coord_flip() +
   theme_bw() +
-  theme(legend.position = c(0.85, 0.75)) +
+  theme(legend.position.inside = c(0.85, 0.75)) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions.10hosts)
 
@@ -256,7 +287,7 @@ ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
   geom_bar() +
   coord_flip() +
   theme_bw() +
-  theme(legend.position = c(0.85, 0.75)) +
+  theme(legend.position.inside = c(0.85, 0.75)) +
   scale_fill_brewer(palette = "Set2") +
   scale_x_discrete(limits = positions)
   
@@ -270,8 +301,8 @@ Each of the cultures from New Zealand that have a geocoordinate are plotted belo
 
 #ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
 
-#ICMP.no.chat <- ICMP.NZ %>%
-#  filter(NZAreaCode != "Chatham Islands") %>%
+#ICMP.no.chat <- ICMP.NZ |>
+#  filter(NZAreaCode != "Chatham Islands") |>
 #  filter(NZAreaCode != "Kermadec Islands")
 
 #nz <- map_data("nzHires")
@@ -283,15 +314,15 @@ Each of the cultures from New Zealand that have a geocoordinate are plotted belo
 
 # Loading in data 
 #Reading in a NZ specific map
-nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) %>%
+nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) |>
   st_transform(2193) #Setting map projection - NZGD2000
 
 #Transforming to an SF object
-rhizoNZ.sf <- ICMP.df %>%
-  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
-  st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
-  st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
+rhizoNZ.sf <- ICMP.df |>
+  filter(!is.na(DecimalLat)) |> #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLong", "DecimalLat")) |> #Defining what the coord columns are
+  st_set_crs(4326) |> #Telling sf it is in WSG84 projection
+  st_transform(2193) |> #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
 
 #Plotting - quite slow
@@ -335,20 +366,20 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 
 #all cultures sorted by date. Add a new column date.isolated 
 ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
-arrange(ICMP.df, date.isolated) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+arrange(ICMP.df, date.isolated) |>
+  select("AccessionNumber","SpecimenType", "Country", "date.isolated") |>
   slice_head(n=5)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
 ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
-arrange(ICMP.df, date.deposited) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.deposited") %>%
+arrange(ICMP.df, date.deposited) |>
+  select("AccessionNumber","SpecimenType", "Country", "date.deposited") |>
   slice_head(n=5)
 
 #New Zealand cultures sorted by date. Add a new column date.isolated
 ICMP.NZ$date.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
-arrange(ICMP.NZ, date.isolated) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+arrange(ICMP.NZ, date.isolated) |>
+  select("AccessionNumber","SpecimenType", "Country", "date.isolated") |>
   slice_head(n=5)
 
 ```
@@ -439,33 +470,33 @@ Top 10 collectors, isolators, identifiers. This will be better once we get the a
 
 #should combine these to a single table using full_join ?
 
-#topCollector <- ICMP.df %>% 
-#  count(StandardCollector, sort = TRUE) %>%
-#  drop_na() %>%
+#topCollector <- ICMP.df |> 
+#  count(StandardCollector, sort = TRUE) |>
+#  drop_na() |>
 #  slice_head(n=10)
 #
 #kable(topCollector, digits=0, "html",
-#      caption = "top collectors") %>%
+#      caption = "top collectors") |>
 #  kable_styling("striped", "bordered")
 
 #this works but is a bit shit till the agents modules matches names correctly
-topCollector <- ICMP.df %>% 
-  count(StandardCollector, sort = TRUE) %>%
-  drop_na() %>%
+topCollector <- ICMP.df |> 
+  count(StandardCollector, sort = TRUE) |>
+  drop_na() |>
   slice_head(n=10)
 
-topDeterminer <- ICMP.df %>% 
-  count(StandardDeterminer, sort = TRUE) %>%
-  drop_na() %>%
+topDeterminer <- ICMP.df |> 
+  count(StandardDeterminer, sort = TRUE) |>
+  drop_na() |>
   slice_head(n=10)
 
-topDepositor <- ICMP.df %>% 
-  count(DepositorName, sort = TRUE) %>%
-  drop_na() %>%
+topDepositor <- ICMP.df |> 
+  count(DepositorName, sort = TRUE) |>
+  drop_na() |>
   slice_head(n=10)
 
 people.table <- full_join(topCollector, topDeterminer, 
-                          by = c("StandardCollector" = "StandardDeterminer" )) %>%
+                          by = c("StandardCollector" = "StandardDeterminer" )) |>
   full_join(topDepositor,
             by = c("StandardCollector" = "DepositorName" ))
 
@@ -474,8 +505,8 @@ people.table
 kable(people.table, digits=0, #"html",
       #caption = "table of specimen types",
       col.names = c('Person name', 'Collected', 'Determined', 'Deposited')
-)%>% #replaces dots in names with spaces
-  kable_styling("striped", "bordered") %>%
+)|> #replaces dots in names with spaces
+  kable_styling("striped", "bordered") |>
   add_header_above(c(" " = 1,  "number of events" = 3))
 
 ```
@@ -514,8 +545,8 @@ ggplot(ICMP.df, aes(LastUpdatedBy, fill = SpecimenType)) +
 ```{r table of security levels, echo=TRUE}
 
 #table of security levels
-table.security <- ICMP.df %>% 
-  group_by(SpecimenSecurityLevelText) %>%
+table.security <- ICMP.df |> 
+  group_by(SpecimenSecurityLevelText) |>
   tally()
 kable(table.security, caption = "table of security levels") #knitr
 
@@ -526,14 +557,14 @@ kable(table.security, caption = "table of security levels") #knitr
 ```{r table of biostatus, echo=TRUE}
 
 #table of security levels
-table.security <- ICMP.df %>% 
-  group_by(OccurrenceDescription) %>%
+table.security <- ICMP.df |> 
+  group_by(OccurrenceDescription) |>
   tally()
 kable(table.security, caption = "table of biostatus Occurrence") #knitr
 
 #table of security levels
-table.security <- ICMP.df %>% 
-  group_by(BiostatusDescription) %>%
+table.security <- ICMP.df |> 
+  group_by(BiostatusDescription) |>
   tally()
 kable(table.security, caption = "table of biostatus description") #knitr
 
