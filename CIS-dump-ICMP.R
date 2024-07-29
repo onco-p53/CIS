@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-28-feb-2024.csv", #also line 94
+ICMP.as.imported.df <- read_csv("ICMP-export-19-jul-2024.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-29-apr-2023.csv",
+ICMP.string.factors <- read.csv("ICMP-export-19-jul-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -143,7 +143,7 @@ ICMP.df |>
   write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
 
 
-#============Unseqeunced strains================
+#============Un-sequenced strains================
 
 ICMP.df %>%
   filter(Country == "New Zealand") %>%
@@ -152,7 +152,7 @@ ICMP.df %>%
   
 # de-duplicate on CurrentName where TRUE overrides false
 
-  write_csv(file='./outputs/ICMP/ICMP-unseqeunced-species.csv') 
+  write_csv(file='./outputs/ICMP/ICMP-unsequenced-species.csv') 
 
 
 #============General stats================
@@ -807,7 +807,7 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
 ggsave(file='./outputs/ICMP/ICMP-deposit-dates-facet.png', width=8, height=5)
 
 
-#ICMP deposit date faceted
+#ICMP deposit dates over time
 date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +

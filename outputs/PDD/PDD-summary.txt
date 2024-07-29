@@ -1,0 +1,361 @@
+   AccessionNumber    SpecimenType      FilingNumber   SpecimenSecurityLevel           SpecimenSecurityLevelText
+ PDD 1     :     1   Alcohol:    36           :  852   Min.   : 1.00         Collection Staff Only  :   259     
+ PDD 10    :     1   Dried  :   142   1       : 1835   1st Qu.:40.00         Confidential           :     4     
+ PDD 100   :     1   Packet :113355   10      :    9   Median :40.00         Public                 :113243     
+ PDD 10000 :     1                    2       :27193   Mean   :39.93         Registered Users       :    25     
+ PDD 100001:     1                    3/1     :19411   3rd Qu.:40.00         Systematics Researchers:     2     
+ PDD 100002:     1                    3/2     :29653   Max.   :40.00                                            
+ PDD 100003:     1                    3/3     :14802                                                            
+ PDD 100004:     1                    3/4     : 2038                                                            
+ PDD 100005:     1                    4       :14895                                                            
+ PDD 100006:     1                    5       : 2584                                                            
+ PDD 100007:     1                    6       :  115                                                            
+ PDD 100008:     1                    7       :   29                                                            
+ PDD 100009:     1                    8       :  115                                                            
+ PDD 10001 :     1                    Hypocrea:    1                                                            
+ Deaccessioned  IsMissing          LoanStatus        Quantity                   CreatedBy    
+ false:113519   false:113227            :104662   Min.   :1       Migration          :57136  
+ true :    14   true :   306   Active   :  6631   1st Qu.:1       FletcherM          :14122  
+                               Approved :    40   Median :1       LANDCARE\\StantonA : 9275  
+                               Initiated:   171   Mean   :1       LANDCARE\\stantona : 6288  
+                               Lost     :    40   3rd Qu.:1       DaleyW             : 5698  
+                               Overdue  :  1989   Max.   :4       OSullivanT         : 5657  
+                                                  NA's   :86237   LANDCARE\\daleyw   : 4286  
+                                                                  CooperJ            : 3176  
+                                                                  WaddellC           : 2568  
+                                                                  KooperbergR        : 1008  
+                                                                  LANDCARE\\JohnstonP:  932  
+                                                                  RanatungaD         :  765  
+                                                                  JohnstonP          :  764  
+                                                                  JohansenR          :  366  
+                 CreatedDate                   UpdatedBy                     UpdatedDate           TypeStatus    
+ 11/04/2011 1:54:46 pm :57136   BulkGeoRefConversion:66130   24/02/2023 6:03:44 pm :60298               :110357  
+ 1/04/2010 2:30:37 pm  : 2831   Migration           :17833   11/04/2011 1:54:46 pm :17833   Epitype     :    11  
+ 20/04/2001 11:00:09 am:  172   CIS-2399            : 9860   18/06/2022 2:26:46 pm : 9860   Holotype    :  1683  
+ 10/06/2001 8:28:07 pm :  153   DaleyW              : 6208   11/02/2024 2:43:06 pm : 2799   Isoepitype  :     5  
+ 29/03/2001 11:26:15 am:    3   LANDCARE\\StantonA  : 5372   28/02/2023 4:59:27 pm : 2025   Isolectotype:     1  
+ 29/03/2001 11:26:20 am:    3   LANDCARE\\CooperJ   : 2239   24/02/2023 6:09:37 pm :  989   Isoneotype  :     2  
+ 29/03/2001 11:26:27 am:    3   LANDCARE\\daleyw    : 1294                         :   45   Isotype     :  1001  
+ 29/03/2001 11:26:30 am:    3   LANDCARE\\JohnstonP : 1238   30/01/2018 11:13:43 am:   35   Lectotype   :     1  
+ 29/03/2001 11:26:33 am:    3   OSullivanT          :  648   3/03/2023 11:56:20 am :   19   Neotype     :     3  
+ 29/03/2001 11:26:37 am:    3   PennycookS          :  530   20/09/2023 7:22:06 pm :    8   Paratype    :   448  
+ 29/03/2001 11:26:46 am:    3   LANDCARE\\cooperj   :  310   29/09/2023 3:11:55 pm :    8   Syntype     :    10  
+ 29/03/2001 11:26:50 am:    3   JohnstonP           :  233   20/09/2023 7:12:44 pm :    7   Topotype    :     9  
+ 29/03/2001 11:26:52 am:    3   LANDCARE\\stantona  :  233   21/09/2023 2:55:57 pm :    5   Type        :     2  
+ 29/03/2001 11:26:57 am:    3   LANDCARE\\WeirB     :  213   11/04/2011 11:10:28 am:    4                        
+                                                VerbatimName   
+ Glomerella cingulata (Stoneman) Spauld. & H. Schrenk :   466  
+ Puccinia coronata Corda                              :   321  
+ Puccinia graminis Pers.                              :   273  
+ Ganoderma P. Karst.                                  :   239  
+ Leptosphaeria maculans (Desm.) Ces. & De Not.        :   219  
+ Botrytis cinerea Pers.                               :   216  
+ Cortinarius (Pers.) Gray 1821                        :   199  
+ Puccinia recondita Roberge ex Desm.                  :   195  
+ Mycena (Pers.) Roussel                               :   190  
+ Thelephoraceae Chevall. 1826                         :   181  
+ Phragmidium violaceum (Schultz) G. Winter            :   172  
+ Cortinarius sp.                                      :   170  
+ Pisolithus Alb. & Schwein.                           :   168  
+ Didymium squamulosum                                 :   167  
+                                                TaxonName     
+ Cortinarius (Pers.) Gray 1821                       :   778  
+ Mycena (Pers.) Roussel 1806                         :   516  
+ Glomerella cingulata (Stoneman) Spauld. & H. Schrenk:   467  
+ Entoloma (Fr.) P. Kumm. 1871                        :   361  
+ Puccinia coronata Corda                             :   340  
+ Russula Pers.                                       :   339  
+ Laccaria Berk. & Broome 1883                        :   297  
+ Puccinia graminis Pers.                             :   282  
+ Ganoderma P. Karst.                                 :   263  
+ Agaricus L. 1753                                    :   258  
+ Didymium squamulosum (Alb. & Schwein.) Fr.          :   253  
+ Marasmius Fr.                                       :   249  
+ Puccinia recondita Desm.                            :   231  
+ Lepiota (Pers.) Gray                                :   229  
+                                                              CurrentName    
+ Cortinarius (Pers.) Gray 1821                                      :   866  
+ Colletotrichum gloeosporioides (Penz.) Penz. & Sacc.               :   519  
+ Mycena (Pers.) Roussel 1806                                        :   518  
+ Entoloma (Fr.) P. Kumm. 1871                                       :   375  
+ Russula Pers.                                                      :   368  
+ Puccinia coronata Corda                                            :   342  
+ Laccaria Berk. & Broome 1883                                       :   297  
+ Puccinia graminis Pers.                                            :   283  
+ Agaricus L. 1753                                                   :   269  
+ Ganoderma P. Karst.                                                :   263  
+ Didymium squamulosum (Alb. & Schwein.) Fr.                         :   253  
+ Marasmius Fr.                                                      :   249  
+ Puccinia recondita Desm.                                           :   249  
+ Lepiota (Pers.) Gray                                               :   234  
+                               SourceNameId           VerbatimDeterminer      StandardDeterminer DeterminersRefNumber
+ 1CB184F5-36B9-11D5-9548-00D0592D548C:   778                   :12661                  :14175              :107755   
+ 1cb1943f-36b9-11d5-9548-00d0592d548c:   516   J.A. Cooper     :11593    Cooper, JA    :11606    EHCM 94-1 :     6   
+ 1CB18BA6-36B9-11D5-9548-00D0592D548C:   467   E.H.C. McKenzie : 9925    McKenzie, EHC :10014    EHCM 86-6 :     5   
+ 1CB188D4-36B9-11D5-9548-00D0592D548C:   361   G.H. Cunningham : 8485    Cunningham, GH: 8485    EHCM 87-22:     5   
+ 1CB19E5C-36B9-11D5-9548-00D0592D548C:   340   P.R. Johnston   : 8382    Johnston, PR  : 8421    EHCM 87-23:     4   
+ 1CB19F47-36B9-11D5-9548-00D0592D548C:   339   J.M. Dingley    : 7277    Dingley, JM   : 7277    EHCM 92-1 :     4   
+ 1CB18FA8-36B9-11D5-9548-00D0592D548C:   297   R.F.R. McNabb   : 2601    Austwick, PKC : 2604    EHCM 85-1 :     3   
+ 1CB19EC5-36B9-11D5-9548-00D0592D548C:   282   P.K.C. Austwick : 2573    McNabb, RFR   : 2601    EHCM 85-11:     3   
+ 1CB18ADB-36B9-11D5-9548-00D0592D548C:   263   G.J. Samuels    : 2323    Samuels, GJ   : 2323    EHCM 85-3 :     3   
+ 1CB1C453-36B9-11D5-9548-00D0592D548C:   258   R.E. Beever     : 2273    Beever, RE    : 2278    EHCM 85-7 :     3   
+ 1CB187A6-36B9-11D5-9548-00D0592D548C:   253   P. Leonard      : 1985    Leonard, P    : 2041    EHCM 87-28:     3   
+ 1CB19237-36B9-11D5-9548-00D0592D548C:   249   P.K. Buchanan   : 1891    Buchanan, PK  : 1904    EHCM 88-2 :     3   
+ 1CB1A050-36B9-11D5-9548-00D0592D548C:   231   H. Sydow        : 1427    Stephenson, SL: 1523    EHCM 88-3 :     3   
+ 1CB19045-36B9-11D5-9548-00D0592D548C:   229   E. Horak        : 1332    Paulus, BC    : 1430    EHCM 89   :     3   
+                                                                                                          Phylum     
+                                                                                                             :   89  
+ Actinomycetota Goodfellow                                                                                   :    8  
+ Ascomycota Caval.-Sm.                                                                                       :42388  
+ Bacillota Gibbons and Murray                                                                                :    2  
+ Bacteroidota Krieg et al.                                                                                   :    2  
+ Basidiobolomycota Doweld                                                                                    :    1  
+ Basidiomycota R.T. Moore                                                                                    :66137  
+ Blastocladiomycota T.W. James                                                                               :   46  
+ Cercozoa Caval.-Sm.                                                                                         :   34  
+ Chlorophyta                                                                                                 :  113  
+ Choanozoa Caval.-Sm.                                                                                        :    3  
+ Chytridiomycota Arx                                                                                         :  143  
+ Entomophthoromycota Humber                                                                                  :   37  
+ Entorrhizomycota R. Bauer, Garnica, Oberwinkler, Riess, Weiß & Begerow                                      :    7  
+ SubPhylum                                                                      Class       SubClass      
+ Mode:logical   Agaricomycetes Doweld                                              :49877   Mode:logical  
+ NA's:113533    Sordariomycetes O.E. Erikss. & Winka                               :14734   NA's:113533   
+                Dothideomycetes O.E. Erikss. & Winka                               :13136                 
+                Pucciniomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.   :11992                 
+                Leotiomycetes O.E. Erikss. & Winka                                 :10240                 
+                Myxomycetes G. Winter                                              : 2727                 
+                Ustilaginomycetes R. Bauer, Oberw. & Vánky                         : 2239                 
+                Pezizomycetes O.E. Erikss. & Winka                                 : 1546                 
+                Oomycetes G. Winter                                                : 1230                 
+                                                                                   : 1149                 
+                Exobasidiomycetes Begerow, Stoll & R. Bauer                        :  773                 
+                Dacrymycetes Doweld                                                :  768                 
+                Eurotiomycetes O.E. Erikss. & Winka                                :  493                 
+                Lecanoromycetes O.E. Erikss. & Winka                               :  489                 
+                                                       Order      
+ Agaricales Underw.                                       :24238  
+ Pucciniales Clem. & Shear                                :11873  
+ Helotiales Nannf. 1932                                   : 7639  
+ Polyporales Gäum.                                        : 7612  
+ Russulales Kreisel ex P.M. Kirk, P.F. Cannon & J.C. David: 5568  
+ Hypocreales Lindau 1897                                  : 5295  
+ Mycosphaerellales P.F. Cannon                            : 4970  
+ Pleosporales Luttrell ex Barr 1983                       : 4295  
+ Hymenochaetales Oberw.                                   : 3109  
+ Boletales E.-J. Gilbert                                  : 2944  
+ Xylariales Nannf. 1932                                   : 2900  
+                                                          : 2179  
+ Rhytismatales M.E. Barr ex Minter 1986                   : 2077  
+ Ustilaginales G. Winter 1880                             : 1925  
+                                                                    Family     
+ Pucciniaceae Chevall. 1826                                            : 8715  
+ Mycosphaerellaceae Lindau 1897                                        : 4880  
+ Polyporaceae Fr. ex Corda                                             : 3685  
+                                                                       : 3600  
+ Cortinariaceae R. Heim ex Pouzar 1983                                 : 2989  
+ Nectriaceae Tul. & C. Tul. 1865                                       : 2782  
+ Russulaceae Lotsy 1907                                                : 2487  
+ Rhytismataceae Chevall. 1826                                          : 2062  
+ Hymenochaetaceae Imazeki & Toki 1954                                  : 2045  
+ Mycenaceae Overeem                                                    : 1811  
+ Hymenogastraceae Vittad.                                              : 1803  
+ Entolomataceae Kotl. & Pouzar                                         : 1607  
+ Pleosporaceae Nitschke 1869                                           : 1453  
+ Stereaceae Pilát 1930                                                 : 1416  
+                               PartAffected                Substrate                   BiostatusDescription
+                                     :113437                    :67569                           :44810    
+ ;                                   :    70   ground           : 6247   Endemic                 :17356    
+ ;;                                  :     2   soil             : 5838   Exotic                  :21970    
+ ascocarp in bark of dead twig       :     1   wood             : 1615   Exotic Fully Naturalised:   18    
+ bark                                :     1   dead wood        : 1578   Indigenous              : 3948    
+ base of stem of frond               :     1   litter           : 1560   Non-endemic             :21105    
+ damaged seeds                       :     1   decaying wood    :  938   Uncertain               : 4326    
+ fallen leaf                         :     1   leaves           :  894                                     
+ fallen log                          :     6   rotten wood      :  654                                     
+ fruit rot                           :     1   decorticated wood:  612                                     
+ growing inside hollow of willow tree:     1   log              :  602                                     
+ leaf                                :     1   bark             :  552                                     
+ leaf spot                           :     1   fallen wood      :  517                                     
+ leaves                              :     1   fallen log       :  332                                     
+                              OccurrenceDescription                              VerbatimTaxonName_C2
+                                         :  913                                            :32422    
+ Absent                                  :15593     Nothofagus menziesii                   : 1322    
+ Border intercept                        :    8     Nothofagus                             : 1302    
+ Eradicated                              :   66     Nothofagus fusca                       : 1301    
+ Extinct                                 :    1     Nothofagus solandri var. cliffortioides:  998    
+ Present                                 :88668     Nothofagus solandri                    :  960    
+ Present in captivity/cultivation/culture:   48     Beilschmiedia tawa                     :  886    
+ Recorded in error                       : 3522     Leptospermum scoparium                 :  880    
+ Uncertain                               : 4650     Pinus radiata                          :  796    
+ Wild                                    :   64     Rhopalostylis sapida                   :  687    
+                                                    Kunzea ericoides                       :  680    
+                                                    Nothofagus sp.                         :  650    
+                                                    Weinmannia racemosa                    :  639    
+                                                    Leptospermum ericoides                 :  583    
+                                  TaxonName_C2                  Vernacular_C2   
+                                        :32419                         :113490  
+ Nothofagus                             : 2865   ;                     :    11  
+ Nothofagus menziesii                   : 1872   kopakopa              :     2  
+ Nothofagus fusca                       : 1688   Nashi                 :     2  
+ Nothofagus solandri                    : 1131   Sugarbeet             :     2  
+ Beilschmiedia tawa                     : 1105   'Porin'               :     1  
+ Nothofagus solandri var. cliffortioides: 1076   'Porina'              :     1  
+ Leptospermum scoparium                 : 1015   ;;                    :     1  
+ Rhopalostylis sapida                   : 1001   Akushiba              :     1  
+ Kunzea ericoides                       :  945   banana                :     1  
+ Pinus radiata                          :  886   Boke                  :     1  
+ Agathis australis                      :  844   bracken               :     1  
+ Pinus                                  :  777   egg cases of ?Flatidae:     1  
+ Leptospermum                           :  746   European rabbit       :     1  
+                                  HostId              Family_C2                                 PartAffected_C2  
+                                     :34046                :33792                                       :113437  
+ E7B3A1C2-1721-4441-BB50-C0FD2A734EED: 2865   Nothofagaceae:11136   ;                                   :    70  
+ B8FAC4EF-5014-4629-B0AB-CD4984B33BEB: 1872   Gramineae    : 7053   ;;                                  :     2  
+ 172DDF3F-1D89-4375-909D-0EFAE2F37F9B: 1688   Myrtaceae    : 5958   ascocarp in bark of dead twig       :     1  
+ 079921AA-E1FA-463D-A853-CF4459D12284: 1131   Compositae   : 3594   bark                                :     1  
+ 744947A1-8377-459A-9404-FD1A710D0535: 1105   Leguminosae  : 3455   base of stem of frond               :     1  
+ 7E1DA21A-0E61-4BBA-BBFA-38EBA003328A: 1076   Pinaceae     : 3044   damaged seeds                       :     1  
+ 7BF6DA3C-2E6B-49A2-A446-1A03271B68AC: 1015   Rosaceae     : 2832   fallen leaf                         :     1  
+ 77DAEC42-C272-4961-AD2F-BBAB7314FA0E: 1001   Cyperaceae   : 1741   fallen log                          :     6  
+ 91A48A8D-078C-4873-AFE6-4FAA2F22BD82:  945   Podocarpaceae: 1624   fruit rot                           :     1  
+ A9B7417B-EE41-4F89-A0C5-51D9A80A44D5:  886   Arecaceae    : 1529   growing inside hollow of willow tree:     1  
+ 40967C73-3C4A-41A2-8025-5DA89FBA94A8:  844   Lauraceae    : 1495   leaf                                :     1  
+ 3DE1D7D2-CF91-4D4D-8ADA-1581B1A59687:  777   Rubiaceae    : 1336   leaf spot                           :     1  
+ 9B4178FB-E7EE-4C1A-9956-7FD571F4357E:  746   Ericaceae    : 1303   leaves                              :     1  
+                                                  Substrate_C2    CollectionEventCode CollectionEventMethod
+                                                        :113387   Mode:logical        Mode:logical         
+ ;                                                      :   100   NA's:113533         NA's:113533          
+ ;living leaf                                           :     4                                            
+ leaf;                                                  :     3                                            
+ leaves                                                 :     3                                            
+ soil                                                   :     3                                            
+ wood                                                   :     3                                            
+ ;;                                                     :     2                                            
+ dead wood                                              :     2                                            
+ ;decorticated decaying branch, approx. 2 cm in diameter:     1                                            
+ ;soil                                                  :     1                                            
+ ;under Kunzea ericoides                                :     1                                            
+ bark                                                   :     1                                            
+ climbing on Coprosma                                   :     1                                            
+ CollectionEventContext          VerbatimCollector         StandardCollector  CollectionDateISO  CollectorsRefNumber
+           : 4958       J.M. Dingley      : 8104   Dingley, JM      : 8105             :  2286          :70923      
+ Cultivated:    9       J.A. Cooper       : 5433   Cooper, JA       : 5434   1956-04   :   218   -      :  130      
+ Field     :14710       E.H.C. McKenzie   : 4846   McKenzie, EHC    : 4902   1955-04   :   202   EHCM 18:   17      
+ Reared    :   32       P.R. Johnston     : 4271   Johnston, PR     : 4295   2007-05-10:   190   EHCM 10:   15      
+ Unknown   :93824       R.E. Beever       : 2384   Beever, RE       : 2398   1928-01   :   186   EHCM 1 :   14      
+                        P. Leonard        : 2308   Leonard, P       : 2338   2008-05-13:   178   EHCM 16:   14      
+                        P.K.C. Austwick   : 2271   Austwick, PKC    : 2311   2004-05-14:   170   EHCM 14:   13      
+                                          : 2257                    : 2286   2008-05-15:   169   EHCM 40:   13      
+                        G.H. Cunningham   : 2121   Cunningham, GH   : 2122   2009-05-14:   164   EHCM 49:   13      
+                        R.F.R. McNabb     : 1966   McNabb, RFR      : 1968   2007-05-08:   158   EHCM 19:   12      
+                        C. Shirley        : 1546   Shirley, C       : 1547   1946-11   :   157   EHCM 21:   12      
+                        N. Siegel         : 1352   Siegel, N        : 1352   1954-02   :   157   EHCM 27:   12      
+                        G.C.M. Latch      : 1142   Stephenson, SL   : 1281   2018-05-07:   154   EHCM 35:   12      
+                        G.M. Taylor       : 1017   Latch, GCM       : 1142   1954-11   :   152   EHCM 37:   12      
+                       VerbatimCountry                             Country                 NZAreaCode   
+ New Zealand                   :84539   New Zealand                    :84546                   :29692  
+ Australia                     : 3101   United States                  : 3366   Auckland        :20496  
+ USA                           : 2829   Australia                      : 3106   Mid Canterbury  : 6441  
+ Germany                       : 2657   Germany                        : 2675   Wellington      : 6009  
+ United Kingdom                : 2335   United Kingdom                 : 2336   Nelson          : 5303  
+ Canada                        : 1603   Canada                         : 1603   Taupo           : 4624  
+ Austria                       : 1215   Austria                        : 1215   Bay of Plenty   : 4360  
+ Fiji                          : 1087   Fiji                           : 1087   Buller          : 4079  
+ Cook Islands                  :  995   Cook Islands                   :  996   Northland       : 3954  
+ Solomon Islands               :  877   Solomon Islands                :  877   Coromandel      : 2702  
+ Vanuatu                       :  863   Vanuatu                        :  863   Westland        : 2443  
+ Samoa                         :  778   Samoa                          :  778   Waikato         : 2327  
+ India                         :  736   India                          :  736   Gisborne        : 2103  
+ Tonga                         :  690   Tonga                          :  691   North Canterbury: 2008  
+                                    StandardLocality                                    VerbatimLocality 
+                                            :14666                                              :  3160  
+ Mt Albert Research Centre                  :  670   Mt Albert Research Centre                  :   668  
+ Mt Albert                                  :  656   Mt Albert                                  :   657  
+ Brandenburg                                :  535   Brandenburg                                :   535  
+ Titirangi                                  :  383   Titirangi                                  :   382  
+ Waitakere Ranges                           :  368   Waitakere Ranges                           :   366  
+ Piha                                       :  327   Piha                                       :   326  
+ Palmerston North, DSIR, Grasslands Division:  322   Palmerston North, DSIR, Grasslands Division:   320  
+ Palmerston North                           :  300   Palmerston North                           :   300  
+ Weraroa                                    :  292   Weraroa                                    :   290  
+ Lincoln                                    :  280   Lincoln                                    :   280  
+ Pukekohe                                   :  276   Pukekohe                                   :   276  
+ Huia                                       :  266   Huia                                       :   265  
+ Little Barrier Island                      :  254   Little Barrier Island                      :   253  
+                         GeodeticDatum      MapSheet         Easting         Northing       DecimalLat    
+                                :33710          :112147          :49925          :49927   Min.   :-53.70  
+ New Zealand Geodetic Datum 1949:62709   R26    :   156   2663720:  574   6477510:  573   1st Qu.:-42.36  
+ New Zealand Geodetic Datum 2000:  904   N26    :   153   2663970:  382   6477870:  360   Median :-39.03  
+ World Geodetic System 1984     :16210   R27    :    85   2667610:  306   6477850:  332   Mean   :-36.91  
+                                         S25    :    55   2643720:  283   6483360:  318   3rd Qu.:-36.90  
+                                         CB10   :    39   2847175:  249   6471410:  281   Max.   : 82.52  
+                                         R11    :    39   2647000:  237   6442180:  263   NA's   :27245   
+                                         O27    :    36   2663930:  230   6280075:  249                   
+                                         S26    :    36   2481660:  216   6471940:  233                   
+                                         U18    :    36   2732210:  211   5729560:  222                   
+                                         L27    :    32   2477390:  200   6472390:  222                   
+                                         L30    :    27   2700590:  197   5741880:  214                   
+                                         T12    :    27   2649460:  169   6091180:  209                   
+                                         N27    :    24   2703000:  167   5741490:  201                   
+  DecimalLong            Altitude      AltitudeInMeters 
+ Min.   :-178.4              :107770   Min.   :    0.0  
+ 1st Qu.: 171.9   2000 feet  :   114   1st Qu.:   74.0  
+ Median : 174.5   50 m       :    97   Median :  243.8  
+ Mean   : 161.9   1000 feet  :    95   Mean   :  396.8  
+ 3rd Qu.: 175.1   3000 feet  :    82   3rd Qu.:  630.0  
+ Max.   : 179.3   2500 feet  :    68   Max.   :16760.0  
+ NA's   :27245    100        :    61   NA's   :110236   
+                  215        :    55                    
+                  150        :    52                    
+                  200 m      :    52                    
+                  800 m      :    48                    
+                  280        :    47                    
+                  750 m      :    46                    
+                  1200 feet  :    43                    
+                                                                   MicroHabitat   
+                                                                         :113493  
+ understory                                                              :     4  
+ side of track                                                           :     3  
+                                                                         :     2  
+ under Leptospermum scoparium and Nothofagus solandri var. cliffortioides:     2  
+ `                                                                       :     1  
+ among moss and rotten debris (Dacrydium cupressinum)                    :     1  
+ cut bank                                                                :     1  
+ cut trunk                                                               :     1  
+ dense Beilschmiedia tawa canopy                                         :     1  
+ dried out hollows amongst stand of Juncus luxurians                     :     1  
+ forest edge                                                             :     1  
+ in light well                                                           :     1  
+ living tree branch close to the ground                                  :     1  
+                                Habitat                                                             CollectionEventNotes
+                                    :96247                                                                    :113257   
+ Nothofagus forest                  : 1756   S side of tree 0.75m away from tree                              :    21   
+ Forest                             : 1089   W side of tree - 0.5m away from tree                             :    19   
+ Beech-broadleaved forest           :  933   BioBlitz 2012                                                    :    16   
+ Beech forest                       :  752   Uncommon                                                         :    15   
+ Broadleaved forest                 :  679   SE side of tree - 0.25m away from tree                           :    11   
+ Garden                             :  631   E side of tree - 0.5m away from tree                             :     8   
+ Urban park                         :  528   N side of tree - 1m away from tree                               :     7   
+ Lowland podocarp-broadleaved forest:  379   Moist Chamber Incubated                                          :     6   
+ Broadleaved-podocarp forest        :  348   NE side of tree - 0.5m away from tree                            :     5   
+ Leptospermum scrub                 :  347   same as 78                                                       :     4   
+ Podocarp forest                    :  334   Locally common                                                   :     3   
+ Mixed indigenous scrub             :  293   locally abundant                                                 :     2   
+ Nothofagus-broadleaved forest      :  247   many other species present including grasses ferns and tree-ferns:     2   
+ IsolationDateISO DepositedDateISO DepositorName  DepositorRefNumber  GenBank       Literature       Images     
+ Mode:logical     Mode:logical     Mode:logical   Mode:logical       false:108398   false:109328   false:93010  
+ NA's:113533      NA's:113533      NA's:113533    NA's:113533        true :  5135   true :  4205   true :20523  
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+                                                                                                                
+ [ reached getOption("max.print") -- omitted 11 rows ]

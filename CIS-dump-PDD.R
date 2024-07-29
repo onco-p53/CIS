@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-30-aug-2023.csv",
+PDD.as.imported.df <- read_csv("PDD-export-19-jul-2024.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) %>%
   glimpse()
@@ -105,7 +105,7 @@ PDD.NZ.df %>%
 head(PDD.df)
 
 #save a summary of the data to txt
-PDD.string.factors <- read.csv("PDD-export-30-aug-2023.csv",
+PDD.string.factors <- read.csv("PDD-export-19-jul-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/PDD/PDD-summary.txt')
