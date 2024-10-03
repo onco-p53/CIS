@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-19-jul-2024.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-4-sep-2024.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-19-jul-2024.csv",
+ICMP.string.factors <- read.csv("ICMP-export-4-sep-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -707,16 +707,16 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 #years test, this works and produces a bar chart but not super useful
-ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
-  floor_date(ICMP.df$date.isolated, unit = "year")
+#ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
+#  floor_date(ICMP.df$date.isolated, unit = "year")
 
-ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
-  labs(title = "Isolation dates of ICMP cultures") +
-  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
-  scale_fill_brewer(palette = "Set2") +
-  theme(legend.position = c(0.1, 0.8)) +
-  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
-  geom_bar()  # this is a bin of two years: binwidth=730
+#ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
+#  labs(title = "Isolation dates of ICMP cultures") +
+#  labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
+#  scale_fill_brewer(palette = "Set2") +
+#  theme(legend.position = c(0.1, 0.8)) +
+#  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+#  geom_bar()  # this is a bin of two years: binwidth=730
 
 
 
