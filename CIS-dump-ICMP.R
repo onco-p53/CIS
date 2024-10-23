@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-4-sep-2024.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-23-oct-2024.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -36,7 +36,7 @@ ICMP.df <- ICMP.as.imported.df %>%
   glimpse()
 
 ICMP.NZ.df <- ICMP.df %>%
-  filter(Country == "New Zealand")
+  filter(StandardCountry_CE1 == "New Zealand")
 
 ICMP.types <- ICMP.df %>%
   filter(TypeStatus != "")
@@ -49,7 +49,7 @@ ICMP.types <- ICMP.df %>%
 # may need correction in CIS if TaxonName_C2 = NA, export as a CSV:
 ICMP.dupes <- ICMP.as.imported.df %>%
   get_dupes(AccessionNumber) %>%
-  select(AccessionNumber, dupe_count, CurrentName, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  select(AccessionNumber, dupe_count, CurrentNamePart_C1, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
   filter(is.na(TaxonName_C2)) %>% #comment this out to get all
   write_csv(file='./outputs/ICMP/ICMP.dupes.csv')
 
@@ -57,30 +57,30 @@ ICMP.dupes <- ICMP.as.imported.df %>%
 #setting up per specimen type subsets, with summaries of each specimen type
 ICMP.bacteria <- ICMP.df %>%
   filter(SpecimenType == "Bacterial Culture")
-table(ICMP.bacteria$Phylum) #this is a validation check for misclassified
+table(ICMP.bacteria$Phylum_C1) #this is a validation check for misclassified
 
 
 ICMP.chromist <- ICMP.df %>%
   filter(SpecimenType == "Chromist Culture")
-table(ICMP.chromist$Phylum) #this is a validation check for misclassified
+table(ICMP.chromist$Phylum_C1) #this is a validation check for misclassified
 
 
 ICMP.fungi <- ICMP.df %>%
   filter(SpecimenType == "Fungal Culture")
-table(ICMP.fungi$Phylum) #this is a validation check for misclassified
+table(ICMP.fungi$Phylum_C1) #this is a validation check for misclassified
 
 ICMP.yeast <- ICMP.df %>%
   filter(SpecimenType == "Yeast Culture")
-table(ICMP.yeast$Phylum) #this is a validation check for misclassified
+table(ICMP.yeast$Phylum_C1) #this is a validation check for misclassified
 
 #change this code below to find errors then fix in CIS
 ICMP.fungi %>%
-  select("AccessionNumber", "SpecimenType", "CurrentName", "Phylum" ) %>%
-  filter(Phylum == "Oomycota" | Phylum == "Amoebozoa")
+  select("AccessionNumber", "SpecimenType", "CurrentNamePart_C1", "Phylum_C1" ) %>%
+  filter(Phylum_C1 == "Oomycota" | Phylum_C1 == "Amoebozoa")
 
 ICMP.chromist %>%
-  select("AccessionNumber", "SpecimenType", "CurrentName", "Phylum" ) %>%
-  filter(Phylum == "Ascomycota" | Phylum == "Basidiomycota")
+  select("AccessionNumber", "SpecimenType", "CurrentNamePart_C1", "Phylum_C1" ) %>%
+  filter(Phylum_C1 == "Ascomycota" | Phylum_C1 == "Basidiomycota")
 
 
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-4-sep-2024.csv",
+ICMP.string.factors <- read.csv("ICMP-export-23-oct-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -136,10 +136,10 @@ sapply(ICMP.NZ.df, function(x) length(unique(x)))
 #filters for blank occurrence description
 #then de-duplicate
 ICMP.df |>
-  select(CurrentName, Country, OccurrenceDescription, BiostatusDescription) |> 
-  filter(is.na(OccurrenceDescription)) |> 
+  select(CurrentNamePart_C1, StandardCountry_CE1, OccurrenceDescription_C1, BiostatusDescription_C1) |> 
+  filter(is.na(OccurrenceDescription_C1)) |> 
   distinct() |> 
-  arrange(CurrentName) |> 
+  arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
 
 
@@ -150,7 +150,7 @@ ICMP.df %>%
   filter(GenBank == "FALSE") %>%
   
   
-# de-duplicate on CurrentName where TRUE overrides false
+# de-duplicate on CurrentNamePart_C1 where TRUE overrides false
 
   write_csv(file='./outputs/ICMP/ICMP-unsequenced-species.csv') 
 
@@ -175,7 +175,7 @@ types.table <- ICMP.df %>% # this one gets a types count
   )
 
 NZ.table <- ICMP.df %>% # this one gets a New Zealand count
-  filter(Country == "New Zealand") %>%
+  filter(StandardCountry_CE1 == "New Zealand") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
     NZ = n(), 
@@ -183,7 +183,7 @@ NZ.table <- ICMP.df %>% # this one gets a New Zealand count
   )
 
 NZtype.table <- ICMP.df %>% # NZ and types
-  filter(Country == "New Zealand" & TypeStatus != "") %>%
+  filter(StandardCountry_CE1 == "New Zealand" & TypeStatus != "") %>%
   group_by(SpecimenType) %>%
   dplyr::summarize(
     NZ.Types = n(), 
@@ -205,16 +205,16 @@ ICMP.df %>%
 
 #how to use this to say how many countries?
 ICMP.df %>%
-  select("AccessionNumber", "Country") %>%
+  select("AccessionNumber", "StandardCountry_CE1") %>%
   map_int(n_distinct)
 
 #create a Genus column
 #split out genus by matching everything up to the first space:
-str_view(ICMP.df$CurrentName, "^[a-zA-Z-]*")
+str_view(ICMP.df$CurrentNamePart_C1, "^[a-zA-Z-]*")
 
 #not perfect but ¯\_(ツ)_/¯ now add it as a mutate:
 ICMP.df %>%
-  mutate(Genus = str_extract(CurrentName, "^[a-zA-Z-]*")) %>%
+  mutate(Genus = str_extract(CurrentNamePart_C1, "^[a-zA-Z-]*")) %>%
   glimpse()
 
 
@@ -431,14 +431,14 @@ sort(table(ICMP.df$Family),decreasing=TRUE)[1:11] #top 11 families
 sort(table(ICMP.NZ.df$Family),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
-#Bacterial Phylum
-ggplot(ICMP.bacteria, aes(Phylum)) +
-  labs(title = "ICMP by bacterial phylum") +
+#Bacterial Phylum_C1
+ggplot(ICMP.bacteria, aes(Phylum_C1)) +
+  labs(title = "ICMP by bacterial Phylum_C1") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
-ggsave(file='./outputs/ICMP/ICMP_bacteria-phylum.png', width=10, height=10)
+ggsave(file='./outputs/ICMP/ICMP_bacteria-Phylum_C1.png', width=10, height=10)
 
 #Bacterial Class
 ggplot(ICMP.bacteria, aes(Class)) +
@@ -470,14 +470,14 @@ ggsave(file='./outputs/ICMP/ICMP_bacteria-family.png', width=10, height=20)
 
 # -----  fungal taxon grouping ----- 
 
-#Fungal Phylum
-ggplot(ICMP.fungi, aes(Phylum)) +
-  labs(title = "ICMP by fungal phylum") +
+#Fungal Phylum_C1
+ggplot(ICMP.fungi, aes(Phylum_C1)) +
+  labs(title = "ICMP by fungal Phylum_C1") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(file='./outputs/ICMP/ICMP_fungal-phylum.png', width=10, height=10)
+ggsave(file='./outputs/ICMP/ICMP_fungal-Phylum_C1.png', width=10, height=10)
 
 
 #Fungal Class
@@ -511,24 +511,24 @@ ggsave(print_bars, file='./outputs/ICMP/ICMP_fungal-family.png', width=0, height
 
 #============Other names================
 
-#Yeast Phylum
-ggplot(ICMP.yeast, aes(Phylum)) + 
-  labs(title = "ICMP by yeast phylum") + 
+#Yeast Phylum_C1
+ggplot(ICMP.yeast, aes(Phylum_C1)) + 
+  labs(title = "ICMP by yeast Phylum_C1") + 
   labs(x = "Taxon", y = "number of isolates") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
-ggsave(file='./outputs/ICMP/ICMP_yeast-phylum.png', width=10, height=10)
+ggsave(file='./outputs/ICMP/ICMP_yeast-Phylum_C1.png', width=10, height=10)
 
 
-#Chromist Phylum
-ggplot(ICMP.chromist, aes(Phylum)) +
-  labs(title = "ICMP by chromist phylum") +
+#Chromist Phylum_C1
+ggplot(ICMP.chromist, aes(Phylum_C1)) +
+  labs(title = "ICMP by chromist Phylum_C1") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
-ggsave(file='./outputs/ICMP/ICMP_chromist-phylum.png', width=10, height=10)
+ggsave(file='./outputs/ICMP/ICMP_chromist-Phylum_C1.png', width=10, height=10)
 
 
 
@@ -538,23 +538,23 @@ ggsave(file='./outputs/ICMP/ICMP_chromist-phylum.png', width=10, height=10)
 #names.present.fungi <- subset(ICMP.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 #summary(names.present.fungi, maxsum=40)
 
-#ggplot code for fungal Phylum
+#ggplot code for fungal Phylum_C1
 require(ggplot2)
-p <- ggplot(names, aes(names$Phlum)) + labs(title = "names by phylum") + labs(x = "Taxon", y = "number of names")
+p <- ggplot(names, aes(names$Phlum)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-phylum.png', width=10, height=10)
+ggsave(print_bars, file='names-Phylum_C1.png', width=10, height=10)
 
 
 
-#ggplot code for fungal Phylum
+#ggplot code for fungal Phylum_C1
 require(ggplot2)
-p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription)) + labs(title = "names by phylum") + labs(x = "Taxon", y = "number of names")
+p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-phylum-occurrence.png', width=10, height=10)
+ggsave(print_bars, file='names-Phylum_C1-occurrence.png', width=10, height=10)
 
 
 #ggplot code for Kingdom
@@ -589,15 +589,15 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 count(ICMP.df)
 
 ICMP.df |> 
-  count(Country == "New Zealand")
+  count(StandardCountry_CE1 == "New Zealand")
 
 ICMP.df |> 
-  filter(Country == "New Zealand") |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
   count()
 
 
 countNZ <- ICMP.df |>
-  count(Country == "New Zealand")
+  count(StandardCountry_CE1 == "New Zealand")
 
 #convert to a percentage
 
@@ -608,13 +608,13 @@ countNZp <-(countNZ / count(ICMP.df))*100
 
 
 
-sort(table(ICMP.df$Country),decreasing=TRUE)[1:12] #top 11 countries
+sort(table(ICMP.df$StandardCountry_CE1),decreasing=TRUE)[1:12] #top 11 countries
 
 #ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
-ICMP.10county <- subset(ICMP.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
+ICMP.10county <- subset(ICMP.df, (StandardCountry_CE1 == "New Zealand" | StandardCountry_CE1 == "United States" | StandardCountry_CE1 == "Australia" | StandardCountry_CE1 == "United Kingdom" | StandardCountry_CE1 == "Brazil" | StandardCountry_CE1 == "Thailand" | StandardCountry_CE1 == "China" | StandardCountry_CE1 == "Japan" | StandardCountry_CE1 == "India" | StandardCountry_CE1 == "Italy"))
 
-ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
+ggplot(ICMP.10county, aes(StandardCountry_CE1, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP") +
   labs(x = "Country", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -627,8 +627,8 @@ ggsave(file='./outputs/ICMP/ICMP_country_by_kind.png', width=8, height=4.5)
 
 
 #ggplot code for pacific country
-pacific <- subset(ICMP.df, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
-ggplot(pacific, aes(Country, fill=SpecimenType)) +
+pacific <- subset(ICMP.df, (StandardCountry_CE1 == "Fiji" | StandardCountry_CE1 == "American Samoa" | StandardCountry_CE1 == "Cook Islands" | StandardCountry_CE1 == "Solomon Islands" | StandardCountry_CE1 == "Micronesia" | StandardCountry_CE1 == "New Caledonia" | StandardCountry_CE1 == "Niue" | StandardCountry_CE1 == "Norfolk Island" | StandardCountry_CE1 == "Samoa" | StandardCountry_CE1 == "Vanuatu"))
+ggplot(pacific, aes(StandardCountry_CE1, fill=SpecimenType)) +
   labs(title = "Pacific Countries cultures in the ICMP") +
   labs(x = "Country", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
@@ -640,10 +640,10 @@ ggsave(file='./outputs/ICMP/ICMP-pacific-countries.png', width=10, height=10)
 
 #ggplot code for country
 positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy", "Iran, Islamic Republic Of")
-ICMP.10county.noNZ <- subset(ICMP.df, (Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy") | Country == "Iran, Islamic Republic Of")
-ggplot(ICMP.10county.noNZ, aes(Country, fill=SpecimenType)) +
+ICMP.10county.noNZ <- subset(ICMP.df, (StandardCountry_CE1 == "United States" | StandardCountry_CE1 == "Australia" | StandardCountry_CE1 == "United Kingdom" | StandardCountry_CE1 == "Brazil" | StandardCountry_CE1 == "Thailand" | StandardCountry_CE1 == "China" | StandardCountry_CE1 == "Japan" | StandardCountry_CE1 == "India" | StandardCountry_CE1 == "Italy") | StandardCountry_CE1 == "Iran, Islamic Republic Of")
+ggplot(ICMP.10county.noNZ, aes(StandardCountry_CE1, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP (not including NZ)") +
-  labs(x = "Country", y = "number of isolates") +
+  labs(x = "StandardCountry_CE1", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   scale_fill_brewer(palette = "Set2") +
   geom_bar()+ coord_flip() + scale_x_discrete(limits = positions)
@@ -665,19 +665,19 @@ ggsave(file='./outputs/ICMP/ICMP_country_by_kind_not_nz.png', width=10, height=1
 #all cultures sorted by date. Add a new column date.isolated 
 ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
 arrange(ICMP.df, date.isolated) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") %>%
   slice_head(n=25)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
 ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
 arrange(ICMP.df, date.deposited) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.deposited") %>%
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.deposited") %>%
   slice_head(n=10)
 
 #New Zealand cultures sorted by date. Add a new column date.isolated
 ICMP.NZ.df$date.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 3)
 arrange(ICMP.NZ.df, date.isolated) %>%
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") %>%
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") %>%
   slice_head(n=25)
 
 
@@ -889,7 +889,7 @@ ICMP.df$topcontrib
 #======NZ Maps========
 
 #New Zealand Area codes bar chart
-ICMP.NZ.df <- subset(ICMP.df,(Country == "New Zealand"))
+ICMP.NZ.df <- subset(ICMP.df,(StandardCountry_CE1 == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 ggplot(ICMP.NZ.df, aes(NZAreaCode)) +
   theme_bw() +
@@ -985,7 +985,7 @@ ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 
 library(leaflet)
 
-#factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
+#factpal <- colorFactor(topo.colors(5), magic.df$CurrentNamePart_C1)
 
 factpal <- colorFactor(palette = "Dark2", domain = ICMP.df$SpecimenType)
 
@@ -995,7 +995,7 @@ ICMP.NZ.leaf <- leaflet(ICMP.NZ.df) %>%
   addCircleMarkers(lng = ~DecimalLong, 
                    lat = ~DecimalLat, 
                    popup = ~AccessionNumber,
-                   label = ~CurrentName,
+                   label = ~CurrentNamePart_C1,
                    color = ~factpal(SpecimenType))
 
 #Opening up viewer
@@ -1020,7 +1020,7 @@ ICMP.crosby.leaf <- leaflet(ICMP.NZ.df) %>%
   addCircleMarkers(lng = ~DecimalLong, 
                    lat = ~DecimalLat, 
                    popup = ~AccessionNumber,
-                   label = ~CurrentName,
+                   label = ~CurrentNamePart_C1,
                    color = blues9)
 
 #Opening up viewer
@@ -1093,7 +1093,7 @@ ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
 require(ggplot2)
 require(lubridate)
 date.isolated <-ymd(ICMP.df.kiwifruit$IsolationDateISO, truncated = 1)
-ggplot(ICMP.df.kiwifruit, aes(date.isolated, fill = Country)) +
+ggplot(ICMP.df.kiwifruit, aes(date.isolated, fill = StandardCountry_CE1)) +
   labs(title = "Isolation dates of ex-kiwifruit ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
   theme(legend.position = c(0.1, 0.7)) +
@@ -1174,7 +1174,7 @@ lst <- strsplit(mystring, " ")  # split string on space
 lst[[1]][2] # access second element
 
 names <- c("Keisha", "Mohammed", "Jane", "Mathieu")
-str_view(CurrentName, "^M")
+str_view(CurrentNamePart_C1, "^M")
 
 
 
@@ -1237,7 +1237,7 @@ library(mapdata)
 ICMP.Neofabraea <- ICMP.NZ.df %>%
   filter(NZAreaCode != "Chatham Islands") %>%
   filter(NZAreaCode != "Kermadec Islands") %>%
-  filter(CurrentName == "Neofabraea actinidiae") %>%
+  filter(CurrentNamePart_C1 == "Neofabraea actinidiae") %>%
   filter(TaxonName_C2 != "") %>%
   rename(Host = TaxonName_C2)
 
@@ -1262,8 +1262,8 @@ ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=5, height
 
 # Pseudomonas savastanoi  -----
 savastanoi.df <- ICMP.df %>% 
-  filter(str_detect(CurrentName, "^Pseudomonas savastanoi")) %>% 
-  filter(Country == "New Zealand") %>%
+  filter(str_detect(CurrentNamePart_C1, "^Pseudomonas savastanoi")) %>% 
+  filter(StandardCountry_CE1 == "New Zealand") %>%
   rename(Host = TaxonName_C2) %>%
   mutate(date.isolated = ymd(IsolationDateISO, truncated = 3)) %>%
   glimpse()
@@ -1290,7 +1290,7 @@ nz.sf <- st_read(dsn = "./data/nz-coastlines-topo-150k/nz-coastlines-topo-150k.s
 
 #Transforming to an SF object
 Psilocybe.sf <- ICMP.df %>%
-  filter(str_detect(CurrentName, "^Psilocybe")) %>%
+  filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
   filter(OccurrenceDescription == "Present") %>%
   filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
   st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
@@ -1301,7 +1301,7 @@ Psilocybe.sf <- ICMP.df %>%
 #Plotting - takes a second to execute
 ggplot() +
   geom_sf(data = nz.sf) +
-  geom_sf(data = Psilocybe.sf, aes(colour = CurrentName),
+  geom_sf(data = Psilocybe.sf, aes(colour = CurrentNamePart_C1),
           size = 2, alpha = 0.8, show.legend = TRUE) +
   annotation_scale(location = "br") +
   annotation_north_arrow(location = "tl",
@@ -1318,17 +1318,17 @@ ggsave(file='./outputs/ICMP/Psilocybe-ICMP.pdf', width=8, height=10)
 #now need to filter and make a csv for sharing
 
 ICMP.df %>%
-  filter(Country == "New Zealand") %>%
+  filter(StandardCountry_CE1 == "New Zealand") %>%
   select("AccessionNumber",
          "StandardCollector",
          "CollectionDateISO",
-         "CurrentName",
+         "CurrentNamePart_C1",
          "VerbatimLocality",
          "DecimalLat", 
          "DecimalLong", 
          "BiostatusDescription", 
          "OccurrenceDescription") %>%
-  filter(str_detect(CurrentName, "^Psilocybe")) %>%
+  filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
   write_csv(file='./outputs/ICMP/NZPsilocybe.csv')
 
 
@@ -1339,9 +1339,9 @@ library(leaflet)
 #Reading in csv data
 magic.df <- read.csv("./outputs/ICMP/NZPsilocybe.csv")
 
-#factpal <- colorFactor(topo.colors(5), magic.df$CurrentName)
+#factpal <- colorFactor(topo.colors(5), magic.df$CurrentNamePart_C1)
 
-factpal <- colorFactor(palette = "Dark2", domain = magic.df$CurrentName)
+factpal <- colorFactor(palette = "Dark2", domain = magic.df$CurrentNamePart_C1)
 
 #To show
 head(magic.df)
@@ -1352,8 +1352,8 @@ magic.leaf <- leaflet(magic.df) %>%
   addCircleMarkers(lng = ~DecimalLong, 
                    lat = ~DecimalLat, 
                    popup = ~AccessionNumber,
-                   label = ~CurrentName,
-                   color = ~factpal(CurrentName))
+                   label = ~CurrentNamePart_C1,
+                   color = ~factpal(CurrentNamePart_C1))
 
 #Opening up viewer
 magic.leaf

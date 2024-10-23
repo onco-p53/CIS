@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 4 September 2024"
+date: "data as of 23 October 2024"
 output:
   html_document:
     code_folding: hide
@@ -37,7 +37,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-4-sep-2024.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-23-oct-2024.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )
@@ -83,7 +83,7 @@ types.table <- ICMP.df |> # this one gets a types count
   )
 
 NZ.table <- ICMP.df |> # this one gets a New Zealand count
-  filter(Country == "New Zealand") |>
+  filter(StandardCountry_CE1 == "New Zealand") |>
   group_by(SpecimenType) |>
   dplyr::summarize(
     NZ = n(), 
@@ -91,7 +91,7 @@ NZ.table <- ICMP.df |> # this one gets a New Zealand count
   )
 
 NZtype.table <- ICMP.df |> # NZ and types
-  filter(Country == "New Zealand" & TypeStatus != "") |>
+  filter(StandardCountry_CE1 == "New Zealand" & TypeStatus != "") |>
   group_by(SpecimenType) |>
   dplyr::summarize(
     NZ.Types = n(), 
@@ -122,12 +122,12 @@ This is a count of unique taxa in the collection. Normally this will be the numb
 
 all_species <- ICMP.df |>
   group_by(SpecimenType) |>
-  summarise(Total.taxa = n_distinct(CurrentName))
+  summarise(Total.taxa = n_distinct(CurrentNamePart_C1))
 
 NZ_species <- ICMP.df |>
-  filter(Country == "New Zealand") |>
+  filter(StandardCountry_CE1 == "New Zealand") |>
   group_by(SpecimenType) |>
-  summarise(NZ.taxa = n_distinct(CurrentName))
+  summarise(NZ.taxa = n_distinct(CurrentNamePart_C1))
 
 icmp.species.table <- left_join(all_species, NZ_species) %>%
   bind_rows(summarise(.,
@@ -176,8 +176,8 @@ Extended specimen data is data beyond the basic taxonomic and and location. See:
 
 ```{r Extended specimen data, echo=TRUE}
 
-#make a new column called GeoRef true false off DecimalLat
-ICMP.df$GeoRef <- ifelse(!is.na(ICMP.df$DecimalLat), TRUE, FALSE)
+#make a new column called GeoRef true false off DecimalLatitude_CE1
+ICMP.df$GeoRef <- ifelse(!is.na(ICMP.df$DecimalLatitude_CE1), TRUE, FALSE)
 
 #sub set out the interesting columns using "select" in dpylr
 only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images", "GeoRef")
@@ -247,7 +247,7 @@ ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
 
 #count the number of NZ cultures
 countNZ <- ICMP.df |> 
-  filter(Country == "New Zealand") |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
   count()
 
 #convert to a percentage
@@ -267,7 +267,7 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  geom_point(data = ICMP.df, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1), color = "red", size = 1, alpha = 0.2) +
   coord_fixed(1.3)
   
 ```
@@ -278,11 +278,11 @@ The top 10 countries represented in the ICMP with type of samples are shown belo
 
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "Thailand", "China", "India",  "Italy")
 
-ICMP.10county <- subset(ICMP.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Thailand" | Country == "China" | Country == "Japan" | Country == "India" | Country == "Italy"))
+ICMP.10county <- subset(ICMP.df, (StandardCountry_CE1 == "New Zealand" | StandardCountry_CE1 == "United States" | StandardCountry_CE1 == "Australia" | StandardCountry_CE1 == "United Kingdom" | StandardCountry_CE1 == "Brazil" | StandardCountry_CE1 == "Thailand" | StandardCountry_CE1 == "China" | StandardCountry_CE1 == "Japan" | StandardCountry_CE1 == "India" | StandardCountry_CE1 == "Italy"))
 
-ggplot(ICMP.10county, aes(Country, fill=SpecimenType)) +
+ggplot(ICMP.10county, aes(StandardCountry_CE1, fill=SpecimenType)) +
   labs(title = "Top 10 Countries in the ICMP") +
-  labs(x = "Country", y = "number of cultures") +
+  labs(x = "StandardCountry_CE1", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip() +
@@ -299,17 +299,17 @@ Each of the cultures from New Zealand that have a geocoordinate are plotted belo
 
 ```{r nz map, echo=TRUE, message=FALSE, warning=FALSE}
 
-#ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
+#ICMP.NZ <- subset(ICMP.df,(StandardCountry_CE1 == "New Zealand"))
 
 #ICMP.no.chat <- ICMP.NZ |>
-#  filter(NZAreaCode != "Chatham Islands") |>
-#  filter(NZAreaCode != "Kermadec Islands")
+#  filter(StandardNewZealandAreaCodes_CE1 != "Chatham Islands") |>
+#  filter(StandardNewZealandAreaCodes_CE1 != "Kermadec Islands")
 
 #nz <- map_data("nzHires")
 #ggplot() + 
 #  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
 #  theme_void() +
-#  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = #1, alpha = 0.2, show.legend = FALSE) +
+#  geom_point(data = ICMP.no.chat, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, colour = StandardNewZealandAreaCodes_CE1), size = #1, alpha = 0.2, show.legend = FALSE) +
 #  coord_fixed(1.3)
 
 # Loading in data 
@@ -319,8 +319,8 @@ nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) |>
 
 #Transforming to an SF object
 rhizoNZ.sf <- ICMP.df |>
-  filter(!is.na(DecimalLat)) |> #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) |> #Defining what the coord columns are
+  filter(!is.na(DecimalLatitude_CE1)) |> #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLongitude_CE1", "DecimalLatitude_CE1")) |> #Defining what the coord columns are
   st_set_crs(4326) |> #Telling sf it is in WSG84 projection
   st_transform(2193) |> #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
@@ -328,7 +328,7 @@ rhizoNZ.sf <- ICMP.df |>
 #Plotting - quite slow
 ggplot() +
   geom_sf(data = nz.sf) +
-  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+  geom_sf(data = rhizoNZ.sf, aes(colour = StandardNewZealandAreaCodes_CE1),
           size = 1, alpha = 0.2, show.legend = FALSE) +
   annotation_scale(location = "br") +
   annotation_north_arrow(location = "tl",
@@ -343,11 +343,11 @@ There are various ways to divide Aotearoa New Zealand in regions. The ICMP uses 
 ```{r top NZ area codes, echo=TRUE, warning=FALSE}
 
 #New Zealand Area codes
-ICMP.NZ <- subset(ICMP.df,(Country == "New Zealand"))
+ICMP.NZ <- subset(ICMP.df,(StandardCountry_CE1 == "New Zealand"))
 
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 
-ggplot(ICMP.NZ, aes(NZAreaCode)) +
+ggplot(ICMP.NZ, aes(StandardNewZealandAreaCodes_CE1)) +
   labs(title = "ICMP cultures by NZ region") +
   labs(x = "Crosby Region", y = "number of cultures") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -365,21 +365,21 @@ ggplot(ICMP.NZ, aes(NZAreaCode)) +
 #this is just for data checking e.g. ranking the early ones don't display in the final version
 
 #all cultures sorted by date. Add a new column date.isolated 
-ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
+ICMP.df$date.isolated <- ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
 arrange(ICMP.df, date.isolated) |>
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") |>
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") |>
   slice_head(n=5)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
-ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ICMP.df$date.deposited <- ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 arrange(ICMP.df, date.deposited) |>
-  select("AccessionNumber","SpecimenType", "Country", "date.deposited") |>
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.deposited") |>
   slice_head(n=5)
 
 #New Zealand cultures sorted by date. Add a new column date.isolated
-ICMP.NZ$date.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 3)
+ICMP.NZ$date.isolated <- ymd(ICMP.NZ$ICMPIsolatedDateISO, truncated = 3)
 arrange(ICMP.NZ, date.isolated) |>
-  select("AccessionNumber","SpecimenType", "Country", "date.isolated") |>
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") |>
   slice_head(n=5)
 
 ```
@@ -398,7 +398,7 @@ arrange(ICMP.NZ, date.isolated) |>
 
 #standard all ICMP overtime stats faceted
 
-date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
@@ -413,7 +413,7 @@ ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
 ```{r all deposited dates chart, echo=TRUE, warning=FALSE}
 
 #ICMP deposit date faceted
-date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+date.deposited <-ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
   labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
@@ -428,7 +428,7 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
 ```{r bacteria deposits chart, echo=TRUE, warning=FALSE}
 ICMP.bacteria <- subset(ICMP.df,(SpecimenType == "Bacterial Culture"))
 
-ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
+ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.bacteria, aes(date.deposited)) +
   theme_bw() +
   labs(title = "Date bacterial cultures were deposited in ICMP") +
@@ -450,7 +450,7 @@ less in winter, more in summer trend.
 
 #new month ICMP culture isolated (in NZ)
 attach(ICMP.NZ) 
-month.isolated <- ymd(ICMP.NZ$IsolationDateISO, truncated = 1)
+month.isolated <- ymd(ICMP.NZ$ICMPIsolatedDateISO, truncated = 1)
 mergemonths <- floor_date(month.isolated, unit = "month")
 ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
@@ -471,7 +471,7 @@ Top 10 collectors, isolators, identifiers. This will be better once we get the a
 #should combine these to a single table using full_join ?
 
 #topCollector <- ICMP.df |> 
-#  count(StandardCollector, sort = TRUE) |>
+#  count(StandardCollector_CE1, sort = TRUE) |>
 #  drop_na() |>
 #  slice_head(n=10)
 #
@@ -481,24 +481,24 @@ Top 10 collectors, isolators, identifiers. This will be better once we get the a
 
 #this works but is a bit shit till the agents modules matches names correctly
 topCollector <- ICMP.df |> 
-  count(StandardCollector, sort = TRUE) |>
+  count(StandardCollector_CE1, sort = TRUE) |>
   drop_na() |>
   slice_head(n=10)
 
 topDeterminer <- ICMP.df |> 
-  count(StandardDeterminer, sort = TRUE) |>
+  count(StandardDeterminer_C1, sort = TRUE) |>
   drop_na() |>
   slice_head(n=10)
 
 topDepositor <- ICMP.df |> 
-  count(DepositorName, sort = TRUE) |>
+  count(ICMPDepositorStandardName, sort = TRUE) |>
   drop_na() |>
   slice_head(n=10)
 
 people.table <- full_join(topCollector, topDeterminer, 
-                          by = c("StandardCollector" = "StandardDeterminer" )) |>
+                          by = c("StandardCollector_CE1" = "StandardDeterminer_C1" )) |>
   full_join(topDepositor,
-            by = c("StandardCollector" = "DepositorName" ))
+            by = c("StandardCollector_CE1" = "ICMPDepositorStandardName" ))
 
 people.table
 
@@ -558,13 +558,13 @@ kable(table.security, caption = "table of security levels") #knitr
 
 #table of security levels
 table.security <- ICMP.df |> 
-  group_by(OccurrenceDescription) |>
+  group_by(OccurrenceDescription_C1) |>
   tally()
 kable(table.security, caption = "table of biostatus Occurrence") #knitr
 
 #table of security levels
 table.security <- ICMP.df |> 
-  group_by(BiostatusDescription) |>
+  group_by(BiostatusDescription_C1) |>
   tally()
 kable(table.security, caption = "table of biostatus description") #knitr
 

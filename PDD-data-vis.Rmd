@@ -3,7 +3,7 @@ title: "PDD data visualisation"
 author:
   name: Bevan Weir
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 3 June 2022"
+date: "data as of 7 October 2024"
 output:
   html_document:
     code_folding: hide
@@ -39,7 +39,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-PDD.as.imported.df <- read_csv("PDD-export-3-jun-2024.csv",
+PDD.as.imported.df <- read_csv("PDD-export-7-oct-2024.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 ) |>
@@ -429,15 +429,6 @@ These stats may be useful for curation or data checking for PDD staff.
 ### Last updated user
 
 ```{r last updated user chart, echo=TRUE}
-
-#pie chart by last updated user
-#PDD.df$LastUpdatedBy <- sapply(PDD.df$UpdatedBy, tolower)
-#ggplot(PDD.df, aes(x=factor(1), fill=LastUpdatedBy)) +
-#  labs(title = "Last user to update an PDD record") +
-#  geom_bar(width = 1) +
-#  coord_polar("y") +
-#  theme_void() +
-#  scale_fill_brewer(palette = "Paired")
 
 PDD.df$LastUpdatedBy <- sapply(PDD.df$UpdatedBy, tolower)
 ggplot(PDD.df, aes(LastUpdatedBy, fill = specimen_kind)) +
