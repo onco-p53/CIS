@@ -3,7 +3,7 @@ title: "PDD data visualisation"
 author:
   name: Bevan Weir
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 7 October 2024"
+date: "data as of 11 November 2024"
 output:
   html_document:
     code_folding: hide
@@ -39,30 +39,31 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-PDD.as.imported.df <- read_csv("PDD-export-7-oct-2024.csv",
+PDD.as.imported.df <- read_csv("PDD-export-11-nov-2024.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 ) |>
   distinct(AccessionNumber, .keep_all= TRUE) #remove dupes
 
 PDD.df <- PDD.as.imported.df |>
-mutate(specimen_kind = case_when(Phylum == 'Ascomycota Caval.-Sm.' ~ 'ascomycetes',
-                                 Class == 'Agaricomycetes Doweld' ~ 'mushrooms',
-                                 Class == 'Agaricostilbomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
-                                 Class == 'Atractiellomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'other',
-                                 Class == 'Basidiomycetes G. Winter' ~ 'mushrooms',
-                                 Class == 'Classiculomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss, & Oberw.' ~ 'rusts and smuts',
-                                 Class == 'Cystobasidiomycetes' ~ 'rusts and smuts',
-                                 Class == 'Dacrymycetes Doweld' ~ 'mushrooms',
-                                 Class == 'Entorrhizomycetes' ~ 'other',
-                                 Class == 'Exobasidiomycetes Begerow, Stoll & R. Bauer' ~ 'rusts and smuts',
-                                 Class == 'Microbotryomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
-                                 Class == 'Pucciniomycetes R. Bauer, Begerow, J.P. Samp., M. Weiss & Oberw.' ~ 'rusts and smuts',
-                                 Class == 'Tremellomycetes Doweld' ~ 'mushrooms',
-                                 Class == 'Ustilaginomycetes R. Bauer, Oberw. & Vánky' ~ 'rusts and smuts',
+  mutate(Class_C1 = str_remove(Class_C1, " .*")) |> 
+  mutate(Phylum_C1 = str_remove(Phylum_C1, " .*")) |>
+  mutate(specimen_kind = case_when(Phylum_C1 == 'Ascomycota' ~ 'ascomycetes',
+                                 Class_C1 == 'Agaricomycetes' ~ 'mushrooms',
+                                 Class_C1 == 'Agaricostilbomycetes' ~ 'other',
+                                 Class_C1 == 'Atractiellomycetes' ~ 'other',
+                                 Class_C1 == 'Basidiomycetes' ~ 'mushrooms',
+                                 Class_C1 == 'Classiculomycetes' ~ 'rusts and smuts',
+                                 Class_C1 == 'Cystobasidiomycetes' ~ 'rusts and smuts',
+                                 Class_C1 == 'Dacrymycetes Doweld' ~ 'mushrooms',
+                                 Class_C1 == 'Exobasidiomycetes' ~ 'rusts and smuts',
+                                 Class_C1 == 'Microbotryomycetes' ~ 'rusts and smuts',
+                                 Class_C1 == 'Pucciniomycetes' ~ 'rusts and smuts',
+                                 Class_C1 == 'Tremellomycetes' ~ 'mushrooms',
+                                 Class_C1 == 'Ustilaginomycetes' ~ 'rusts and smuts',
                                  TRUE ~ 'other')) |>
   filter(Deaccessioned == "FALSE")  |> 
-  mutate(date.collected = ymd(CollectionDateISO, truncated = 3))
+  mutate(date.collected = ymd(CollectionDateFromISO_CE1, truncated = 3))
 
 
 #how many specimens are public
@@ -71,7 +72,7 @@ PDD.public <- PDD.as.imported.df |>
 
 #create a NZ filter
 PDD.NZ.df <- PDD.df |>
-  filter(Country == "New Zealand")
+  filter(StandardCountry_CE1 == "New Zealand")
 
 ```
 
@@ -99,7 +100,7 @@ types.table <- PDD.df |> # this one gets a types count
   )
 
 NZ.table <- PDD.df |> # this one gets a New Zealand count
-  filter(Country == "New Zealand") |>
+  filter(StandardCountry_CE1 == "New Zealand") |>
   group_by(specimen_kind) |>
   dplyr::summarize(
     NZ = n(), 
@@ -107,7 +108,7 @@ NZ.table <- PDD.df |> # this one gets a New Zealand count
   )
 
 NZtype.table <- PDD.df |> # NZ and types
-  filter(Country == "New Zealand" & TypeStatus != "") |>
+  filter(StandardCountry_CE1 == "New Zealand" & TypeStatus != "") |>
   group_by(specimen_kind) |>
   dplyr::summarize(
     NZ.Types = n(), 
@@ -202,9 +203,9 @@ Many PDD specimens are associated with a host plant, for example ectomycorrhiza 
 ```{r top 10 host families, echo=TRUE}
 
 #barchart of to 10 host families sorted by 'kind' of type, coloured by kind of organism
-positions.10hosts <- c("Nothofagaceae", "Gramineae", "Myrtaceae", "Compositae", "Leguminosae", "Pinaceae", "Rosaceae", "Cyperaceae", "Podocarpaceae",  "Lauraceae")
+positions.10hosts <- c("Nothofagaceae", "Gramineae", "Myrtaceae", "Compositae", "Leguminosae", "Pinaceae", "Rosaceae", "Cyperaceae", "Podocarpaceae",  "Arecaceae")
 
-PDD.10hosts <- subset(PDD.df, (Family_C2 == "Nothofagaceae" | Family_C2 == "Gramineae" | Family_C2 == "Myrtaceae" | Family_C2 == "Compositae" | Family_C2 == "Leguminosae" | Family_C2 == "Pinaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Cyperaceae" | Family_C2 == "Podocarpaceae" | Family_C2 == "Lauraceae"))
+PDD.10hosts <- subset(PDD.df, (Family_C2 == "Nothofagaceae" | Family_C2 == "Gramineae" | Family_C2 == "Myrtaceae" | Family_C2 == "Compositae" | Family_C2 == "Leguminosae" | Family_C2 == "Pinaceae" | Family_C2 == "Rosaceae" | Family_C2 == "Cyperaceae" | Family_C2 == "Podocarpaceae" | Family_C2 == "Arecaceae"))
 
 
 ggplot(PDD.10hosts, aes(Family_C2, fill=specimen_kind)) +
@@ -231,7 +232,7 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = PDD.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2) +
+  geom_point(data = PDD.df, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1), color = "red", size = 1, alpha = 0.2) +
   coord_fixed(1.3)
   
 ```
@@ -243,16 +244,16 @@ The top 10 countries represented in the PDD with type of samples are shown below
 positions <- c("United States", "Australia", "Germany", "United Kingdom",
                "Canada", "Austria", "Fiji", "Cook Islands",  "Solomon Islands", "Vanuatu")
 
-PDD.10county <- subset(PDD.df, (Country == "United States" |
-                                  Country == "Australia" | Country == "Germany" |
-                                  Country == "United Kingdom" | Country == "Canada" |
-                                  Country == "Austria" | Country == "Fiji" |
-                                  Country == "Cook Islands" | Country == "Solomon Islands" |
-                       Country == "Vanuatu"))
+PDD.10county <- subset(PDD.df, (StandardCountry_CE1 == "United States" |
+                                  StandardCountry_CE1 == "Australia" | StandardCountry_CE1 == "Germany" |
+                                  StandardCountry_CE1 == "United Kingdom" | StandardCountry_CE1 == "Canada" |
+                                  StandardCountry_CE1 == "Austria" | StandardCountry_CE1 == "Fiji" |
+                                  StandardCountry_CE1 == "Cook Islands" | StandardCountry_CE1 == "Solomon Islands" |
+                       StandardCountry_CE1 == "Vanuatu"))
 
-ggplot(PDD.10county, aes(Country, fill=specimen_kind)) +
+ggplot(PDD.10county, aes(StandardCountry_CE1, fill=specimen_kind)) +
   labs(title = "Top 10 Countries in the PDD (other than NZ)") +
-  labs(x = "Country", y = "number of specimens") +
+  labs(x = "StandardCountry_CE1", y = "number of specimens") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip() +
@@ -276,8 +277,8 @@ nz.sf <- st_read(dsn = "./data/coastline/coastline.shp", quiet = TRUE) |>
 
 #Transforming to an SF object
 rhizoNZ.sf <- PDD.df |>
-  filter(!is.na(DecimalLat)) |> #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) |> #Defining what the coord columns are
+  filter(!is.na(DecimalLatitude_CE1)) |> #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLongitude_CE1", "DecimalLatitude_CE1")) |> #Defining what the coord columns are
   st_set_crs(4326) |> #Telling sf it is in WSG84 projection
   st_transform(2193) |> #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
@@ -285,7 +286,7 @@ rhizoNZ.sf <- PDD.df |>
 #Plotting - quite slow
 ggplot() +
   geom_sf(data = nz.sf) +
-  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+  geom_sf(data = rhizoNZ.sf, aes(colour = StandardNewZealandAreaCodes_CE1),
           size = 1, alpha = 0.2, show.legend = FALSE) +
   annotation_scale(location = "br") +
   annotation_north_arrow(location = "tl",
@@ -303,7 +304,7 @@ There are various ways to divide Aotearoa New Zealand in regions. The PDD uses '
 
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
 
-ggplot(PDD.NZ.df, aes(NZAreaCode)) +
+ggplot(PDD.NZ.df, aes(StandardNewZealandAreaCodes_CE1)) +
   labs(title = "PDD specimens by NZ region") +
   labs(x = "Crosby Region", y = "number of specimens") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -323,14 +324,14 @@ ggplot(PDD.NZ.df, aes(NZAreaCode)) +
 #all specimens sorted by date. Add a new column date.collected 
 PDD.df |>
   arrange(date.collected) |>
-  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") |>
+  select("AccessionNumber","specimen_kind", "CurrentNamePart_C1", "StandardCountry_CE1", "date.collected") |>
   slice_head(n=5)
 
 
 #New Zealand specimens sorted by date. Add a new column date.collected
 PDD.NZ.df |>
   arrange(date.collected) |>
-  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected") |>
+  select("AccessionNumber","specimen_kind", "CurrentNamePart_C1", "StandardCountry_CE1", "date.collected") |>
   slice_head(n=5)
 
 ```
@@ -369,7 +370,7 @@ less in winter, more in summer trend.
 ```{r NZ collected month chart, echo=TRUE, message=FALSE, warning=FALSE}
 
 #new month PDD specimen collected (in NZ)
-month.collected <- ymd(PDD.NZ.df$CollectionDateISO, truncated = 1)
+month.collected <- ymd(PDD.NZ.df$CollectionDateFromISO_CE1, truncated = 1)
 mergemonths <- floor_date(month.collected, unit = "month")
 ggplot(PDD.NZ.df, aes(month(mergemonths, label = TRUE), fill = specimen_kind)) +
   labs(title = "Collection month of PDD specimens from NZ") + 
@@ -383,7 +384,7 @@ ggplot(PDD.NZ.df, aes(month(mergemonths, label = TRUE), fill = specimen_kind)) +
 
 ## People
 
-Top 10 collectors, and identifiers. This will be better once we get the agents module working, which will reduce the duplicates and name string variants.
+Top 10 collectors and identifiers of PDD specimens
 
 ```{r top collectors etc., echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -398,19 +399,19 @@ Top 10 collectors, and identifiers. This will be better once we get the agents m
 #      caption = "top collectors") |>
 #  kable_styling("striped", "bordered")
 
-#this works but is a bit shit till the agents modules matches names correctly
+
 topCollector <- PDD.df |> 
-  count(StandardCollector, sort = TRUE) |>
+  count(StandardCollector_CE1, sort = TRUE) |>
   drop_na() |>
   slice_head(n=10)
 
 topDeterminer <- PDD.df |> 
-  count(StandardDeterminer, sort = TRUE) |>
+  count(StandardDeterminer_C1, sort = TRUE) |>
   drop_na() |>
   slice_head(n=10)
 
 people.table <- full_join(topCollector, topDeterminer, 
-                          by = c("StandardCollector" = "StandardDeterminer" ))
+                          by = c("StandardCollector_CE1" = "StandardDeterminer_C1" ))
 
 
 kable(people.table, digits=0, "html",
@@ -460,13 +461,13 @@ kable(table.security, caption = "table of security levels") #knitr
 
 #table of security levels
 table.security <- PDD.df |> 
-  group_by(OccurrenceDescription) |>
+  group_by(OccurrenceDescription_C1) |>
   tally()
 kable(table.security, caption = "table of biostatus Occurrence") #knitr
 
 #table of security levels
 table.security <- PDD.df |> 
-  group_by(BiostatusDescription) |>
+  group_by(BiostatusDescription_C1) |>
   tally()
 kable(table.security, caption = "table of biostatus description") #knitr
 
