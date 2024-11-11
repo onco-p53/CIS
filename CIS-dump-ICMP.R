@@ -507,14 +507,40 @@ ggplot(ICMP.fungi, aes(Family)) +
   coord_flip()
 ggsave(print_bars, file='./outputs/ICMP/ICMP_fungal-family.png', width=0, height=20)
 
+#============Literature================
 
+ICMP.df |> 
+  filter(Literature == "TRUE") |>
+  count(CurrentNamePart_C1, sort = TRUE) |>
+  drop_na() |>
+  slice_head(n=10)
+
+ICMPlit.df <- ICMP.df |> 
+  filter(Literature == "TRUE") |>
+{then filter by these names}
+
+
+#Fungal Family
+ggplot(ICMPlit.df, aes(Family_C1)) +
+  labs(title = "Most cited species") +
+  labs(x = "Taxon", y = "number of isolates") +
+  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
+  geom_bar() + 
+  coord_flip()
+
+#============batches================
+
+ICMP.df |> 
+  count(ICMPBatchesTotal, sort = TRUE) |>
+  drop_na() |>
+  slice_tail(n=10)
 
 #============Other names================
 
 #Yeast Phylum_C1
 ggplot(ICMP.yeast, aes(Phylum_C1)) + 
   labs(title = "ICMP by yeast Phylum_C1") + 
-  labs(x = "Taxon", y = "number of isolates") + 
+  labs(x = "Taxon", y = "number of cultures with a reference") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()

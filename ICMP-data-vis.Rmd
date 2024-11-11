@@ -444,8 +444,6 @@ ggplot(ICMP.bacteria, aes(date.deposited)) +
 
 In the New Zealand autumn, May is the peak mushroom fruiting season explain the number of fungi isolated in this month. In general there is a trend of fewer isolations in Winter and more in Summer. The high numbers in January may be an artifact of a prior way recording the data in the database which if the month was unknown it would be recorded as January.
 
-less in winter, more in summer trend.
-
 ```{r NZ isolated month chart, echo=TRUE, message=FALSE, warning=FALSE}
 
 #new month ICMP culture isolated (in NZ)
@@ -464,9 +462,9 @@ ggplot(ICMP.NZ, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
 
 ## People
 
-Top 10 collectors, isolators, identifiers. This will be better once we get the agents module working, which will reduce the duplicates. Will convert to charts at that time.
+Top 10 collectors, isolators, identifiers
 
-```{r top collectors etc., echo=TRUE, message=FALSE, warning=FALSE}
+```{r top collectors etc., echo=FALSE, message=FALSE, warning=FALSE}
 
 #should combine these to a single table using full_join ?
 
@@ -479,7 +477,6 @@ Top 10 collectors, isolators, identifiers. This will be better once we get the a
 #      caption = "top collectors") |>
 #  kable_styling("striped", "bordered")
 
-#this works but is a bit shit till the agents modules matches names correctly
 topCollector <- ICMP.df |> 
   count(StandardCollector_CE1, sort = TRUE) |>
   drop_na() |>
@@ -500,7 +497,7 @@ people.table <- full_join(topCollector, topDeterminer,
   full_join(topDepositor,
             by = c("StandardCollector_CE1" = "ICMPDepositorStandardName" ))
 
-people.table
+#people.table
 
 kable(people.table, digits=0, #"html",
       #caption = "table of specimen types",

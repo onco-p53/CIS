@@ -499,6 +499,20 @@ arrange(PDD.df, date.collected) %>%
 # Do on recived date and check for any blanks
 #can do a culmalative graph?
 
+
+#first collections by cunningham
+
+
+PDD.df |>
+  mutate(date.collected = ymd(CollectionDateISO, truncated = 3)) |>
+  arrange(date.collected) |>
+  select("AccessionNumber","specimen_kind", "CurrentName", "Country", "date.collected", "StandardCollector") |>
+  filter(Country == "New Zealand") |> 
+  filter(str_detect(StandardCollector, "^Cunningham")) |>
+  slice_head(n=10)
+
+
+
 #phylum to too many lets subset it:
 library(tidyverse)
 PDD.groups <- PDD.df %>%
