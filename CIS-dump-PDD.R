@@ -105,7 +105,7 @@ PDD.NZ.df %>%
 head(PDD.df)
 
 #save a summary of the data to txt
-PDD.string.factors <- read.csv("PDD-export-19-jul-2024.csv",
+PDD.string.factors <- read.csv("PDD-export-11-nov-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/PDD/PDD-summary.txt')
@@ -139,6 +139,38 @@ PDD.df |>
   distinct() |> 
   arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/PDD/PDD-missing-occurrence.csv')
+
+#============No identification================
+
+#filters for blank identification
+#also finds blank name part
+
+PDD.df |>
+  select(AccessionNumber, CurrentNamePart_C1, VerbatimName_C1, TaxonName_C1, StandardCountry_CE1) |> 
+  filter(is.na(CurrentNamePart_C1)) |> 
+  arrange(CurrentNamePart_C1) |> 
+  write_csv(file='./outputs/PDD/PDD-missing-identification.csv')
+
+
+#============Un-sequenced strains================
+
+#chat gpt version, all species from NZ that don't have a sequence
+unsequenced.df <- PDD.df |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
+  distinct(CurrentNamePart_C1, GenBank)
+
+# Identify values that have both TRUE and FALSE  
+to_exclude <- unsequenced.df %>%
+  group_by(CurrentNamePart_C1) %>%
+  filter(n_distinct(GenBank) > 1) %>%
+  pull(CurrentNamePart_C1) %>%
+  unique()
+
+# Filter out those values
+filtered_data <- unsequenced.df |> 
+  filter(!CurrentNamePart_C1 %in% to_exclude) |> 
+  filter(GenBank == "FALSE") |> 
+  write_csv(file='./outputs/PDD/PDD-unsequenced-species.csv') 
 
 #============Bevan's Specimens================
 
@@ -1187,7 +1219,7 @@ unique(PDD.colletot$TaxonName)
 library(leaflet)
 
 #Transforming to an SF object
-Psilocybe.both.leaf.df <- ICMP.PDD.df |> 
+Psilocybe.both.leaf.df <- PDD.df |> 
   filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) |> 
   filter(StandardCountry_CE1 == "New Zealand") |> 
   filter(OccurrenceDescription_C1 == "Present")

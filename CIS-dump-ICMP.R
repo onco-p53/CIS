@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-23-oct-2024.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-14-nov-2024.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-23-oct-2024.csv",
+ICMP.string.factors <- read.csv("ICMP-export-14-nov-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -142,16 +142,36 @@ ICMP.df |>
   arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
 
+#============No identification================
+
+#filters for blank identification
+#also finds blank name part
+
+ICMP.df |>
+  select(AccessionNumber, CurrentNamePart_C1, VerbatimName_C1, TaxonName_C1, StandardCountry_CE1) |> 
+  filter(is.na(CurrentNamePart_C1)) |> 
+  arrange(CurrentNamePart_C1) |> 
+  write_csv(file='./outputs/ICMP/ICMP-missing-identification.csv')
+
 
 #============Un-sequenced strains================
 
-ICMP.df %>%
-  filter(Country == "New Zealand") %>%
-  filter(GenBank == "FALSE") %>%
-  
-  
-# de-duplicate on CurrentNamePart_C1 where TRUE overrides false
+#chat gpt version, all species from NZ that don't have a sequence
+unsequenced.df <- ICMP.df |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
+  distinct(CurrentNamePart_C1, GenBank)
 
+# Identify values that have both TRUE and FALSE  
+to_exclude <- unsequenced.df %>%
+  group_by(CurrentNamePart_C1) %>%
+  filter(n_distinct(GenBank) > 1) %>%
+  pull(CurrentNamePart_C1) %>%
+  unique()
+
+# Filter out those values
+filtered_data <- unsequenced.df |> 
+  filter(!CurrentNamePart_C1 %in% to_exclude) |> 
+  filter(GenBank == "FALSE") |> 
   write_csv(file='./outputs/ICMP/ICMP-unsequenced-species.csv') 
 
 
@@ -217,6 +237,29 @@ ICMP.df %>%
   mutate(Genus = str_extract(CurrentNamePart_C1, "^[a-zA-Z-]*")) %>%
   glimpse()
 
+#============Text mining stats================
+
+
+unwanted.table <- ICMP.df |> 
+  filter(str_detect(SpecimenFlags, "Unwanted")) |> 
+  group_by(SpecimenType) |> 
+  dplyr::summarize(
+    NZ = n(), 
+    .groups = "drop"
+  )
+
+unwanted.table
+
+unwanted.df <- ICMP.df |> 
+  filter(str_detect(SpecimenFlags, "Unwanted")) |> 
+  filter(str_detect(CurrentNamePart_C1, "PDD")) |> 
+  write_csv(file='./outputs/ICMP/ICMP_unwanted_cultures.csv')
+
+unwanted.df <- ICMP.df |> 
+  filter(str_detect(SpecimenFlags, "Unwanted")) |> 
+  distinct(CurrentNamePart_C1) |> 
+  write_csv(file='./outputs/ICMP/ICMP_unwanted_species.csv')
+
 
 #============Type cultures================
 
@@ -269,6 +312,24 @@ ggplot(ICMP.types, aes(TypeStatus, fill=GenBank)) +
   geom_bar() +
   coord_flip()
 ggsave(file='./outputs/ICMP/ICMP.types.with.sequence.png', width=10, height=10)
+
+#depositors of types
+
+ICMP.types |> 
+  
+sort(table(ICMP.types$ICMPDepositorStandardName),decreasing=TRUE)[1:30]
+
+  
+
+
+sort(table(ICMP.types$ICMPDepositorStandardName),decreasing=TRUE)[1:12]
+
+
+ICMP.dupes <- ICMP.as.imported.df %>%
+  get_dupes(AccessionNumber) %>%
+  select(AccessionNumber, dupe_count, CurrentNamePart_C1, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  filter(is.na(TaxonName_C2)) %>% #comment this out to get all
+  write_csv(file='./outputs/ICMP/ICMP.dupes.csv')
 
 
 #============PIE CHART!================
@@ -689,9 +750,11 @@ ggsave(file='./outputs/ICMP/ICMP_country_by_kind_not_nz.png', width=10, height=1
 #should make a tibble of the below
 
 #all cultures sorted by date. Add a new column date.isolated 
-ICMP.df$date.isolated <- ymd(ICMP.df$IsolationDateISO, truncated = 3)
-arrange(ICMP.df, date.isolated) %>%
-  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") %>%
+ICMP.df$date.isolated <- ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
+arrange(ICMP.df, date.isolated) |> 
+  select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated", "CurrentNamePart_C1") |> 
+  filter(str_detect(CurrentNamePart_C1, "(^Ralstonia)")) |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
   slice_head(n=25)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
@@ -701,7 +764,7 @@ arrange(ICMP.df, date.deposited) %>%
   slice_head(n=10)
 
 #New Zealand cultures sorted by date. Add a new column date.isolated
-ICMP.NZ.df$date.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 3)
+ICMP.NZ.df$date.isolated <- ymd(ICMP.NZ.df$ICMPIsolatedDateISO, truncated = 3)
 arrange(ICMP.NZ.df, date.isolated) %>%
   select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.isolated") %>%
   slice_head(n=25)
@@ -709,7 +772,7 @@ arrange(ICMP.NZ.df, date.isolated) %>%
 
 
 #new month ICMP culture isolated (in NZ)
-month.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 1)
+month.isolated <- ymd(ICMP.NZ.df$ICMPIsolatedDateISO, truncated = 1)
 mergemonths <- floor_date(month.isolated, unit = "month")
 ggplot(ICMP.NZ.df, aes(month(mergemonths, label = TRUE), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
@@ -721,7 +784,7 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 #new week ICMP culture isolated (in NZ)
-week.isolated <- ymd(ICMP.NZ.df$IsolationDateISO, truncated = 0)
+week.isolated <- ymd(ICMP.NZ.df$ICMPIsolatedDateISO, truncated = 0)
 mergeweeks <- round_date(week.isolated, unit = "week")
 ggplot(ICMP.NZ.df, aes(isoweek(mergeweeks), fill = SpecimenType)) +
   labs(title = "Isolation month of ICMP cultures from NZ") + 
@@ -733,7 +796,7 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 #years test, this works and produces a bar chart but not super useful
-#ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
+#ICMP.df$date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3) %>%
 #  floor_date(ICMP.df$date.isolated, unit = "year")
 
 #ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
@@ -748,7 +811,7 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 
-ICMP.df$date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3) %>%
+ICMP.df$date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3) %>%
   floor_date(ICMP.df$date.isolated, unit = "year")
 
 ICMP.df$date.isolated
@@ -758,7 +821,7 @@ ICMP.df$date.isolated
 
 #ICMP isolation dates playing with plotting
 #could do a histogram with a wider binned freqpoly as a 'trendline'
-date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType, colour = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
@@ -797,7 +860,7 @@ ggsave(file='./outputs/ICMP/ICMP-total-deposits-smoothed.png', width=8, height=5
 
 
 #ICMP isolation dates 
-date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   theme_bw()+
   labs(title = "Isolation dates of ICMP cultures") +
@@ -810,7 +873,7 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-dates.png', width=8, height=5)
 
 
 #ICMP isolation dates faceted
-date.isolated <-ymd(ICMP.df$IsolationDateISO, truncated = 3)
+date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
   labs(title = "Isolation dates of ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
@@ -1118,7 +1181,7 @@ ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
 #standard all ICMP overtime stats
 require(ggplot2)
 require(lubridate)
-date.isolated <-ymd(ICMP.df.kiwifruit$IsolationDateISO, truncated = 1)
+date.isolated <-ymd(ICMP.df.kiwifruit$ICMPIsolatedDateISO, truncated = 1)
 ggplot(ICMP.df.kiwifruit, aes(date.isolated, fill = StandardCountry_CE1)) +
   labs(title = "Isolation dates of ex-kiwifruit ICMP cultures") +
   labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") +
@@ -1253,7 +1316,7 @@ ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
 
 #======Special cases========
 
-# Neofabraea actinidiae -----
+## Neofabraea actinidiae -----
 
 #the map has an issue as a work around remove the Chatham islands
 
@@ -1286,12 +1349,12 @@ ggplot() +
 ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=5, height=5, limitsize = FALSE)
 
 
-# Pseudomonas savastanoi  -----
+## Pseudomonas savastanoi  -----
 savastanoi.df <- ICMP.df %>% 
   filter(str_detect(CurrentNamePart_C1, "^Pseudomonas savastanoi")) %>% 
   filter(StandardCountry_CE1 == "New Zealand") %>%
   rename(Host = TaxonName_C2) %>%
-  mutate(date.isolated = ymd(IsolationDateISO, truncated = 3)) %>%
+  mutate(date.isolated = ymd(ICMPIsolatedDateISO, truncated = 3)) %>%
   glimpse()
 
 #Calculate savastanoi isolation dates
@@ -1307,7 +1370,7 @@ ggsave(file='./outputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
 
 
 
-# magic mushrooms -----
+## magic mushrooms -----
 
 # Loading in data 
 #Reading in a NZ specific map
@@ -1393,4 +1456,15 @@ ICMP.df |>
   select("VerbatimName") |> 
   head(n=22) |> 
   print(n = 22)
+
+##======Ralstonia========
+
+
+# import and filter for only Ralstonia, detect "race 3" which is an important pathgen
+ralstonia.race3.df <- ICMP.df |> 
+  filter(str_detect(CurrentNamePart_C1, "(^Ralstonia)")) |> 
+  filter(Deaccessioned == "FALSE") |> 
+  select(AccessionNumber, CurrentNamePart_C1, StandardCountry_CE1, SpecimenNotes) |>
+  filter(str_detect(SpecimenNotes, regex("race 3", ignore_case = TRUE))) |>
+  write_csv(file='./outputs/ICMP/ralstonia-race3.csv')
 

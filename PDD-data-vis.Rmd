@@ -27,8 +27,8 @@ library(mapdata)
 library(dplyr)
 library(knitr)
 library(kableExtra)
-library(sf) #Simple feature
-library(ggspatial) #Add's fancy shit to the map
+library(sf)
+library(ggspatial)
 
 ```
 
@@ -365,8 +365,6 @@ ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
 
 In the New Zealand autumn, May is the peak mushroom fruiting season explain the number of fungi collected in this month. In general there is a trend of fewer Collections in Winter and more in Summer. The high numbers in January may be an artifact of a prior way recording the data in the database which if the month was unknown it would be recorded as January.
 
-less in winter, more in summer trend.
-
 ```{r NZ collected month chart, echo=TRUE, message=FALSE, warning=FALSE}
 
 #new month PDD specimen collected (in NZ)
@@ -489,4 +487,4 @@ This table shows the first few rows of the full dataset. use the arrows to explo
  
 ```
 
-This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.
+This document was compiled on `r date()` using R `r getRversion()`, ggplot2 `r packageVersion("ggplot2")`, and knitr `r packageVersion("knitr")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.

@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 23 October 2024"
+date: "data as of 14 November 2024"
 output:
   html_document:
     code_folding: hide
@@ -37,7 +37,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-23-oct-2024.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-14-nov-2024.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )
@@ -151,6 +151,8 @@ ICMP.types <- subset(ICMP.df,!(TypeStatus == ""))
 ```
 
 The ICMP has **`r count(ICMP.types)` type cultures** cultures. There are different 'kinds' of types. Bacterial types are 'type strains', bacterial pathovars are 'pathotype strains'. Fungal type cultures may have been isolated from (*ex*) a type specimen (e.g. from PDD) and are thus 'ex types'.
+
+Only `r round((217/1019)*100, digits = 0)`% of the types are from New Zealand.
 
 ```{r types chart, echo=TRUE}
 
@@ -583,4 +585,4 @@ This table shows the first few rows of the full dataset. use the arrows to explo
  
 ```
 
-This document was compiled on `r date()` using R version `r getRversion()` and Tidyverse version `r packageVersion("tidyverse")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.
+This document was compiled on `r date()` using R `r getRversion()`, ggplot2 `r packageVersion("ggplot2")`, and knitr `r packageVersion("knitr")`. All figures and code are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) attributed to Bevan Weir. Source code is available at <https://github.com/onco-p53/CIS>.
