@@ -1,5 +1,5 @@
 ## R Script to process data exported from the CIS databases ##
-# Author: B.S. Weir (2017-2022)
+# Author: B.S. Weir (2017-2025)
 
 #============Load all the packages needed================
 
@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-14-nov-2024.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-3-jan-2025.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -26,13 +26,13 @@ ICMP.as.imported.df <- read_csv("ICMP-export-14-nov-2024.csv", #also line 99
 
 
 #tidyverse way of sub setting - remove viruses and deaccessioned cultures
-ICMP.df <- ICMP.as.imported.df %>%
-  distinct(AccessionNumber, .keep_all= TRUE) %>% #remove dupes
+ICMP.df <- ICMP.as.imported.df |> 
+  distinct(AccessionNumber, .keep_all= TRUE) |>  #remove dupes
   filter(SpecimenType == "Bacterial Culture" | 
            SpecimenType == "Chromist Culture" | 
            SpecimenType == "Fungal Culture" | 
-           SpecimenType == "Yeast Culture") %>%
-  filter(Deaccessioned == "FALSE") %>%
+           SpecimenType == "Yeast Culture") |> 
+  filter(Deaccessioned == "FALSE") |> 
   glimpse()
 
 ICMP.NZ.df <- ICMP.df %>%
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-14-nov-2024.csv",
+ICMP.string.factors <- read.csv("ICMP-export-18-dec-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -154,7 +154,7 @@ ICMP.df |>
   write_csv(file='./outputs/ICMP/ICMP-missing-identification.csv')
 
 
-#============Un-sequenced strains================
+#============Un-sequenced species================
 
 #chat gpt version, all species from NZ that don't have a sequence
 unsequenced.df <- ICMP.df |> 
@@ -230,14 +230,16 @@ ICMP.df %>%
 
 #create a Genus column
 #split out genus by matching everything up to the first space:
-str_view(ICMP.df$CurrentNamePart_C1, "^[a-zA-Z-]*")
+#not working
+# str_view(ICMP.df$CurrentNamePart_C1, "^[a-zA-Z-]*") 
 
 #not perfect but ¯\_(ツ)_/¯ now add it as a mutate:
-ICMP.df %>%
-  mutate(Genus = str_extract(CurrentNamePart_C1, "^[a-zA-Z-]*")) %>%
-  glimpse()
+#not working
+#ICMP.df %>%
+#  mutate(Genus = str_extract(CurrentNamePart_C1, "^[a-zA-Z-]*")) %>%
+#  glimpse()
 
-#============Text mining stats================
+#============Unwanted orgs================
 
 
 unwanted.table <- ICMP.df |> 
@@ -315,16 +317,6 @@ ggsave(file='./outputs/ICMP/ICMP.types.with.sequence.png', width=10, height=10)
 
 #depositors of types
 
-ICMP.types |> 
-  
-sort(table(ICMP.types$ICMPDepositorStandardName),decreasing=TRUE)[1:30]
-
-  
-
-
-sort(table(ICMP.types$ICMPDepositorStandardName),decreasing=TRUE)[1:12]
-
-
 ICMP.dupes <- ICMP.as.imported.df %>%
   get_dupes(AccessionNumber) %>%
   select(AccessionNumber, dupe_count, CurrentNamePart_C1, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
@@ -401,26 +393,7 @@ ggsave(file='./outputs/ICMP/extended-specimen-images.png', width=7, height=7)
 #Add code here from the rmd file for faceted graph
 
 
-```{r Extended specimen data, echo=TRUE}
 
-#make a new column called GeoRef true false off DecimalLat
-ICMP.df$GeoRef <- ifelse(!is.na(ICMP.df$DecimalLat), TRUE, FALSE)
-
-#sub set out the interesting columns using "select" in dpylr
-only.ext.specimen <- select(ICMP.df, "AccessionNumber","SpecimenType", "GenBank", "Literature", "Images", "GeoRef")
-
-#create two new columns using "pivot_longer" into a tibble table
-tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:6, names_to="ExtendedSpecimen", values_to="present")
-
-# ** Cultures with extended specimen data
-ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
-  labs(title = "Cultures with DNA sequences, georeferences, images, and citations in literature") +
-  labs(x = "extended specimen data", y = "proportion of cultures with this data") +
-  theme_bw() +
-  scale_fill_brewer(palette = "Paired") +
-  geom_bar(position = "fill")
-
-```
 
 
 
@@ -437,7 +410,7 @@ ggsave(file='./outputs/ICMP/ICMP_kingdoms.png', width=7, height=7)
 
 
 #Occurrence in NZ
-ggplot(ICMP.df, aes(SpecimenType, fill=OccurrenceDescription)) +
+ggplot(ICMP.df, aes(SpecimenType, fill=OccurrenceDescription_C1)) +
   labs(title = "Cultures in the ICMP by occurrence in NZ") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -448,7 +421,7 @@ ggsave(file='./outputs/ICMP/ICMP_kingdoms_occurrence.png', width=7, height=7)
 
 
 #Occurrence in NZ
-ggplot(ICMP.df, aes(OccurrenceDescription, fill=SpecimenType)) +
+ggplot(ICMP.df, aes(OccurrenceDescription_C1, fill=SpecimenType)) +
   labs(title = "Cultures in the ICMP by occurrence in NZ") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -488,8 +461,8 @@ ggsave(file='./outputs/ICMP/ICMP_kingdoms_updated_by.png', width=7, height=7)
 
 # ----- bacterial taxon grouping -----
 
-sort(table(ICMP.df$Family),decreasing=TRUE)[1:11] #top 11 families
-sort(table(ICMP.NZ.df$Family),decreasing=TRUE)[1:11] #top 11 NZ families
+sort(table(ICMP.df$Family_C1),decreasing=TRUE)[1:11] #top 11 families
+sort(table(ICMP.NZ.df$Family_C1),decreasing=TRUE)[1:11] #top 11 NZ families
 
 
 #Bacterial Phylum_C1
@@ -502,7 +475,7 @@ ggplot(ICMP.bacteria, aes(Phylum_C1)) +
 ggsave(file='./outputs/ICMP/ICMP_bacteria-Phylum_C1.png', width=10, height=10)
 
 #Bacterial Class
-ggplot(ICMP.bacteria, aes(Class)) +
+ggplot(ICMP.bacteria, aes(Class_C1)) +
   labs(title = "ICMP by bacterial class") +
   labs(x = "Taxon", y = "number of isolates") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -511,7 +484,7 @@ ggplot(ICMP.bacteria, aes(Class)) +
 ggsave(file='./outputs/ICMP/ICMP_bacteria-class.png', width=10, height=10)
 
 #Bacterial Order
-ggplot(ICMP.bacteria, aes(Order)) +
+ggplot(ICMP.bacteria, aes(Order_C1)) +
   labs(title = "ICMP by bacterial order") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -520,7 +493,7 @@ ggplot(ICMP.bacteria, aes(Order)) +
 ggsave(file='./outputs/ICMP/ICMP_bacteria-order.png', width=10, height=10)
 
 #Bacterial Family
-ggplot(ICMP.bacteria, aes(Family)) +
+ggplot(ICMP.bacteria, aes(Family_C1)) +
   labs(title = "ICMP by bacterial family") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -542,7 +515,7 @@ ggsave(file='./outputs/ICMP/ICMP_fungal-Phylum_C1.png', width=10, height=10)
 
 
 #Fungal Class
-ggplot(ICMP.fungi, aes(Class)) +
+ggplot(ICMP.fungi, aes(Class_C1)) +
   labs(title = "ICMP by fungal class") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -551,7 +524,7 @@ ggplot(ICMP.fungi, aes(Class)) +
 ggsave(file='./outputs/ICMP/ICMP_fungal-class.png', width=10, height=10)
 
 #Fungal Order
-ggplot(ICMP.fungi, aes(Order)) + 
+ggplot(ICMP.fungi, aes(Order_C1)) + 
   labs(title = "ICMP by fungal order") + 
   labs(x = "Taxon", y = "number of isolates") + 
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
@@ -560,13 +533,13 @@ ggplot(ICMP.fungi, aes(Order)) +
 ggsave(file='./outputs/ICMP/ICMP_fungal-order.png', width=10, height=20)
 
 #Fungal Family
-ggplot(ICMP.fungi, aes(Family)) +
+ggplot(ICMP.fungi, aes(Family_C1)) +
   labs(title = "ICMP by fungal family") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
   geom_bar() + 
   coord_flip()
-ggsave(print_bars, file='./outputs/ICMP/ICMP_fungal-family.png', width=0, height=20)
+ggsave(file='./outputs/ICMP/ICMP_fungal-family.png', width=10, height=20)
 
 #============Literature================
 
@@ -622,7 +595,7 @@ ggsave(file='./outputs/ICMP/ICMP_chromist-Phylum_C1.png', width=10, height=10)
 
 
 # fungi present in NZ
-#names.present.fungi <- subset(ICMP.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+#names.present.fungi <- subset(ICMP.df,(Kingdom == "Fungi" & OccurrenceDescription_C1 == "Present"))
 #summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum_C1
@@ -637,7 +610,7 @@ ggsave(print_bars, file='names-Phylum_C1.png', width=10, height=10)
 
 #ggplot code for fungal Phylum_C1
 require(ggplot2)
-p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
+p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription_C1)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -646,7 +619,7 @@ ggsave(print_bars, file='names-Phylum_C1-occurrence.png', width=10, height=10)
 
 #ggplot code for Kingdom
 require(ggplot2)
-p <- ggplot(names, aes(names$Kingdom, fill=OccurrenceDescription)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
+p <- ggplot(names, aes(names$Kingdom, fill=OccurrenceDescription_C1)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -664,7 +637,7 @@ ggsave(print_bars, file='names-Kindom-biostatus.png', width=10, height=10)
 
 #ggplot code for Fungal Family present in NZ
 require(ggplot2)
-p <- ggplot(names.present.fungi, aes(names.present.fungi$Family)) + labs(title = "names by family in NZ") + labs(x = "Taxon", y = "number of species")
+p <- ggplot(names.present.fungi, aes(names.present.fungi$Family_C1)) + labs(title = "names by family in NZ") + labs(x = "Taxon", y = "number of species")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -1169,7 +1142,7 @@ ggplot(ICMP.10hosts, aes(Family_C2, fill=SpecimenType)) +
 #kiwifruit
 require(ggplot2)
 ICMP.df.kiwifruit <- subset(ICMP.bacteria,(Family_C2 == "Actinidiaceae" ))
-ggplot(ICMP.df.kiwifruit, aes(Family)) +
+ggplot(ICMP.df.kiwifruit, aes(Family_C2)) +
   labs(title = "Family of microbes on kiwifruit in the ICMP") +
   labs(x = "Taxon", y = "number of isolates") +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
@@ -1205,7 +1178,7 @@ ggsave(file='ICMP_Myrtaceae-genbank.png', width=8, height=5)
 
 #Family of 'microbe' on NZ Myrtaceae in the ICMPt
 ICMP.df.Myrtaceae <- subset(ICMP.NZ.df,(Family_C2 == "Myrtaceae"))
-ggplot(ICMP.df.Myrtaceae, aes(Family, fill=SpecimenType)) + #fill by type
+ggplot(ICMP.df.Myrtaceae, aes(Family_C1, fill=SpecimenType)) + #fill by type
   labs(title = "Family of 'microbe' on NZ Myrtaceae in the ICMP") +
   labs(x = "Family", y = "number of isolates") +
   geom_bar() +
@@ -1380,7 +1353,7 @@ nz.sf <- st_read(dsn = "./data/nz-coastlines-topo-150k/nz-coastlines-topo-150k.s
 #Transforming to an SF object
 Psilocybe.sf <- ICMP.df %>%
   filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
-  filter(OccurrenceDescription == "Present") %>%
+  filter(OccurrenceDescription_C1 == "Present") %>%
   filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
   st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
   st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
@@ -1416,7 +1389,7 @@ ICMP.df %>%
          "DecimalLat", 
          "DecimalLong", 
          "BiostatusDescription", 
-         "OccurrenceDescription") %>%
+         "OccurrenceDescription_C1") %>%
   filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
   write_csv(file='./outputs/ICMP/NZPsilocybe.csv')
 
@@ -1457,7 +1430,7 @@ ICMP.df |>
   head(n=22) |> 
   print(n = 22)
 
-##======Ralstonia========
+#======Ralstonia========
 
 
 # import and filter for only Ralstonia, detect "race 3" which is an important pathgen
@@ -1467,4 +1440,100 @@ ralstonia.race3.df <- ICMP.df |>
   select(AccessionNumber, CurrentNamePart_C1, StandardCountry_CE1, SpecimenNotes) |>
   filter(str_detect(SpecimenNotes, regex("race 3", ignore_case = TRUE))) |>
   write_csv(file='./outputs/ICMP/ralstonia-race3.csv')
+
+
+#======Updates for other culture collections========
+
+# find what columns we should be searching:
+# Identify columns containing the text "ncppb"
+columns_with_text <- which(apply(ICMP.df, 2, function(col) any(grepl("ncppb", col, ignore.case = TRUE))))
+# Get the column names
+column_names <- names(ICMP.df)[columns_with_text]
+# Print the results
+if (length(column_names) > 0) {
+  cat("The text 'ncppb' appears in the following columns:\n")
+  print(column_names)
+} else {
+  cat("The text 'ncppb' does not appear in any column.\n")
+}
+
+ICMP.df |> 
+  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
+         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
+         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
+         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
+  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
+  filter(str_detect(ICMPDepositorName, regex("ncppb", ignore_case = TRUE)) |
+                      str_detect(Duplicates, regex("ncppb", ignore_case = TRUE)) |
+                      str_detect(ICMPDepositorRefNumber, regex("ncppb", ignore_case = TRUE))
+                      ) |> 
+  write_csv(file='./outputs/ICMP/NCPPB-identifications.csv')
+
+ICMP.df |> 
+  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
+         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
+         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
+         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
+  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
+  filter(str_detect(ICMPDepositorName, regex("CBS", ignore_case = TRUE)) |
+           str_detect(Duplicates, regex("CBS", ignore_case = TRUE)) |
+           str_detect(ICMPDepositorRefNumber, regex("CBS", ignore_case = TRUE))
+  ) |> 
+  write_csv(file='./outputs/ICMP/CBS-identifications.csv')
+
+ICMP.df |> 
+  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
+         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
+         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
+         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
+  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
+  filter(str_detect(ICMPDepositorName, regex("NRRL", ignore_case = TRUE)) |
+           str_detect(Duplicates, regex("NRRL", ignore_case = TRUE)) |
+           str_detect(ICMPDepositorRefNumber, regex("NRRL", ignore_case = TRUE))
+  ) |> 
+  write_csv(file='./outputs/ICMP/NRRL-identifications.csv')
+
+ICMP.df |> 
+  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
+         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
+         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
+         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
+  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
+  filter(str_detect(ICMPDepositorName, regex("DAF", ignore_case = TRUE)) |
+           str_detect(Duplicates, regex("DAF", ignore_case = TRUE)) |
+           str_detect(ICMPDepositorRefNumber, regex("DAF", ignore_case = TRUE))
+  ) |> 
+  write_csv(file='./outputs/ICMP/DAF-identifications.csv')
+
+#======Make cultures public========
+
+#alternately comment out the last two filter lines
+ICMP.df |> 
+  select(AccessionNumber, SpecimenSecurityLevelText, Deaccessioned, CurrentNamePart_C1,
+         ICMPDepositorName, CreatedBy, CreatedDate, ICMPBatchesLastStorageDate,
+         ICMPBatches, SpecimenFlags) |> 
+  filter(SpecimenSecurityLevelText == "Collection Staff Only") |> 
+  filter(str_detect(ICMPBatches, regex("/+", ignore_case = TRUE))) |>
+  filter(str_detect(SpecimenFlags, regex("completed", ignore_case = TRUE))) |>
+  write_csv(file='./outputs/ICMP/make-public.csv')
+
+#======Cultures with sequence not uploaded========
+
+#search for 16S in ID notes, but not those with genbank true  
+ICMP.df |> 
+  select(AccessionNumber, SpecimenType, TypeStatus, CurrentNamePart_C1,
+         IdentifiersNote_C1, GenBank) |> 
+  filter(GenBank == "FALSE") |> 
+  filter(str_detect(IdentifiersNote_C1, regex("16S", ignore_case = TRUE))) |>
+  write_csv(file='./outputs/ICMP/bacteria-seq-not_uploaded.csv')
+
+#search for ITS in ID notes, but not those with genbank true  
+ICMP.df |> 
+  select(AccessionNumber, SpecimenType, TypeStatus, CurrentNamePart_C1,
+         IdentifiersNote_C1, GenBank) |> 
+  filter(GenBank == "FALSE") |> 
+  filter(str_detect(IdentifiersNote_C1, regex("ITS", ignore_case = TRUE))) |>
+  write_csv(file='./outputs/ICMP/fungi-seq-not_uploaded.csv') 
+
+
 
