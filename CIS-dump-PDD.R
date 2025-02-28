@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-11-nov-2024.csv",
+PDD.as.imported.df <- read_csv("PDD-export-28-feb-2025.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) |>
   glimpse()
@@ -105,7 +105,7 @@ PDD.NZ.df %>%
 head(PDD.df)
 
 #save a summary of the data to txt
-PDD.string.factors <- read.csv("PDD-export-11-nov-2024.csv",
+PDD.string.factors <- read.csv("PDD-export-18-dec-2024.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/PDD/PDD-summary.txt')
@@ -135,7 +135,7 @@ sapply(PDD.NZ.df, function(x) length(unique(x)))
 PDD.df |>
   select(CurrentNamePart_C1, StandardCountry_CE1, OccurrenceDescription_C1, BiostatusDescription_C1) |> 
   filter(is.na(OccurrenceDescription_C1)) |> 
-  #filter(StandardCountry_CE1 == "New Zealand") |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
   distinct() |> 
   arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/PDD/PDD-missing-occurrence.csv')
@@ -928,6 +928,129 @@ CollectionDateFromISO_CE1
 
 mergemonths <- round_date(date.collected, unit = "month")
 mergemonths
+
+
+#============Accessions per year================
+
+date.collected <-ymd(PDD.df$CollectionDateFromISO_CE1, truncated = 3)
+ggplot(PDD.df, aes(date.collected, fill = specimen_kind)) +
+  labs(title = "Collection dates of PDD specimens") +
+  labs(x = "Date of collection", y =  "Number of specimens" , fill = "") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 10) +
+  geom_hline(yintercept=677.8, linetype=2) + 
+  annotate("text", x = as.Date("1850-01-01"), y = 720, 
+           label = "Last 5 Year average collected", color = "black", hjust = 0) +
+  geom_hline(yintercept=1054.6, linetype=2) + 
+  annotate("text", x = as.Date("1850-01-01"), y = 1100, 
+           label = "Last 10 Year average collected", color = "black", hjust = 0) +
+  geom_hline(yintercept=2167, linetype=2, color = "red") + 
+  annotate("text", x = as.Date("1850-01-01"), y = 2210, 
+           label = "Last 5 Year average accessioned", color = "red", hjust = 0) +
+  geom_hline(yintercept=1778.3, linetype=2, color = "red") + 
+  annotate("text", x = as.Date("1850-01-01"), y = 1820, 
+           label = "Last 10 Year average accessioned", color = "red", hjust = 0)
+ggsave(file='./outputs/PDD/PDD-collection-dates.png', width=8, height=5)
+
+
+#generate date deposited column
+date.collected <-ymd(PDD.df$CollectionDateFromISO_CE1, truncated = 3)
+
+# Extract the year from the date using lubridate's year() function
+PDD.df <- PDD.df %>% mutate(year.collected = year(date.collected))
+
+# Exclude any rows from 2025 (partial year)
+complete_data <- PDD.df %>% filter(year.collected < 2025)
+
+# Count the number of rows per year
+yearly_counts <- complete_data %>%
+  group_by(year.collected) %>%
+  summarize(count = n()) %>%
+  arrange(year.collected)
+
+# Calculate the overall average count per year (all complete years)
+avg_all <- mean(yearly_counts$count)
+
+# Identify the most recent complete year
+last_year <- max(yearly_counts$year.collected)
+
+# Calculate the average count for the past 5 complete years
+last_5_years <- yearly_counts %>% filter(year.collected >= (last_year - 4))
+avg_last5 <- mean(last_5_years$count)
+
+# Calculate the average count for the past 10 complete years
+last_10_years <- yearly_counts %>% filter(year.collected >= (last_year - 9))
+avg_last10 <- mean(last_10_years$count)
+
+# Output the results
+print(yearly_counts)
+cat("Average per year (all complete years):", avg_all, "\n")
+cat("Average per year (last 5 years):", avg_last5, "\n")
+cat("Average per year (last 10 years):", avg_last10, "\n")
+
+
+## Using the date of data entry ================
+
+date.databased <-dmy_hms(PDD.df$CreatedDate, truncated = 3) #i think the prob is we have to strip off the times
+ggplot(PDD.df, aes(date.databased, fill = specimen_kind)) +
+  labs(title = "Database dates of PDD specimens") +
+  labs(x = "Date of database", y =  "Number of specimens" , fill = "") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set2") +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) + # this is a bin of two years: binwidth=730
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  scale_y_continuous(n.breaks = 10) +
+  geom_hline(yintercept=677.8, linetype=2) + 
+  annotate("text", x = as.Date("1850-01-01"), y = 720, 
+           label = "Last 5 Year Average collected", color = "black", hjust = 0) +
+  geom_hline(yintercept=1054.6, linetype=2) + 
+  annotate("text", x = as.Date("2020-01-01"), y = 1100, 
+           label = "Last 10 Year Average collected", color = "black", hjust = 0) +
+  geom_hline(yintercept=2167, linetype=2) + 
+  annotate("text", x = as.Date("2020-01-01"), y = 2167, 
+           label = "Last 5 Year Average accessioned", color = "red", hjust = 0) +
+  geom_hline(yintercept=1778.3, linetype=2) + 
+  annotate("text", x = as.Date("2020-01-01"), y = 1778, 
+           label = "Last 10 Year Average accessioned", color = "red", hjust = 0) +
+  ggsave(file='./outputs/PDD/PDD-database-dates.png', width=8, height=5)
+
+#generate date deposited column
+date.databased <-dmy_hms(PDD.df$CreatedDate, truncated = 3)
+
+# Extract the year from the date using lubridate's year() function
+PDD.df <- PDD.df %>% mutate(year.databased = year(date.databased))
+
+# Exclude any rows from 2025 (partial year)
+complete_data <- PDD.df %>% filter(year.databased < 2025)
+
+# Count the number of rows per year
+yearly_counts <- complete_data %>%
+  group_by(year.databased) %>%
+  summarize(count = n()) %>%
+  arrange(year.databased)
+
+# Calculate the overall average count per year (all complete years)
+avg_all <- mean(yearly_counts$count)
+
+# Identify the most recent complete year
+last_year <- max(yearly_counts$year.databased)
+
+# Calculate the average count for the past 5 complete years
+last_5_years <- yearly_counts %>% filter(year.databased >= (last_year - 4))
+avg_last5 <- mean(last_5_years$count)
+
+# Calculate the average count for the past 10 complete years
+last_10_years <- yearly_counts %>% filter(year.databased >= (last_year - 9))
+avg_last10 <- mean(last_10_years$count)
+
+# Output the results
+print(yearly_counts)
+cat("Average per year (all complete years):", avg_all, "\n")
+cat("Average per year (last 5 years):", avg_last5, "\n")
+cat("Average per year (last 10 years):", avg_last10, "\n")
 
 
 
