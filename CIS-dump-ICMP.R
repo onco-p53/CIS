@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-3-jan-2025.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-28-feb-2025.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-18-dec-2024.csv",
+ICMP.string.factors <- read.csv("ICMP-export-21-jan-2025.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -135,6 +135,7 @@ sapply(ICMP.NZ.df, function(x) length(unique(x)))
 
 #filters for blank occurrence description
 #then de-duplicate
+#maybe cut the genera out and only have species, e.g only include strains that have a space
 ICMP.df |>
   select(CurrentNamePart_C1, StandardCountry_CE1, OccurrenceDescription_C1, BiostatusDescription_C1) |> 
   filter(is.na(OccurrenceDescription_C1)) |> 
@@ -264,6 +265,18 @@ unwanted.df <- ICMP.df |>
 
 
 #============Type cultures================
+
+#generate a list of type strains for LPSN
+
+type_strains.df <- ICMP.df |> 
+  filter(SpecimenType == "Bacterial Culture") |> 
+  filter(TypeStatus == "Type strain") |> 
+  filter(SpecimenSecurityLevelText == "Public") |>
+  select(AccessionNumber, SpecimenType, TypeStatus, TaxonName_C1, CurrentNamePart_C1,
+         SpecimenSecurityLevelText, StandardCountry_CE1, Duplicates, ICMPDepositorRefNumber) |>
+  arrange(TaxonName_C1) |>
+  write_csv(file='./outputs/ICMP/ICMP_type_strains.csv')
+
 
 #sorting plots:
 #  https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
@@ -731,7 +744,7 @@ arrange(ICMP.df, date.isolated) |>
   slice_head(n=25)
 
 #all cultures sorted by deposited date. Add a new column date.isolated 
-ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ICMP.df$date.deposited <- ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 arrange(ICMP.df, date.deposited) %>%
   select("AccessionNumber","SpecimenType", "StandardCountry_CE1", "date.deposited") %>%
   slice_head(n=10)
@@ -809,7 +822,7 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-dates2.png', width=8, height=5)
 
 
 #testing some new code for overlaying a trend
-ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$DepositedDateISO, truncated = 3)
+ICMP.bacteria$date.deposited <- ymd(ICMP.bacteria$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.bacteria, aes(date.deposited)) +
   theme_bw() +
   labs(title = "Date bacterial cultures were deposited in ICMP") +
@@ -821,7 +834,7 @@ ggsave(file='./outputs/ICMP/ICMP-bacteria-depost-dates-smoothed.png', width=8, h
 
 
 #deposits over time
-ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
+ICMP.df$date.deposited <- ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.deposited)) +
   theme_bw() +
   labs(title = "Date cultures were deposited in ICMP") +
@@ -857,8 +870,8 @@ ggplot(ICMP.df, aes(date.isolated, fill = SpecimenType)) +
 ggsave(file='./outputs/ICMP/ICMP-isolation-dates-facet.png', width=8, height=5)
 
 
-#ICMP deposit date faceted
-date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+## *ICMP deposit date faceted*
+date.deposited <-ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
   labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
@@ -869,29 +882,38 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
 ggsave(file='./outputs/ICMP/ICMP-deposit-dates-facet.png', width=8, height=5)
 
 
-#ICMP deposit dates over time
-date.deposited <-ymd(ICMP.df$DepositedDateISO, truncated = 3)
+
+
+
+
+
+library(ggplot2)
+library(lubridate)
+
+# Convert deposit dates
+ICMP.df$date.deposited <- ymd(ICMP.df$ICMPDepositedDateISO)
+
+# Plot
 ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
-  labs(title = "Deposit dates of ICMP cultures") +
-  labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
+  geom_histogram(binwidth = 365.25 * 2, show.legend = TRUE) +  
+  geom_hline(aes(yintercept = 426, color = "Last 5 Year Average"), linetype = "dashed") +
   scale_fill_brewer(palette = "Set2") +
+  scale_color_manual(name = "", values = c("Last 5 Year Average" = "red")) +  # Custom legend entry
   scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
-  geom_histogram(binwidth=365.25, show.legend = FALSE) # this is a bin of two years: binwidth=730
-ggsave(file='./outputs/ICMP/ICMP-deposit-dates.png', width=8, height=5)
+  labs(
+    title = "Deposit Dates of ICMP Cultures",
+    x = "Date of Deposit in ICMP",
+    y = "Number of Cultures",
+    fill = "Specimen Type"
+  ) +
+  theme_minimal()
 
-#testing some new code
-ICMP.df$date.deposited <- ymd(ICMP.df$DepositedDateISO, truncated = 3)
-builder <- ggplot(ICMP.df, aes(date.deposited)) +
-  labs(title = "Date bacterial cultures were deposited in ICMP") +
-  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
-  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
-  geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
-#  geom_hline(yintercept=392, linetype=2)
+# Save plot
+ggsave(filename = "./outputs/ICMP/ICMP-deposit-dates.png", plot = p, width = 8, height = 5)
 
-ggplot_build(builder)
-builder.data<-ggplot_build(builder)$data
-head(builder.data)
-mean(builder.data$count)
+
+
+
 
 #could do this early on and convert all to proper dates?? - nah make a seperate Date column
 #for intercep do count per year to seperate table?
@@ -943,8 +965,133 @@ ICMP.df$topcontrib
 
 
 
+#======deposits per year========
+
+## *ICMP deposit dates over time*
+date.deposited <-ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
+ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
+  labs(title = "Deposit dates of ICMP cultures") +
+  labs(x = "Date of deposit in ICMP", y =  "Number of cultures" , fill = "") +
+  theme_bw() +
+  scale_fill_brewer(palette = "Set2") +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y") +
+  #scale_y_continuous(n.breaks = 10) +
+  geom_histogram(binwidth=365.25, show.legend = TRUE) +
+  geom_hline(yintercept=426.2, linetype=2) + 
+  annotate("text", x = as.Date("1990-01-01"), y = 430, 
+           label = "Last 5 Year Average", color = "black", hjust = 0) +
+  geom_hline(yintercept=457.1, linetype=2) + 
+  annotate("text", x = as.Date("1990-01-01"), y = 461, 
+           label = "Last 10 Year Average", color = "black", hjust = 0)
+ggsave(file='./outputs/ICMP/ICMP-deposit-dates.png', width=8, height=5)
 
 
+#need accession per year and re-storage
+
+#generate date deposited column
+date.deposited <-ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
+
+# Extract the year from the date using lubridate's year() function
+ICMP.df <- ICMP.df %>% mutate(year.deposited = year(date.deposited))
+
+# Exclude any rows from 2025 (partial year)
+complete_data <- ICMP.df %>% filter(year.deposited < 2025)
+
+# Count the number of rows per year
+yearly_counts <- complete_data %>%
+  group_by(year.deposited) %>%
+  summarize(count = n()) %>%
+  arrange(year.deposited)
+
+# Calculate the overall average count per year (all complete years)
+avg_all <- mean(yearly_counts$count)
+
+# Identify the most recent complete year
+last_year <- max(yearly_counts$year.deposited)
+
+# Calculate the average count for the past 5 complete years
+last_5_years <- yearly_counts %>% filter(year.deposited >= (last_year - 4))
+avg_last5 <- mean(last_5_years$count)
+
+# Calculate the average count for the past 10 complete years
+last_10_years <- yearly_counts %>% filter(year.deposited >= (last_year - 9))
+avg_last10 <- mean(last_10_years$count)
+
+# Output the results
+print(yearly_counts)
+cat("Average per year (all complete years):", avg_all, "\n")
+cat("Average per year (last 5 years):", avg_last5, "\n")
+cat("Average per year (last 10 years):", avg_last10, "\n")
+
+
+#======restorage per year========
+
+#teh logic here would be a batch date in 2025 but isolation date more than 2 years prior??.
+#no has more than 1 batch and latest date
+
+#ICMPBatchesLastStorageDate - iso date
+#ICMPBatchesTotal-  a numeric
+
+date.stored <-ymd(ICMP.df$ICMPBatchesLastStorageDate, truncated = 3)
+
+complete_data <- ICMP.df |> 
+  mutate(year.stored = year(date.stored)) |> 
+  filter(year.stored < 2025) |> 
+  filter(ICMPBatchesTotal > 1)
+
+# Count the number of rows per year
+yearly_counts <- complete_data %>%
+  group_by(year.stored) %>%
+  summarize(count = n()) %>%
+  arrange(year.stored)
+
+# Calculate the overall average count per year (all complete years)
+avg_all <- mean(yearly_counts$count)
+
+# Identify the most recent complete year
+last_year <- max(yearly_counts$year.stored)
+
+# Calculate the average count for the past 5 complete years
+last_5_years <- yearly_counts %>% filter(year.stored >= (last_year - 4))
+avg_last5 <- mean(last_5_years$count)
+
+# Calculate the average count for the past 10 complete years
+last_10_years <- yearly_counts %>% filter(year.stored >= (last_year - 9))
+avg_last10 <- mean(last_10_years$count)
+
+# Output the results
+print(yearly_counts)
+cat("Average per year (all complete years):", avg_all, "\n")
+cat("Average per year (last 5 years):", avg_last5, "\n")
+cat("Average per year (last 10 years):", avg_last10, "\n")
+
+
+plot(yearly_counts)
+
+
+ggplot(yearly_counts, aes(x = year.stored, y = count)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_text(aes(label = count), vjust = -0.5, size = 2) +
+  labs(
+    title = "ICMP Yearly Re-storage Counts",
+    x = "Year re-stored",
+    y = "Count"
+  ) +
+  theme_bw()
+ggsave(file='./outputs/ICMP/ICMP-restorage.png', width=8, height=5)
+
+#data cleanup
+## odd batches
+early_batches <- ICMP.df |> 
+  mutate(year.stored = year(date.stored)) |> 
+  filter(year.stored < 2002) |> 
+  filter(ICMPBatchesTotal > 1) |> 
+  select(AccessionNumber, ICMPBatchesTotal)
+
+#no batch date
+no_batch <- ICMP.df |> 
+  filter(ICMPBatchesTotal = is.na) |> 
+  select(AccessionNumber, ICMPBatchesTotal)
 
 
 
@@ -1206,7 +1353,7 @@ summary(NgāiTahu)
 attach(NgāiTahu) 
 require(ggplot2)
 require(lubridate)
-date.isolated <-ymd(NgāiTahu$DepositedDateISO, truncated = 1)
+date.isolated <-ymd(NgāiTahu$ICMPDepositedDateISO, truncated = 1)
 di <- ggplot(NgāiTahu, aes(date.isolated, fill = SpecimenType)) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -1433,7 +1580,7 @@ ICMP.df |>
 #======Ralstonia========
 
 
-# import and filter for only Ralstonia, detect "race 3" which is an important pathgen
+# import and filter for only Ralstonia, detect "race 3" which is an important pathogen
 ralstonia.race3.df <- ICMP.df |> 
   filter(str_detect(CurrentNamePart_C1, "(^Ralstonia)")) |> 
   filter(Deaccessioned == "FALSE") |> 
@@ -1442,74 +1589,20 @@ ralstonia.race3.df <- ICMP.df |>
   write_csv(file='./outputs/ICMP/ralstonia-race3.csv')
 
 
-#======Updates for other culture collections========
+# race 2
+ralstonia.race2.df <- ICMP.df |> 
+  filter(str_detect(CurrentNamePart_C1, "(^Ralstonia)")) |> 
+  filter(Deaccessioned == "FALSE") |> 
+  select(AccessionNumber, CurrentNamePart_C1, StandardCountry_CE1, SpecimenNotes) |>
+  filter(str_detect(SpecimenNotes, regex("race 2", ignore_case = TRUE))) |>
+  write_csv(file='./outputs/ICMP/ralstonia-race2.csv')
 
-# find what columns we should be searching:
-# Identify columns containing the text "ncppb"
-columns_with_text <- which(apply(ICMP.df, 2, function(col) any(grepl("ncppb", col, ignore.case = TRUE))))
-# Get the column names
-column_names <- names(ICMP.df)[columns_with_text]
-# Print the results
-if (length(column_names) > 0) {
-  cat("The text 'ncppb' appears in the following columns:\n")
-  print(column_names)
-} else {
-  cat("The text 'ncppb' does not appear in any column.\n")
-}
-
-ICMP.df |> 
-  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
-         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
-         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
-         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
-  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
-  filter(str_detect(ICMPDepositorName, regex("ncppb", ignore_case = TRUE)) |
-                      str_detect(Duplicates, regex("ncppb", ignore_case = TRUE)) |
-                      str_detect(ICMPDepositorRefNumber, regex("ncppb", ignore_case = TRUE))
-                      ) |> 
-  write_csv(file='./outputs/ICMP/NCPPB-identifications.csv')
-
-ICMP.df |> 
-  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
-         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
-         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
-         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
-  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
-  filter(str_detect(ICMPDepositorName, regex("CBS", ignore_case = TRUE)) |
-           str_detect(Duplicates, regex("CBS", ignore_case = TRUE)) |
-           str_detect(ICMPDepositorRefNumber, regex("CBS", ignore_case = TRUE))
-  ) |> 
-  write_csv(file='./outputs/ICMP/CBS-identifications.csv')
-
-ICMP.df |> 
-  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
-         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
-         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
-         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
-  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
-  filter(str_detect(ICMPDepositorName, regex("NRRL", ignore_case = TRUE)) |
-           str_detect(Duplicates, regex("NRRL", ignore_case = TRUE)) |
-           str_detect(ICMPDepositorRefNumber, regex("NRRL", ignore_case = TRUE))
-  ) |> 
-  write_csv(file='./outputs/ICMP/NRRL-identifications.csv')
-
-ICMP.df |> 
-  select(AccessionNumber, TaxonName_C1, CurrentNamePart_C1, StandardDeterminer_C1, 
-         IdentificationDateFromISO_C1, Duplicates, ICMPDepositorName,
-         ICMPDepositorRefNumber, ICMPTransferredViaName, ICMPTransferredViaRefNumber,
-         ICMPTransferredFromName, ICMPTransferredFromRefNumber) |> 
-  filter(IdentificationDateFromISO_C1 > as.Date("2010-01-01")) |> 
-  filter(str_detect(ICMPDepositorName, regex("DAF", ignore_case = TRUE)) |
-           str_detect(Duplicates, regex("DAF", ignore_case = TRUE)) |
-           str_detect(ICMPDepositorRefNumber, regex("DAF", ignore_case = TRUE))
-  ) |> 
-  write_csv(file='./outputs/ICMP/DAF-identifications.csv')
 
 #======Make cultures public========
 
 #alternately comment out the last two filter lines
 ICMP.df |> 
-  select(AccessionNumber, SpecimenSecurityLevelText, Deaccessioned, CurrentNamePart_C1,
+  select(AccessionNumber, SpecimenType, SpecimenSecurityLevelText, Deaccessioned, CurrentNamePart_C1,
          ICMPDepositorName, CreatedBy, CreatedDate, ICMPBatchesLastStorageDate,
          ICMPBatches, SpecimenFlags) |> 
   filter(SpecimenSecurityLevelText == "Collection Staff Only") |> 
@@ -1533,7 +1626,130 @@ ICMP.df |>
          IdentifiersNote_C1, GenBank) |> 
   filter(GenBank == "FALSE") |> 
   filter(str_detect(IdentifiersNote_C1, regex("ITS", ignore_case = TRUE))) |>
-  write_csv(file='./outputs/ICMP/fungi-seq-not_uploaded.csv') 
+  write_csv(file='./outputs/ICMP/fungi-seq-not_uploaded.csv')
+
+#NZ type cultures with no sequence data 
+ICMP.df |> 
+  select(AccessionNumber, SpecimenType, TypeStatus, CurrentNamePart_C1,
+         IdentifiersNote_C1, StandardCountry_CE1, GenBank) |> 
+  filter(StandardCountry_CE1 == "New Zealand") |> 
+  filter(GenBank == "FALSE") |> 
+  filter(TypeStatus != "") |> 
+  write_csv(file='./outputs/ICMP/unsequenced-NZ-fungi.csv')
+
+
+#======Read ICMP from text and make a new column========
+
+
+#loaded as a tibble
+ICMP.shotgun.df <- read_csv("ICMP_shotgun.csv",
+                                guess_max = Inf,
+                                show_col_types = FALSE) |> 
+  glimpse()
+
+ICMP.shotgun.df |> 
+  mutate(new_column = stringr::str_extract(Description, "ICMP ?\\d{1,5},"),
+         new_column = str_replace(new_column, ",$", "")) |>
+  mutate(ICMP = str_replace(new_column, "ICMP(\\d)", "ICMP \\1")) |>
+  write_csv(file='./outputs/ICMP/shotgun.csv')
+
+#str_replace(new_column, "ICMP(\\d)", "ICMP \\1") checks for cases where "ICMP" is immediately followed by a digit (ICMP(\\d)) and inserts a space between "ICMP" and the digit. \\1 captures the digit and reuses it in the replacement.
+
+#======Check Risk Group 2 cultures========
+
+##======ones from humans etc========
+
+human_related_regex <- "human|skin|toe|blood|urine|vagina|faeces|feces|cyst|nail|knee|hospital|skull|bone|lung|saliva|sputum|bladder|liver|eye"
+
+ICMP.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, CurrentNamePart_C2, Duplicates, PartAffected_C2,
+         Substrate_C1, Substrate_C2, ICMPIsolatorRefNumber, ICMPDepositorRefNumber, SpecimenFlags) |> 
+  filter(
+    str_detect(ICMPIsolatorRefNumber, regex("NHI|NZRM", ignore_case = TRUE)) |
+      str_detect(ICMPDepositorRefNumber, regex("NHI|NZRM", ignore_case = TRUE)) |
+      str_detect(Duplicates, regex("NHI|NZRM", ignore_case = TRUE)) |
+      str_detect(Substrate_C1, regex(human_related_regex, ignore_case = TRUE)) |
+      str_detect(PartAffected_C2, regex(human_related_regex, ignore_case = TRUE)) |
+      str_detect(Substrate_C2, regex(human_related_regex, ignore_case = TRUE))
+  ) |>
+  mutate(SpecimenFlagExtract = stringr::str_extract(SpecimenFlags, "Warning: Risk Group 2")) |>
+  select(-SpecimenFlags) |> # Exclude SpecimenFlags column from the final output
+  arrange(desc(nchar(CurrentNamePart_C2))) |> 
+  write_csv(file='./outputs/ICMP/homo-sapiens.csv')
+
+
+##======mismatches where the riskgroup is absent========
+
+risk_validation <- ICMP.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlags) |> 
+  mutate(SpecimenFlagExtract = stringr::str_extract(SpecimenFlags, "Warning: Risk Group 2")) |>
+  select(-SpecimenFlags) # Exclude SpecimenFlags column from the final output
+
+# Filter rows where SpecimenFlagExtract contains "Warning: Risk Group 2"
+risk_group_2 <- risk_validation |> 
+  filter(str_detect(SpecimenFlagExtract, "Warning: Risk Group 2")) |> 
+  select(CurrentNamePart_C1) |> 
+  distinct()
+
+# Identify cases where CurrentNamePart_C1 does not have "Warning: Risk Group 2"
+non_matching_cases <- risk_validation |> 
+  filter(CurrentNamePart_C1 %in% risk_group_2$CurrentNamePart_C1 & 
+           is.na(SpecimenFlagExtract)) |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlagExtract) |> 
+  arrange(CurrentNamePart_C1) |>
+  write_csv(file='./outputs/ICMP/RiskGroup2_mismatches.csv')
+
+# List all riskgroup cultures in ICMP
+# Filter rows where SpecimenFlagExtract contains "Warning: Risk Group 2"
+risk_validation |> 
+  filter(str_detect(SpecimenFlagExtract, "Warning: Risk Group 2")) |> 
+  arrange(CurrentNamePart_C1) |>
+  write_csv(file='./outputs/ICMP/RiskGroup2_all_ICMP.csv')
+
+##======check LPSN for new ones========
+
+# Read LPSN_RG2 and ensure it's treated as a single-column data frame
+LPSN_RG2 <- read.csv("LPSN_RG2.txt", header = FALSE, stringsAsFactors = FALSE)
+colnames(LPSN_RG2) <- "V1"  # Name the column for clarity
+
+# Process ICMP.df and filter for matches
+matching_names <- ICMP.df %>%
+  select(CurrentNamePart_C1) %>%
+  distinct() %>%
+  mutate(CurrentNamePart_C1 = trimws(tolower(CurrentNamePart_C1))) %>%  # Standardize
+  filter(CurrentNamePart_C1 %in% tolower(trimws(LPSN_RG2$V1))) |> 
+  write_csv(file='./outputs/ICMP/RiskGroup2_LPSN_matches.csv')
+
+# Read LPSN_RG3 and ensure it's treated as a single-column data frame
+LPSN_RG3 <- read.csv("LPSN_RG3.txt", header = FALSE, stringsAsFactors = FALSE)
+colnames(LPSN_RG3) <- "V1"  # Name the column for clarity
+
+# Process ICMP.df and filter for matches
+matching_names <- ICMP.df %>%
+  select(CurrentNamePart_C1) %>%
+  distinct() %>%
+  mutate(CurrentNamePart_C1 = trimws(tolower(CurrentNamePart_C1))) %>%  # Standardize
+  filter(CurrentNamePart_C1 %in% tolower(trimws(LPSN_RG3$V1))) |> 
+  write_csv(file='./outputs/ICMP/RiskGroup3_LPSN_matches.csv')
+
+##======check epathogen for new ones========
+
+epathogen_RG2 <- read_csv("epathogen-RG2-fungi.csv",
+                                guess_max = Inf,
+                                show_col_types = FALSE)
+
+# Process ICMP.df and filter for matches
+matching_names <- ICMP.df %>%
+  select(CurrentNamePart_C1) %>%
+  distinct() %>%
+  mutate(CurrentNamePart_C1 = trimws(tolower(CurrentNamePart_C1))) %>%  # Standardize
+  filter(CurrentNamePart_C1 %in% tolower(trimws(epathogen_RG2$Name))) |> 
+  write_csv(file='./outputs/ICMP/RiskGroup2_epathogen_fungi.csv')
 
 
 
+
+
+#======Notes========
+
+#yeah nah. no notes field
