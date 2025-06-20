@@ -3,7 +3,7 @@ title: "PDD data visualisation"
 author:
   name: Bevan Weir
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 11 November 2024"
+date: "data as of 20 June 2025"
 output:
   html_document:
     code_folding: hide
@@ -39,7 +39,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-PDD.as.imported.df <- read_csv("PDD-export-11-nov-2024.csv",
+PDD.as.imported.df <- read_csv("PDD-export-20-june-2025.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 ) |>
@@ -429,13 +429,23 @@ These stats may be useful for curation or data checking for PDD staff.
 
 ```{r last updated user chart, echo=TRUE}
 
+# Ensure LastUpdatedBy is all lowercase
 PDD.df$LastUpdatedBy <- sapply(PDD.df$UpdatedBy, tolower)
-ggplot(PDD.df, aes(LastUpdatedBy, fill = specimen_kind)) +
-  labs(title = "Last user to update an PDD record") +
-  labs(x = "User", y = "number of specimens") +
-  theme(axis.text.x=element_text(angle=-90, hjust=0)) +
-  theme_bw() +
+
+# Remove rows with "bulkgeorefconversion"
+PDD_filtered <- PDD.df |> 
+  filter(LastUpdatedBy != "bulkgeorefconversion")
+
+# Create the plot
+ggplot(PDD_filtered, aes(LastUpdatedBy, fill = specimen_kind)) +
   geom_bar() +
+  labs(
+    title = "Last user to update a PDD record",
+    x = "User",
+    y = "Number of specimens"
+  ) +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0)) +
+  theme_bw() +
   scale_fill_brewer(palette = "Set2") +
   coord_flip()
 

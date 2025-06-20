@@ -264,7 +264,7 @@ unwanted_icmp <- ICMP.df |>
   mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
 
 # 2. Load MPI unwanted organism list
-mpi_unwanted <- read_csv("MPI-unwanted-fungi-16-June-2025.csv")
+mpi_unwanted <- read_csv("MPI-unwanted bacteria-16-June-2025.csv")
 
 # 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
 #    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
@@ -277,7 +277,7 @@ results <- unwanted_icmp |>
 print(results)
 
 # 4. Export results to CSV
-write_csv(results, "unflagged_unwanted_organisms_chromists.csv")
+write_csv(results, "ICMP_unflagged_unwanted_organisms_bacteria.csv")
 
 
 
@@ -1868,7 +1868,18 @@ matching_names <- ICMP.df %>%
 
 
 
+#============Count Users================
 
-#======Notes========
+# Create a cleaned 'LastUpdatedBy' column
+ICMP.df <- ICMP.df |> 
+  mutate(
+    LastUpdatedBy = tolower(UpdatedBy),
+    LastUpdatedBy = str_remove(LastUpdatedBy, "^landcare\\\\")  # Remove 'landcare\' prefix
+  )
 
-#yeah nah. no notes field
+# Filter out unwanted rows and count by user
+user_counts <- ICMP.df |> 
+  filter(LastUpdatedBy != "bulkgeorefconversion") |> 
+  count(LastUpdatedBy, sort = TRUE)
+
+print(user_counts, n=30)

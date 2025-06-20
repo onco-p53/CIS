@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-28-feb-2025.csv",
+PDD.as.imported.df <- read_csv("PDD-export-20-june-2025.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) |>
   glimpse()
@@ -1381,19 +1381,36 @@ unwanted_pdd <- PDD.df |>
   mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
 
 # 2. Load MPI unwanted organism list
-mpi_unwanted <- read_csv("MPI-unwanted bacteria-16-June-2025.csv")
+mpi_unwanted <- read_csv("MPI-unwanted-fungi-16-June-2025.csv")
 
 # 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
 #    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
 results <- unwanted_pdd |> 
   filter(CurrentNamePart_C1 %in% mpi_unwanted$`Pest name`,
-         is.na(SpecimenFlagExtract))
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
 
 # View results
 print(results)
 
 # 4. Export results to CSV
-write_csv(results, "PDD_bacteria_unflagged_unwanted_organisms.csv")
+write_csv(results, "PDD_fungi_unflagged_unwanted_organisms.csv")
+
+#============Count Users================
+
+# Create a cleaned 'LastUpdatedBy' column
+PDD.df <- PDD.df |> 
+  mutate(
+    LastUpdatedBy = tolower(UpdatedBy),
+    LastUpdatedBy = str_remove(LastUpdatedBy, "^landcare\\\\")  # Remove 'landcare\' prefix
+  )
+
+# Filter out unwanted rows and count by user
+user_counts <- PDD.df |> 
+  filter(LastUpdatedBy != "bulkgeorefconversion") |> 
+  count(LastUpdatedBy, sort = TRUE)
+
+print(user_counts, n=30)
 
 
 
