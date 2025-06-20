@@ -1371,6 +1371,31 @@ magic.leaf
 psilocybe-html-map.html
 
 
+#============Unwanted orgs================
+
+#Need to pull in the MPI lists and check
+
+# 1. Load ICMP data and extract "Unwanted Organism"
+unwanted_pdd <- PDD.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlags) |> 
+  mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
+
+# 2. Load MPI unwanted organism list
+mpi_unwanted <- read_csv("MPI-unwanted bacteria-16-June-2025.csv")
+
+# 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
+#    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
+results <- unwanted_pdd |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Pest name`,
+         is.na(SpecimenFlagExtract))
+
+# View results
+print(results)
+
+# 4. Export results to CSV
+write_csv(results, "PDD_bacteria_unflagged_unwanted_organisms.csv")
+
+
 
 
 

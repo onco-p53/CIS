@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-28-feb-2025.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-20-june-2025.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-21-jan-2025.csv",
+ICMP.string.factors <- read.csv("ICMP-export-20-june-2025.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -240,7 +240,64 @@ ICMP.df %>%
 #  mutate(Genus = str_extract(CurrentNamePart_C1, "^[a-zA-Z-]*")) %>%
 #  glimpse()
 
+
+#============Biostatus Counts================
+
+ICMP.df |>
+  filter(StandardCountry_CE1 == "New Zealand") |> 
+  filter(SpecimenType == "Fungal Culture") |> 
+  count(OccurrenceDescription_C1, name = "Count")
+
+501+272+776+1071
+  
+2600*2
+
+
+
 #============Unwanted orgs================
+
+#Need to pull in the MPI lists and check
+
+# 1. Load ICMP data and extract "Unwanted Organism"
+unwanted_icmp <- ICMP.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlags) |> 
+  mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
+
+# 2. Load MPI unwanted organism list
+mpi_unwanted <- read_csv("MPI-unwanted-fungi-16-June-2025.csv")
+
+# 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
+#    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
+results <- unwanted_icmp |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Pest name`,
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
+# View results
+print(results)
+
+# 4. Export results to CSV
+write_csv(results, "unflagged_unwanted_organisms_chromists.csv")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 unwanted.table <- ICMP.df |> 
@@ -255,13 +312,36 @@ unwanted.table
 
 unwanted.df <- ICMP.df |> 
   filter(str_detect(SpecimenFlags, "Unwanted")) |> 
-  filter(str_detect(CurrentNamePart_C1, "PDD")) |> 
+  filter(str_detect(CurrentNamePart_C1, "PDD")) |> #this is wrong
   write_csv(file='./outputs/ICMP/ICMP_unwanted_cultures.csv')
 
 unwanted.df <- ICMP.df |> 
   filter(str_detect(SpecimenFlags, "Unwanted")) |> 
   distinct(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/ICMP/ICMP_unwanted_species.csv')
+
+#============New orgs================
+
+library(dplyr)
+library(lubridate)
+
+# First, parse the date column into a new column
+ICMP.df <- ICMP.df |>
+  mutate(CollectionDateParsed = ymd(CollectionDateFromISO_CE1, truncated = 3))
+
+# Now filter and find species without any early collection dates
+threshold_date <- as.Date("1998-07-29")
+
+species_without_early_dates <- ICMP.df |>
+  filter(StandardCountry_CE1 == "New Zealand") |>
+  group_by(CurrentNamePart_C1) |>
+  summarise(has_early_date = any(CollectionDateParsed < threshold_date, na.rm = TRUE)) |>
+  filter(!has_early_date) |>
+  select(CurrentNamePart_C1)
+
+# Print the result
+print(species_without_early_dates)
+
 
 
 #============Type cultures================
@@ -1023,6 +1103,19 @@ cat("Average per year (all complete years):", avg_all, "\n")
 cat("Average per year (last 5 years):", avg_last5, "\n")
 cat("Average per year (last 10 years):", avg_last10, "\n")
 
+#check for culture with no deposit date
+
+missing_dates <- ICMP.df |>
+  select(AccessionNumber, ICMPDepositedDateISO) |>
+  filter(is.na(ICMPDepositedDateISO))
+
+# Print the table
+print(n=50, missing_dates)
+
+
+
+
+
 
 #======restorage per year========
 
@@ -1088,11 +1181,17 @@ early_batches <- ICMP.df |>
   filter(ICMPBatchesTotal > 1) |> 
   select(AccessionNumber, ICMPBatchesTotal)
 
-#no batch date
-no_batch <- ICMP.df |> 
-  filter(ICMPBatchesTotal = is.na) |> 
+#no batch date - quite a few to back fill from batch creation date
+no_date <- ICMP.df |> 
+  filter(is.na(date.stored)) |> 
+  filter(ICMPBatchesTotal > 0) |>
   select(AccessionNumber, ICMPBatchesTotal)
 
+#also need to find all with blank deposit dates
+no_deposit_date <- ICMP.df |> 
+  filter(is.na(ICMPDepositedDateISO)) |> 
+  filter(ICMPBatchesTotal > 0) |>
+  select(AccessionNumber, ICMPBatchesTotal)
 
 
 #======NZ Maps========
@@ -1334,6 +1433,26 @@ ggplot(ICMP.df.Myrtaceae, aes(Family_C1, fill=SpecimenType)) + #fill by type
 ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
 
 
+#cucurbits
+ICMP.cucurbit <- ICMP.df |> 
+  filter(Family_C2 == "Cucurbitaceae") |> 
+  filter(SpecimenType == "Fungal Culture") |>
+  filter(StandardCountry_CE1 == "New Zealand")
+
+ggplot(ICMP.cucurbit, aes(CurrentNamePart_C1, fill=GenBank)) + 
+  labs(title = "ICMP Fungi on cucurbits in NZ") +
+  labs(x = "Fungus", y = "Number of cultures") +
+  geom_bar() +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2")
+ggsave(file='./outputs/ICMP/ICMP_cucurbit.png', width=5, height=8)
+
+
+
+
+
+
+
 #======people======
 
 summary(ICMP.df$StandardCollector, maxsum=50)
@@ -1444,8 +1563,8 @@ library(maps)
 library(mapdata)
 
 ICMP.Neofabraea <- ICMP.NZ.df %>%
-  filter(NZAreaCode != "Chatham Islands") %>%
-  filter(NZAreaCode != "Kermadec Islands") %>%
+  filter(StandardNewZealandAreaCodes_CE1 != "Chatham Islands") %>%
+  filter(StandardNewZealandAreaCodes_CE1 != "Kermadec Islands") %>%
   filter(CurrentNamePart_C1 == "Neofabraea actinidiae") %>%
   filter(TaxonName_C2 != "") %>%
   rename(Host = TaxonName_C2)
@@ -1457,8 +1576,8 @@ ggplot() +
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
   geom_point(data = ICMP.Neofabraea, 
-             aes(x = DecimalLong, 
-                 y = DecimalLat, 
+             aes(x = DecimalLongitude_CE1, 
+                 y = DecimalLatitude_CE1, 
                  colour = Host), 
              size = 5, 
              alpha = 0.5, 
@@ -1466,7 +1585,7 @@ ggplot() +
              na.rm=TRUE) +
   #geom_text(data = ICMP.Neofabraea, position=position_jitter (width=0.5,height=0.2), aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 3, color = "black") + #little bit of jitter
   coord_map(xlim = c(172, 178), ylim = c(-34, -40))
-ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=5, height=5, limitsize = FALSE)
+ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=8, height=5, bg= "white", limitsize = FALSE)
 
 
 ## Pseudomonas savastanoi  -----
@@ -1483,7 +1602,7 @@ ggplot(savastanoi.df, aes(date.isolated, fill = Host)) +
   labs(x = "Date of isolation", y =  "Number of cultures") +
   theme_bw() +
   scale_fill_brewer(palette = "Set2") +
-  theme(legend.position = c(0.15, 0.7)) +
+  theme(legend.position = c(0.8, 0.8)) +
   geom_histogram(binwidth=365.25, show.legend = TRUE) +
   scale_x_date(date_breaks = "10 years", date_labels = "%Y")
 ggsave(file='./outputs/ICMP/P.savastanoi-date-hosts.png', width=8, height=5)
