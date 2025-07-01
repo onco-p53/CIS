@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-20-june-2025.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-29-june-2025.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -264,7 +264,7 @@ unwanted_icmp <- ICMP.df |>
   mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
 
 # 2. Load MPI unwanted organism list
-mpi_unwanted <- read_csv("MPI-unwanted bacteria-16-June-2025.csv")
+mpi_unwanted <- read_csv("MPI-Pest-Register-29-June-2025.csv")
 
 # 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
 #    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
@@ -273,32 +273,22 @@ results <- unwanted_icmp |>
          is.na(SpecimenFlagExtract)) |> 
   arrange(CurrentNamePart_C1)
 
+# EXtra check try synonyms
+synonyms_results <- unwanted_icmp |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Scientific name(s)`, 
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
 # View results
-print(results)
+print(results, n=40)
+print(synonyms_results, n=40)
 
 # 4. Export results to CSV
-write_csv(results, "ICMP_unflagged_unwanted_organisms_bacteria.csv")
+write_csv(results, "./outputs/ICMP/ICMP_unflagged_unwanted_organisms.csv")
+write_csv(synonyms_results, "./outputs/ICMP/ICMP_unflagged_unwanted_organisms_synonyms.csv")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#break
 
 unwanted.table <- ICMP.df |> 
   filter(str_detect(SpecimenFlags, "Unwanted")) |> 
@@ -1883,3 +1873,35 @@ user_counts <- ICMP.df |>
   count(LastUpdatedBy, sort = TRUE)
 
 print(user_counts, n=30)
+
+
+#============Check aspergillus names================
+
+#I guess subset by family then check id any current names are not on the accepted list?
+
+# Load required packages
+library(readxl)
+library(dplyr)
+
+# Step 1: Load the Excel file
+accepted_species <- read_excel("Table S2 ICPA accepted species list.xlsx")
+
+# Step 2: Filter ICMP.df for the specified order
+eurotiales_df <- ICMP.df %>%
+  filter(Order_C1 == "Eurotiales G.W. Martin ex Benny & Kimbr. 1980")
+
+# Step 3: Find names in CurrentNamePart_C1 that are NOT in accepted_species$ID
+unmatched_names <- eurotiales_df %>%
+  filter(!(CurrentNamePart_C1 %in% accepted_species$ID)) %>%
+  pull(CurrentNamePart_C1) %>%
+  unique()
+
+# Step 4: Print the unmatched names
+print(unmatched_names)
+write.csv(unmatched_names, "unmatched_names.csv", row.names = FALSE)
+
+Penicillium thomii - need to follow up once paper published
+
+  
+  
+

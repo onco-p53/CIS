@@ -12,7 +12,7 @@ library(janitor)
 
 #============Load data================
 
-PDD.as.imported.df <- read_csv("PDD-export-20-june-2025.csv",
+PDD.as.imported.df <- read_csv("PDD-export-29-june-2025.csv",
                                 guess_max = Inf, #assign column types
                                 show_col_types = FALSE) |>
   glimpse()
@@ -1372,6 +1372,40 @@ psilocybe-html-map.html
 
 
 #============Unwanted orgs================
+
+#Need to pull in the MPI lists and check
+
+# 1. Load ICMP data and extract "Unwanted Organism"
+unwanted_pdd <- PDD.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlags) |> 
+  mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
+
+# 2. Load MPI unwanted organism list
+mpi_unwanted <- read_csv("MPI-Pest-Register-29-June-2025.csv")
+
+# 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
+#    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
+results <- unwanted_pdd |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Pest name`,
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
+# EXtra check try synonyms
+synonyms_results <- unwanted_pdd |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Scientific name(s)`, 
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
+# View results
+print(results, n=40)
+print(synonyms_results, n=40)
+
+# 4. Export results to CSV
+write_csv(results, "./outputs/PDD/PDD_unflagged_unwanted_organisms.csv")
+write_csv(synonyms_results, "./outputs/PDD/PDD_unflagged_unwanted_organisms_synonyms.csv")
+
+
+
 
 #Need to pull in the MPI lists and check
 
