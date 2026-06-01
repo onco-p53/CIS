@@ -1,5 +1,5 @@
                          SpecimenGuid                            SpecimenId                       AccessionNumber 
-                                23885                                 23885                                 23885 
+                                24226                                 24226                                 24226 
                         Subcollection                            TypeStatus                          SpecimenType 
                                     1                                    17                                     4 
                           Preparation                          Preservation                 SpecimenSecurityLevel 
@@ -9,65 +9,65 @@
                          FilingNumber                            LoanStatus                              Quantity 
                                   162                                     4                                     2 
                             Exsiccata                       ExsiccataNumber                            Duplicates 
-                                    2                                     1                                  3726 
+                                    2                                     1                                  3731 
                       OtherRefNumbers                       SpecimenPermits                      SpecimenProjects 
-                                 8388                                    85                                    10 
+                                 8389                                    85                                    10 
                       VerbatimName_C1                          TaxonName_C1                       SourceNameId_C1 
-                                 5568                                  4745                                  4746 
+                                 5677                                  4824                                  4825 
                        CurrentName_C1                    CurrentNamePart_C1                            Kingdom_C1 
-                                 4273                                  4270                                     6 
+                                 4353                                  4350                                     6 
                             Phylum_C1                          SubPhylum_C1                              Class_C1 
                                    19                                     9                                    50 
                           SubClass_C1                              Order_C1                             Family_C1 
-                                   23                                   146                                   464 
+                                   23                                   147                                   470 
                     VernacularName_C1                          IsPresent_C1                           IsActive_C1 
-                                  118                                     2                                     1 
+                                  117                                     3                                     2 
                        IsUncertain_C1                           IsHybrid_C1                 IdentificationType_C1 
-                                    2                                     2                                     3 
+                                    3                                     2                                     4 
           IdentificationTypeStatus_C1                      SecurityLevel_C1                  SecurityLevelText_C1 
-                                   17                                     4                                     4 
+                                   17                                     5                                     5 
                       VerbatimDate_C1          IdentificationDateFromISO_C1            IdentificationDateToISO_C1 
-                                 1773                                  1602                                     1 
+                                 1842                                  1669                                     1 
                 VerbatimDeterminer_C1                 StandardDeterminer_C1               DeterminersRefNumber_C1 
-                                  789                                   620                                  1186 
+                                  800                                   616                                  1179 
                    IdentifiersNote_C1                          Reference_C1               BiostatusDescription_C1 
-                                 1697                                    78                                     7 
+                                 1797                                    79                                     7 
              OccurrenceDescription_C1                    AssociationType_C1                        Association_C1 
-                                    8                                     2                                  3169 
+                                    8                                     2                                  3191 
                       PartAffected_C1                          Substrate_C1            PreviousIdentifications_C1 
-                                  125                                  1237                                  5217 
+                                  131                                  1289                                  5337 
                       VerbatimName_C2                          TaxonName_C2                       SourceNameId_C2 
-                                 3158                                  2263                                  2219 
+                                 3191                                  2281                                  2241 
                        CurrentName_C2                    CurrentNamePart_C2                            Kingdom_C2 
-                                 2138                                  2137                                     1 
+                                 2153                                  2153                                     1 
                             Phylum_C2                          SubPhylum_C2                              Class_C2 
                                     1                                     1                                     1 
                           SubClass_C2                              Order_C2                             Family_C2 
-                                    1                                     1                                   275 
+                                    1                                     1                                   278 
                     VernacularName_C2                          IsPresent_C2                           IsActive_C2 
-                                 2576                                     3                                     2 
+                                 2601                                     3                                     2 
                        IsUncertain_C2                           IsHybrid_C2                 IdentificationType_C2 
                                     3                                     2                                     3 
           IdentificationTypeStatus_C2                      SecurityLevel_C2                  SecurityLevelText_C2 
-                                    1                                     2                                     2 
+                                    1                                     3                                     3 
                       VerbatimDate_C2          IdentificationDateFromISO_C2            IdentificationDateToISO_C2 
-                                   28                                    29                                     1 
+                                   30                                    31                                     1 
                 VerbatimDeterminer_C2                 StandardDeterminer_C2               DeterminersRefNumber_C2 
-                                   37                                    34                                    14 
+                                   38                                    35                                    14 
                    IdentifiersNote_C2                          Reference_C2               BiostatusDescription_C2 
-                                   46                                     2                                     7 
+                                   53                                     2                                     7 
              OccurrenceDescription_C2                    AssociationType_C2                        Association_C2 
                                     8                                     2                                     2 
                       PartAffected_C2                          Substrate_C2            PreviousIdentifications_C2 
-                                 2674                                   197                                    11 
+                                 2690                                   211                                    12 
                       OtherComponents               CollectionEventCode_CE1             CollectionEventMethod_CE1 
                                    10                                     1                                     1 
            CollectionEventContext_CE1      CollectionEventSecurityLevel_CE1  CollectionEventSecurityLevelText_CE1 
-                                    4                                     4                                     4 
+                                    4                                     5                                     5 
                  VerbatimLocality_CE1                  StandardLocality_CE1     StandardLocalitySecurityLevel_CE1 
-                                 4784                                  3683                                     3 
+                                 4856                                  3800                                     3 
 StandardLocalitySecurityLevelText_CE1                   VerbatimCountry_CE1                   StandardCountry_CE1 
-                                    3                                   217                                   148 
+                                    3                                   218                                   148 
              VerbatimLandDistrict_CE1              StandardLandDistrict_CE1        VerbatimEcologicalDistrict_CE1 
                                     1                                     1                                     1 
        StandardEcologicalDistrict_CE1          VerbatimEcologicalRegion_CE1          StandardEcologicalRegion_CE1 
@@ -79,27 +79,27 @@ StandardLocalitySecurityLevelText_CE1                   VerbatimCountry_CE1     
    VerbatimWorldGeographicRegions_CE1    StandardWorldGeographicRegions_CE1               VerbatimNativeLands_CE1 
                                     2                                     2                                     1 
               StandardNativeLands_CE1                   NoDataCollector_CE1                 VerbatimCollector_CE1 
-                                    1                                     2                                  2426 
+                                    1                                     2                                  2444 
                 StandardCollector_CE1               CollectorsRefNumber_CE1            VerbatimCollectionDate_CE1 
-                                 2160                                  4122                                  4253 
+                                 2173                                  4361                                  4377 
             CollectionDateFromISO_CE1               CollectionDateToISO_CE1                     LatLongSource_CE1 
-                                 3220                                    12                                     3 
+                                 3314                                    12                                     3 
                     GeodeticDatum_CE1                          MapSheet_CE1                           Easting_CE1 
                                     4                                     7                                   473 
                          Northing_CE1                   DecimalLatitude_CE1                  DecimalLongitude_CE1 
-                                  484                                  3695                                  3721 
+                                  484                                  3810                                  3833 
         GeoReferenceSecurityLevel_CE1     GeoReferenceSecurityLevelText_CE1                GeoReferenceAuthor_CE1 
                                     4                                     4                                    18 
                  GeoReferenceDate_CE1     GeoReferenceMeasurementMethod_CE1             GeoReferencePrecision_CE1 
-                                  260                                    20                                     2 
+                                  271                                    20                                     2 
                          Altitude_CE1             LowerAltitudeInMeters_CE1             UpperAltitudeInMeters_CE1 
-                                   28                                    28                                     1 
+                                   29                                    29                                     1 
                       LocalHeight_CE1          LowerLocalHeightInMeters_CE1          UpperLocalHeightInMeters_CE1 
                                    20                                    10                                     1 
                         Abundance_CE1                           Habitat_CE1                      MicroHabitat_CE1 
-                                    1                                    58                                     1 
+                                    1                                    59                                     1 
              CollectionEventNotes_CE1                 ObservedOrganisms_CE1                          Keywords_CE1 
-                                  218                                     1                                     1 
+                                  219                                     1                                     1 
                           Permits_CE1               CollectionEventCode_CE2             CollectionEventMethod_CE2 
                                     1                                     1                                     1 
            CollectionEventContext_CE2      CollectionEventSecurityLevel_CE2  CollectionEventSecurityLevelText_CE2 
@@ -141,28 +141,28 @@ StandardLocalitySecurityLevelText_CE2                   VerbatimCountry_CE2     
              CollectionEventNotes_CE2                 ObservedOrganisms_CE2                          Keywords_CE2 
                                     2                                     1                                     1 
                           Permits_CE2                 OtherCollectionEvents                         SpecimenFlags 
-                                    1                                     1                                  2271 
+                                    1                                     1                                  2323 
                         SpecimenLinks                                Images                        SpecimenImages 
-                                 1468                                     2                                  8552 
+                                 1477                                     2                                  9195 
                         ExternalLinks                               GenBank                            Literature 
-                                 9167                                     2                                     2 
+                                 9366                                     2                                     2 
                         SpecimenNotes                        SpecimenEvents                   ICMPIsolatedDateISO 
-                                 9871                                 23390                                  3342 
+                                10079                                 23652                                  3427 
                      ICMPIsolatorName              ICMPIsolatorStandardName                 ICMPIsolatorRefNumber 
-                                 1017                                   856                                  4898 
+                                 1033                                   863                                  5115 
                  ICMPDepositedDateISO                     ICMPDepositorName             ICMPDepositorStandardName 
-                                 2131                                   841                                   680 
+                                 2167                                   841                                   680 
                ICMPDepositorRefNumber             ICMPTransferredViaDateISO                ICMPTransferredViaName 
-                                17284                                    32                                   670 
+                                17366                                    32                                   665 
        ICMPTransferredViaStandardName           ICMPTransferredViaRefNumber            ICMPTransferredFromDateISO 
-                                  647                                  2988                                    52 
+                                  644                                  2988                                    52 
               ICMPTransferredFromName       ICMPTransferredFromStandardName          ICMPTransferredFromRefNumber 
-                                 1112                                  1055                                  2168 
+                                 1104                                  1043                                  2169 
                           ICMPBatches            ICMPBatchesLastStorageDate                      ICMPBatchesTotal 
-                                19248                                  2442                                    14 
+                                19973                                  2533                                    14 
                          SpecimenSets                   FromFieldBookUpload                 FailedValidationTests 
-                                 3283                                     2                                     7 
+                                 4016                                     2                                     7 
                             CreatedBy                           CreatedDate                             UpdatedBy 
-                                   16                                 10898                                    27 
+                                   16                                 11238                                    27 
                           UpdatedDate 
-                                18802 
+                                19610 

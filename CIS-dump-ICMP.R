@@ -18,7 +18,7 @@ R.version.string
 #============Load data================
 
 #loaded as a tibble
-ICMP.as.imported.df <- read_csv("ICMP-export-29-june-2025.csv", #also line 99
+ICMP.as.imported.df <- read_csv("ICMP-export-1-apr-2026.csv", #also line 99
                                 guess_max = Inf,
                                 show_col_types = FALSE)
 
@@ -96,7 +96,7 @@ ICMP.as.imported.df %>%
   write_csv(file='./outputs/ICMP/ICMP-head.csv')
 
 #save a summary of the data to txt
-ICMP.string.factors <- read.csv("ICMP-export-20-june-2025.csv",
+ICMP.string.factors <- read.csv("ICMP-export-1-apr-2026.csv",
                                 stringsAsFactors = TRUE) %>%
   summary(maxsum=25) %>%
   capture.output(file='./outputs/ICMP/ICMP-summary.txt')
@@ -142,6 +142,46 @@ ICMP.df |>
   distinct() |> 
   arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/ICMP/ICMP-missing-occurrence.csv')
+
+#============Missing images================
+
+library(dplyr)
+library(readr)
+library(stringr)
+
+out <- ICMP.df %>%
+  mutate(
+    Images = case_when(
+      is.logical(Images)   ~ Images,
+      is.numeric(Images)   ~ Images != 0,
+      is.character(Images) ~ tolower(Images) %in% c("true","t","yes","y","1"),
+      TRUE                 ~ FALSE
+    ),
+    StandardCountry_CE1 = str_trim(StandardCountry_CE1)
+  ) %>%
+  group_by(CurrentNamePart_C1) %>%
+  summarise(
+    n_total         = n(),
+    n_nz            = sum(StandardCountry_CE1 == "New Zealand", na.rm = TRUE),
+    has_image_any   = any(Images, na.rm = TRUE),
+    has_image_in_nz = any(Images & StandardCountry_CE1 == "New Zealand", na.rm = TRUE),
+    BiostatusDescription_C1  = paste(unique(na.omit(BiostatusDescription_C1[StandardCountry_CE1=="New Zealand"])), collapse = "; "),
+    OccurrenceDescription_C1 = paste(unique(na.omit(OccurrenceDescription_C1[StandardCountry_CE1=="New Zealand"])), collapse = "; "),
+    .groups = "drop"
+  ) %>%
+  # names that occur in NZ but have no NZ images
+  filter(n_nz > 0, !has_image_in_nz) %>%
+  select(
+    CurrentNamePart_C1,
+    n_total, n_nz,
+    has_image_any, has_image_in_nz,
+    BiostatusDescription_C1, OccurrenceDescription_C1
+  )
+
+# Save if you like
+write_csv(out, "./outputs/ICMP/taxa_without_images_nz_view.csv")
+
+
 
 #============No identification================
 
@@ -290,6 +330,30 @@ write_csv(synonyms_results, "./outputs/ICMP/ICMP_unflagged_unwanted_organisms_sy
 
 #break
 
+## my code should have a check to see if the same name has different UO status
+
+
+# Step 1: Identify inconsistent flags
+inconsistent_flags <- unwanted_icmp |>
+  group_by(CurrentNamePart_C1) |>
+  summarise(n_flags = n_distinct(SpecimenFlagExtract, na.rm = FALSE)) |>
+  filter(n_flags > 1)
+
+# Step 2: Extract full records for these cases
+inconsistent_flag_records <- unwanted_icmp |>
+  filter(CurrentNamePart_C1 %in% inconsistent_flags$CurrentNamePart_C1) |>
+  arrange(CurrentNamePart_C1)
+
+# Step 3: Output
+print(inconsistent_flag_records, n = 40)
+
+# Optional CSV export
+write_csv(inconsistent_flag_records, "./outputs/ICMP/Inconsistent_Unwanted_Organism_Flags.csv")
+
+
+
+
+
 unwanted.table <- ICMP.df |> 
   filter(str_detect(SpecimenFlags, "Unwanted")) |> 
   group_by(SpecimenType) |> 
@@ -312,8 +376,32 @@ unwanted.df <- ICMP.df |>
 
 #============New orgs================
 
+#before 1998 but have a flag
+
+ICMP_newO.df <- ICMP.df |>
+  mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "EPA Permit"),
+    DepositDateParsed = ymd(ICMPDepositedDateISO, truncated = 3)
+  ) |>
+  # Filter for records with EPA Permit AND collected before 1998-07-29
+  filter(
+    !is.na(SpecimenFlagExtract),
+    DepositDateParsed < ymd("1998-07-29")
+  ) |>
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1,
+         ICMPDepositedDateISO, StandardCountry_CE1, SpecimenFlagExtract
+  ) |>
+write_csv(file='./outputs/ICMP/ICMP_EPA_permit_before_1998.csv')
+
+
+
+
+
+
 library(dplyr)
 library(lubridate)
+
+threshold_date <- as.Date("1998-07-29")
+
 
 # First, parse the date column into a new column
 ICMP.df <- ICMP.df |>
@@ -632,18 +720,7 @@ ICMP.df |>
   drop_na() |>
   slice_head(n=10)
 
-ICMPlit.df <- ICMP.df |> 
-  filter(Literature == "TRUE") |>
-{then filter by these names}
-
-
-#Fungal Family
-ggplot(ICMPlit.df, aes(Family_C1)) +
-  labs(title = "Most cited species") +
-  labs(x = "Taxon", y = "number of isolates") +
-  theme(axis.text.x=element_text(angle=-90, hjust=0)) + 
-  geom_bar() + 
-  coord_flip()
+#could doa chart of this too
 
 #============batches================
 
@@ -673,60 +750,6 @@ ggplot(ICMP.chromist, aes(Phylum_C1)) +
   coord_flip()
 ggsave(file='./outputs/ICMP/ICMP_chromist-Phylum_C1.png', width=10, height=10)
 
-
-
-
-
-# fungi present in NZ
-#names.present.fungi <- subset(ICMP.df,(Kingdom == "Fungi" & OccurrenceDescription_C1 == "Present"))
-#summary(names.present.fungi, maxsum=40)
-
-#ggplot code for fungal Phylum_C1
-require(ggplot2)
-p <- ggplot(names, aes(names$Phlum)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-Phylum_C1.png', width=10, height=10)
-
-
-
-#ggplot code for fungal Phylum_C1
-require(ggplot2)
-p <- ggplot(names, aes(names$Phlum, fill=OccurrenceDescription_C1)) + labs(title = "names by Phylum_C1") + labs(x = "Taxon", y = "number of names")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-Phylum_C1-occurrence.png', width=10, height=10)
-
-
-#ggplot code for Kingdom
-require(ggplot2)
-p <- ggplot(names, aes(names$Kingdom, fill=OccurrenceDescription_C1)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-Kindom-occurrence.png', width=10, height=10)
-
-
-#ggplot code for Kingdom biostatus
-require(ggplot2)
-p <- ggplot(names, aes(names$Kingdom, fill=BioStatusDescription)) + labs(title = "names by Kingdom") + labs(x = "Taxon", y = "number of names")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-Kindom-biostatus.png', width=10, height=10)
-
-
-#ggplot code for Fungal Family present in NZ
-require(ggplot2)
-p <- ggplot(names.present.fungi, aes(names.present.fungi$Family_C1)) + labs(title = "names by family in NZ") + labs(x = "Taxon", y = "number of species")
-p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
-p + geom_bar()+ coord_flip()
-print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
-
-
 #============Countries================
 
 count(ICMP.df)
@@ -737,19 +760,6 @@ ICMP.df |>
 ICMP.df |> 
   filter(StandardCountry_CE1 == "New Zealand") |> 
   count()
-
-
-countNZ <- ICMP.df |>
-  count(StandardCountry_CE1 == "New Zealand")
-
-#convert to a percentage
-
-countNZp <-(countNZ / count(ICMP.df))*100
-
-
-
-
-
 
 sort(table(ICMP.df$StandardCountry_CE1),decreasing=TRUE)[1:12] #top 11 countries
 
@@ -867,10 +877,10 @@ ggsave(file='./outputs/ICMP/ICMP-isolation-month.png', width=8, height=5)
 
 
 
-ICMP.df$date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3) %>%
-  floor_date(ICMP.df$date.isolated, unit = "year")
+#ICMP.df$date.isolated <-ymd(ICMP.df$ICMPIsolatedDateISO, truncated = 3) %>%
+#  floor_date(ICMP.df$date.isolated, unit = "year")
 
-ICMP.df$date.isolated
+#ICMP.df$date.isolated
    
 
 
@@ -979,7 +989,7 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   theme_minimal()
 
 # Save plot
-ggsave(filename = "./outputs/ICMP/ICMP-deposit-dates.png", plot = p, width = 8, height = 5)
+ggsave(filename = "./outputs/ICMP/ICMP-deposit-dates-old.png", width = 8, height = 5)
 
 
 
@@ -988,28 +998,28 @@ ggsave(filename = "./outputs/ICMP/ICMP-deposit-dates.png", plot = p, width = 8, 
 #could do this early on and convert all to proper dates?? - nah make a seperate Date column
 #for intercep do count per year to seperate table?
 
-#collection dates. really only for comparing with isolation %% CollectionDateISO
-ggplot(ICMP.df, aes(as.Date(CollectionDateISO, format='%Y-%m-%d'))) +
-  labs(title = "Date cultures were collected") +
-  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
-  scale_x_date() +
-  geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
-ggsave(file='./outputs/ICMP/ICMP-Collection-dates.png', width=5, height=5)
+#collection dates. really only for comparing with isolation %% CollectionDateFromISO_CE1
+#ggplot(ICMP.df, aes(as.Date(CollectionDateFromISO_CE1, format='%Y-%m-%d'))) +
+#  labs(title = "Date cultures were collected") +
+#  labs(x = "Date of deposit", y =  "Number of cultures" , fill = "") +
+#  scale_x_date() +
+#  geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+#ggsave(file='./outputs/ICMP/ICMP-Collection-dates.png', width=5, height=5)
 
 
 
 
-ICMP.df$topcontrib <- ifelse(ICMP.df$Contributor == "NZP", "NZP", "other")
+ICMP.df$topcontrib <- ifelse(ICMP.df$ICMPDepositorName == "NZP", "NZP", "other") #this was the old "contributor" column
 ICMP.df$topcontrib
 
 
 attach(ICMP.df) 
 require(ggplot2)
-dr <- ggplot(ICMP.df, aes(as.Date(ReceivedDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(ICMP.df, aes(as.Date(ICMPDepositedDateISO, format='%Y-%m-%d'),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
-ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
+ggsave(drp, file='./outputs/ICMP/ICMP-received-dates-contributor1.png', width=15, height=10)
 
 
 
@@ -1022,14 +1032,14 @@ sum2
 
 attach(ICMP.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(ICMP.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(ICMP.df, aes(as.Date(ICMPDepositedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the ICMP collection") + labs(x = "Date of Receipt", y =  "Number of cultures" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
-ggsave(drp, file='ICMP-received-dates-contributor.png', width=15, height=10)
+ggsave(drp, file='./outputs/ICMP/ICMP-received-dates-contributor2.png', width=15, height=10)
 
 
-ICMP.df$topcontrib <- ifelse(ICMP.df$Contributor == "NZP", "NZP", "other")
+ICMP.df$topcontrib <- ifelse(ICMP.df$ICMPDepositorName == "NZP", "NZP", "other")
 
 ICMP.df$topcontrib
 
@@ -1037,7 +1047,7 @@ ICMP.df$topcontrib
 
 #======deposits per year========
 
-## *ICMP deposit dates over time*
+## *ICMP deposit dates and capacity over time*
 date.deposited <-ymd(ICMP.df$ICMPDepositedDateISO, truncated = 3)
 ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   labs(title = "Deposit dates of ICMP cultures") +
@@ -1048,10 +1058,10 @@ ggplot(ICMP.df, aes(date.deposited, fill = SpecimenType)) +
   #scale_y_continuous(n.breaks = 10) +
   geom_histogram(binwidth=365.25, show.legend = TRUE) +
   geom_hline(yintercept=426.2, linetype=2) + 
-  annotate("text", x = as.Date("1990-01-01"), y = 430, 
+  annotate("text", x = as.Date("1990-01-01"), y = 454.4, 
            label = "Last 5 Year Average", color = "black", hjust = 0) +
   geom_hline(yintercept=457.1, linetype=2) + 
-  annotate("text", x = as.Date("1990-01-01"), y = 461, 
+  annotate("text", x = as.Date("1990-01-01"), y = 471.2, 
            label = "Last 10 Year Average", color = "black", hjust = 0)
 ggsave(file='./outputs/ICMP/ICMP-deposit-dates.png', width=8, height=5)
 
@@ -1186,10 +1196,13 @@ no_deposit_date <- ICMP.df |>
 
 #======NZ Maps========
 
+library(maps)
+library(mapdata)
+
 #New Zealand Area codes bar chart
 ICMP.NZ.df <- subset(ICMP.df,(StandardCountry_CE1 == "New Zealand"))
 positions <- c("New Zealand", "Campbell Island", "Auckland Islands", "Snares Islands", "Chatham Islands",  "Stewart Island", "Southland", "Fiordland", "Dunedin", "Central Otago", "Otago Lakes", "South Canterbury", "Mackenzie", "Westland", "Mid Canterbury", "North Canterbury", "Buller", "Kaikoura", "Marlborough", "Nelson", "Marlborough Sounds", "South Island", "Wairarapa", "Wellington", "Hawkes Bay", "Rangitikei", "Wanganui", "Gisborne", "Taupo", "Taranaki", "Bay of Plenty", "Waikato", "Coromandel", "Auckland", "Northland", "North Island", "Three Kings Islands", "Kermadec Islands")
-ggplot(ICMP.NZ.df, aes(NZAreaCode)) +
+ggplot(ICMP.NZ.df, aes(StandardNewZealandAreaCodes_CE1)) +
   theme_bw() +
   labs(title = "ICMP cultures by NZ region") +
   labs(x = "Crosby Region", y = "number of cultures") +
@@ -1197,7 +1210,7 @@ ggplot(ICMP.NZ.df, aes(NZAreaCode)) +
   geom_bar() +
   coord_flip() +
   scale_x_discrete(limits = positions)
-ggsave(file='./outputs/ICMP/ICMP_NZAreaCode.png', width=8, height=5)
+ggsave(file='./outputs/ICMP/ICMP_StandardNewZealandAreaCodes_CE1.png', width=8, height=5)
 
 
 #require(ggplot2)
@@ -1219,8 +1232,8 @@ nz.sf <- st_read(dsn = "./data/coastline/coastline.shp") %>%
 
 #Transforming to an SF object
 rhizoNZ.sf <- ICMP.df %>%
-  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  filter(!is.na(DecimalLatitude_CE1)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLongitude_CE1", "DecimalLatitude_CE1")) %>% #Defining what the coord columns are
   st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
   st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
@@ -1228,7 +1241,7 @@ rhizoNZ.sf <- ICMP.df %>%
 #Plotting - takes a second to execute
 ggplot() +
   geom_sf(data = nz.sf) +
-  geom_sf(data = rhizoNZ.sf, aes(colour = NZAreaCode),
+  geom_sf(data = rhizoNZ.sf, aes(colour = StandardNewZealandAreaCodes_CE1),
           size = 1, alpha = 0.2, show.legend = FALSE) +
   annotation_scale(location = "br") +
   annotation_north_arrow(location = "tl",
@@ -1236,7 +1249,7 @@ ggplot() +
                          style = north_arrow_fancy_orienteering) +
   theme_minimal()
 #Saving the code
-ggsave(file='./outputs/NZ_map.png', width=8, height=6)
+ggsave(file='./outputs/ICMP/NZ_map.png', width=8, height=6)
 
 
 
@@ -1246,19 +1259,19 @@ ggsave(file='./outputs/NZ_map.png', width=8, height=6)
 #the map has an issue as a work around remove the Chatham islands
 
 ICMP.no.chat <- ICMP.NZ.df %>%
-  filter(NZAreaCode != "Chatham Islands") %>%
-  filter(NZAreaCode != "Kermadec Islands")
+  filter(StandardNewZealandAreaCodes_CE1 != "Chatham Islands") %>%
+  filter(StandardNewZealandAreaCodes_CE1 != "Kermadec Islands")
 
 #this super high res map is for checking weird points
 nz <- map_data("nzHires")
 ggplot() + 
   geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, colour = NZAreaCode), size = 1, alpha = 0.5, show.legend = FALSE) +
-  geom_text(data = ICMP.no.chat, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 1, color = "black") + #, angle = 45
+  geom_point(data = ICMP.no.chat, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, colour = StandardNewZealandAreaCodes_CE1), size = 1, alpha = 0.5, show.legend = FALSE) +
+  geom_text(data = ICMP.no.chat, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, label = AccessionNumber), hjust = 0.0, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
-ggsave(file='ICMP_NZ-aeracode-map_labels.png', width=50, height=50, limitsize = FALSE)
-ggsave(file='ICMP_NZ-aeracode-map_labels.svg', width=50, height=50, limitsize = FALSE)
+ggsave(file='./outputs/ICMP/ICMP_NZ-aeracode-map_labels.png', width=50, height=50, limitsize = FALSE)
+ggsave(file='./outputs/ICMP/ICMP_NZ-aeracode-map_labels.svg', width=50, height=50, limitsize = FALSE)
 
 
 
@@ -1267,15 +1280,15 @@ ggsave(file='ICMP_NZ-aeracode-map_labels.svg', width=50, height=50, limitsize = 
 antibiotic.map <- read.csv("ICMP-antibiotic-map.csv", header=TRUE, sep=",")
 head(antibiotic.map)
 
-nz <- map_data("nzHires")
-ggplot() + 
-  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
-  theme_void() +
-  geom_point(data = antibiotic.map, aes(x = DecimalLong, y = DecimalLat), color = "black", size = 2) +
-  geom_text(data = antibiotic.map, aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = -0.2, size = 1, color = "black") + #, angle = 45
-  coord_fixed(1.3)
-ggsave(file='ICMP_antibiotic_july2021labels.png', width=10, height=10)
-ggsave(file='ICMP_antibiotic_july2021labels.svg', width=10, height=10)
+#nz <- map_data("nzHires")
+#ggplot() + 
+#  geom_polygon(data = nz, aes(x=long, y = lat, group = group), fill = "grey") +
+#  theme_void() +
+#  geom_point(data = antibiotic.map, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1), color = "black", size = 2) +
+#  geom_text(data = antibiotic.map, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, label = AccessionNumber), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+#  coord_fixed(1.3)
+#ggsave(file='./outputs/ICMP/ICMP_antibiotic_july2021labels.png', width=10, height=10)
+#ggsave(file='./outputs/ICMP/ICMP_antibiotic_july2021labels.svg', width=10, height=10)
 
 #to make the Chatham islands work you need to fudge them over 180 e.g. 183.41667
 #will have to melt and add the fudge factor somehow to only Chatams ones
@@ -1290,8 +1303,8 @@ factpal <- colorFactor(palette = "Dark2", domain = ICMP.df$SpecimenType)
 #Using leaflet
 ICMP.NZ.leaf <- leaflet(ICMP.NZ.df) %>%
   addTiles() %>% 
-  addCircleMarkers(lng = ~DecimalLong, 
-                   lat = ~DecimalLat, 
+  addCircleMarkers(lng = ~DecimalLongitude_CE1, 
+                   lat = ~DecimalLatitude_CE1, 
                    popup = ~AccessionNumber,
                    label = ~CurrentNamePart_C1,
                    color = ~factpal(SpecimenType))
@@ -1303,20 +1316,20 @@ ICMP.NZ.leaf
 
 library(leaflet)
 
-factpal <- colorFactor(topo.colors(19), ICMP.NZ.df$NZAreaCode)
-#factpal <- colorFactor(palette = "Dark2", domain = ICMP.NZ.df$NZAreaCode)
+factpal <- colorFactor(topo.colors(19), ICMP.NZ.df$StandardNewZealandAreaCodes_CE1)
+#factpal <- colorFactor(palette = "Dark2", domain = ICMP.NZ.df$StandardNewZealandAreaCodes_CE1)
 
 
 
 ICMP.NZ.df <- ICMP.NZ.df %>%
-filter(NZAreaCode == "Taranaki")
+filter(StandardNewZealandAreaCodes_CE1 == "Taranaki")
   
   
 #Using leaflet
 ICMP.crosby.leaf <- leaflet(ICMP.NZ.df) %>%
   addTiles() %>% 
-  addCircleMarkers(lng = ~DecimalLong, 
-                   lat = ~DecimalLat, 
+  addCircleMarkers(lng = ~DecimalLongitude_CE1, 
+                   lat = ~DecimalLatitude_CE1, 
                    popup = ~AccessionNumber,
                    label = ~CurrentNamePart_C1,
                    color = blues9)
@@ -1332,10 +1345,10 @@ world <- map_data("world")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "#1f78b4", size = 1, alpha = 0.2) +
-  #geom_text(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
+  geom_point(data = ICMP.df, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1), color = "#1f78b4", size = 1, alpha = 0.2) +
+  #geom_text(data = ICMP.df, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, label = ""), hjust = -0.2, size = 1, color = "black") + #, angle = 45
   coord_fixed(1.3)
-ggsave(file='ICMP_worldmap_poster.png', width=12, height=6)
+ggsave(file='./outputs/ICMP/ICMP_worldmap_poster.png', width=12, height=6, bg = "white")
 
 
 
@@ -1344,7 +1357,7 @@ world <- map_data("world2")
 ggplot() + 
   geom_polygon(data = world, aes(x=long, y = lat, group = group), fill = "grey") +
   theme_void() +
-  geom_point(data = ICMP.df, aes(x = DecimalLong, y = DecimalLat), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
+  geom_point(data = ICMP.df, aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1), color = "red", size = 1, alpha = 0.2, wrap=c(0,360)) +
   coord_fixed(1.3)
 
 
@@ -1384,7 +1397,7 @@ ggplot(ICMP.df.kiwifruit, aes(Family_C2)) +
   theme(axis.text.x=element_text(angle=-90, hjust=0)) +
   geom_bar() +
   coord_flip()
-ggsave(print_bars, file='ICMP_kiwifruit-family.png', width=10, height=10)
+ggsave(file='./outputs/ICMP/ICMP_kiwifruit-family.png', width=10, height=10)
 
 
 #standard all ICMP overtime stats
@@ -1397,7 +1410,7 @@ ggplot(ICMP.df.kiwifruit, aes(date.isolated, fill = StandardCountry_CE1)) +
   theme(legend.position = c(0.1, 0.7)) +
   geom_histogram(binwidth=365.25) +
   scale_fill_brewer(palette = "Paired")
-ggsave(file='ICMP-isolation-dates-kiwifruit.png', width=8, height=5)
+ggsave(file='./outputs/ICMP/ICMP-isolation-dates-kiwifruit.png', width=8, height=5)
 
 
 
@@ -1410,7 +1423,7 @@ ggplot(ICMP.df.Myrtaceae, aes(SpecimenType, fill=GenBank)) +
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Paired")
-ggsave(file='ICMP_Myrtaceae-genbank.png', width=8, height=5)
+ggsave(file='./outputs/ICMP/ICMP_Myrtaceae-genbank.png', width=8, height=5)
 
 #Family of 'microbe' on NZ Myrtaceae in the ICMPt
 ICMP.df.Myrtaceae <- subset(ICMP.NZ.df,(Family_C2 == "Myrtaceae"))
@@ -1420,7 +1433,7 @@ ggplot(ICMP.df.Myrtaceae, aes(Family_C1, fill=SpecimenType)) + #fill by type
   geom_bar() +
   coord_flip() +
   scale_fill_brewer(palette = "Set2")
-ggsave(file='ICMP_Myrtaceae-family.png', width=8, height=15)
+ggsave(file='./outputs/ICMP/ICMP_Myrtaceae-family.png', width=8, height=15)
 
 
 #cucurbits
@@ -1445,56 +1458,34 @@ ggsave(file='./outputs/ICMP/ICMP_cucurbit.png', width=5, height=8)
 
 #======people======
 
-summary(ICMP.df$StandardCollector, maxsum=50)
+summary(ICMP.df$StandardCollector_CE1, maxsum=50)
 
 #======pulling stats======
 
 #NgāiTahu fungi
 #this data was cleaned for: public, NZ, fungi, and deposited before DOC date: 1 November 2011
 
-NgāiTahu.trimed <- read.csv("ICMP-export-ngaitahu.csv", header=TRUE, sep=",")
-head(NgāiTahu.trimed)
-summary(NgāiTahu.trimed, maxsum=10)
-NgāiTahu <- subset(NgāiTahu.trimed, (NZAreaCode == "Stewart Island" | NZAreaCode == "	Southland" | NZAreaCode == "Dunedin" | NZAreaCode == "Central Otago" | NZAreaCode == "Otago Lakes" | NZAreaCode == "Westland" | NZAreaCode == "Mackenzie" | NZAreaCode == "South Canterbury" | NZAreaCode == "Mid Canterbury" | NZAreaCode == "North Canterbury" | NZAreaCode == "Buller"))
-summary(NgāiTahu)
+#NgāiTahu.trimed <- read.csv("ICMP-export-ngaitahu.csv", header=TRUE, sep=",")
+#head(NgāiTahu.trimed)
+#summary(NgāiTahu.trimed, maxsum=10)
+#NgāiTahu <- subset(NgāiTahu.trimed, (StandardNewZealandAreaCodes_CE1 == "Stewart Island" | StandardNewZealandAreaCodes_CE1 == "	Southland" | StandardNewZealandAreaCodes_CE1 == "Dunedin" | StandardNewZealandAreaCodes_CE1 == "Central Otago" | StandardNewZealandAreaCodes_CE1 == "Otago Lakes" | StandardNewZealandAreaCodes_CE1 == "Westland" | StandardNewZealandAreaCodes_CE1 == "Mackenzie" | StandardNewZealandAreaCodes_CE1 == "South Canterbury" | StandardNewZealandAreaCodes_CE1 == "Mid Canterbury" | StandardNewZealandAreaCodes_CE1 == "North Canterbury" | StandardNewZealandAreaCodes_CE1 == "Buller"))
+#summary(NgāiTahu)
 
 #standard all ICMP overtime stats
-attach(NgāiTahu) 
-require(ggplot2)
-require(lubridate)
-date.isolated <-ymd(NgāiTahu$ICMPDepositedDateISO, truncated = 1)
-di <- ggplot(NgāiTahu, aes(date.isolated, fill = SpecimenType)) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
-di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
-dip <- di + geom_histogram(binwidth=365.25)
-ggsave(dip, file='NgāiTahu-isolation-dates2.png', width=8, height=5)
+#attach(NgāiTahu) 
+#require(ggplot2)
+#require(lubridate)
+#date.isolated <-ymd(NgāiTahu$ICMPDepositedDateISO, truncated = 1)
+#di <- ggplot(NgāiTahu, aes(date.isolated, fill = SpecimenType)) + labs(title = "Isolation dates of ICMP cultures") + labs(x = "Date of isolation", y =  "Number of cultures" , fill = "") 
+#di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
+#dip <- di + geom_histogram(binwidth=365.25)
+#ggsave(dip, file='./outputs/ICMP/NgāiTahu-isolation-dates2.png', width=8, height=5)
 
-
-
-
-
-
-library(lubridate)
-d=tribble(ICMP.df)
-d %>% mutate(date=mdy(textdate)) %>%
-  arrange(date)
-?arrange
 
 #====== string manipulation======
 
 #Things I want to do are:
 #  Split a taxon name into bits and extract Genus and species
-
-
-library(stringr)
-str_c(str_split_fixed("Bacteroides oleiciplenus YIT 12058", " ",4)[,c(1,3)],collapse=" ")
-
-lst <- strsplit(mystring, " ")  # split string on space
-lst[[1]][2] # access second element
-
-names <- c("Keisha", "Mohammed", "Jane", "Mathieu")
-str_view(CurrentNamePart_C1, "^M")
-
-
 
 
 #merge together the Genbank literature and image data to one column
@@ -1573,7 +1564,7 @@ ggplot() +
              alpha = 0.5, 
              show.legend = TRUE, 
              na.rm=TRUE) +
-  #geom_text(data = ICMP.Neofabraea, position=position_jitter (width=0.5,height=0.2), aes(x = DecimalLong, y = DecimalLat, label = AccessionNumber), hjust = 0.0, size = 3, color = "black") + #little bit of jitter
+  #geom_text(data = ICMP.Neofabraea, position=position_jitter (width=0.5,height=0.2), aes(x = DecimalLongitude_CE1, y = DecimalLatitude_CE1, label = AccessionNumber), hjust = 0.0, size = 3, color = "black") + #little bit of jitter
   coord_map(xlim = c(172, 178), ylim = c(-34, -40))
 ggsave(file='./outputs/ICMP/ICMP_Neofabraea_actinidiae_map.png', width=8, height=5, bg= "white", limitsize = FALSE)
 
@@ -1610,8 +1601,8 @@ nz.sf <- st_read(dsn = "./data/nz-coastlines-topo-150k/nz-coastlines-topo-150k.s
 Psilocybe.sf <- ICMP.df %>%
   filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
   filter(OccurrenceDescription_C1 == "Present") %>%
-  filter(!is.na(DecimalLat)) %>% #Removing missing obs as sf doesn't play with these
-  st_as_sf(coords = c("DecimalLong", "DecimalLat")) %>% #Defining what the coord columns are
+  filter(!is.na(DecimalLatitude_CE1)) %>% #Removing missing obs as sf doesn't play with these
+  st_as_sf(coords = c("DecimalLongitude_CE1", "DecimalLatitude_CE1")) %>% #Defining what the coord columns are
   st_set_crs(4326) %>% #Telling sf it is in WSG84 projection
   st_transform(2193) %>% #Changing it to NZGD2000 to match coastline polygon
   st_crop(st_bbox(nz.sf)) #Cropping out points that are outside the coastline polygons bounding box (e.g. not NZ)
@@ -1638,13 +1629,13 @@ ggsave(file='./outputs/ICMP/Psilocybe-ICMP.pdf', width=8, height=10)
 ICMP.df %>%
   filter(StandardCountry_CE1 == "New Zealand") %>%
   select("AccessionNumber",
-         "StandardCollector",
-         "CollectionDateISO",
+         "StandardCollector_CE1",
+         "CollectionDateFromISO_CE1",
          "CurrentNamePart_C1",
-         "VerbatimLocality",
-         "DecimalLat", 
-         "DecimalLong", 
-         "BiostatusDescription", 
+         "VerbatimLocality_CE1",
+         "DecimalLatitude_CE1", 
+         "DecimalLongitude_CE1", 
+         "BiostatusDescription_C1", 
          "OccurrenceDescription_C1") %>%
   filter(str_detect(CurrentNamePart_C1, "^Psilocybe")) %>%
   write_csv(file='./outputs/ICMP/NZPsilocybe.csv')
@@ -1667,8 +1658,8 @@ head(magic.df)
 #Using leaflet
 magic.leaf <- leaflet(magic.df) %>%
   addTiles() %>% 
-  addCircleMarkers(lng = ~DecimalLong, 
-                   lat = ~DecimalLat, 
+  addCircleMarkers(lng = ~DecimalLongitude_CE1, 
+                   lat = ~DecimalLatitude_CE1, 
                    popup = ~AccessionNumber,
                    label = ~CurrentNamePart_C1,
                    color = ~factpal(CurrentNamePart_C1))
@@ -1678,11 +1669,11 @@ magic.leaf
 
 #use save as a webpage function in Rstudio to save
 
-psilocybe-html-map.html
+# save as psilocybe-html-map.html
 
 
 ICMP.df |> 
-  select("VerbatimName") |> 
+  select("VerbatimName_C1") |> 
   head(n=22) |> 
   print(n = 22)
 
@@ -1900,8 +1891,5 @@ unmatched_names <- eurotiales_df %>%
 print(unmatched_names)
 write.csv(unmatched_names, "unmatched_names.csv", row.names = FALSE)
 
-Penicillium thomii - need to follow up once paper published
 
-  
-  
 

@@ -1,87 +1,134 @@
 ## R Script to process data exported from the CIS databases ##
 # Author: B.S. Weir (2017)
 
-#============Load and subset data================
-CHR.dump <- read.csv("20170917 CHR Dump.csv")
+## R Script to process data exported from the CIS databases ##
+# Author: B.S. Weir (2017-2022)
 
-# subset out "Deaccessioned=True", not implemented
-# CHR.dump <- subset(noviruses,(Deaccessioned == "FALSE"))
+#============Load all the packages needed================
+
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+library(janitor)
+#library(svglite)
 
 
-#setting up per specimen type subsets, with summaries of each specimen type
-CHR.alcohol <- subset(CHR.dump,(SpecimenType == "Alcohol"))
-summary(CHR.alcohol, maxsum=40)
+#============Load data================
+
+CHR.as.imported.df <- read_csv("CIS_CHR export 1 Jul 2025.csv",
+                               guess_max = Inf, #assign column types
+                               show_col_types = FALSE) |>
+  glimpse()
 
 
+#============Check imported data for issues================
 
-#============Quick data check================
-#have a quick look at the data
-head(CHR.dump)
+# get duplicates based due to component duplication
+# may need correction in CIS if TaxonName_C2 = NA, export as a CSV
 
-# summary(CHR.dump.initial, maxsum=20) #data before subsetting, not implemented
-summary(CHR.dump, maxsum=20) #data after subsetting
+CHR.dupes <- CHR.as.imported.df  |>
+  get_dupes(AccessionNumber) |>
+  select(AccessionNumber, dupe_count, CurrentNamePart_C1, TaxonName_C2, Substrate_C2, PartAffected_C2) %>%
+  filter(is.na(TaxonName_C2)) |> #comment this out to get all
+  write_csv(file='./outputs/CHR/CHR.dupes.csv')
 
-s <- summary(CHR.dump, maxsum=20)
-capture.output(s, file = "CHR-summary.txt")
 
+#============Subset and massage the Data================
+
+CHR.df <- CHR.as.imported.df |>
+  distinct(AccessionNumber, .keep_all= TRUE) |> #remove dupes
+  glimpse()
+
+#============Unwanted orgs================
+
+#Need to pull in the MPI lists and check
+
+# 1. Load ICMP data and extract "Unwanted Organism"
+unwanted_CHR <- CHR.df |> 
+  select(AccessionNumber, SpecimenType, CurrentNamePart_C1, SpecimenFlags) |> 
+  mutate(SpecimenFlagExtract = str_extract(SpecimenFlags, "Unwanted Organism"))
+
+# 2. Load MPI unwanted organism list
+mpi_unwanted <- read_csv("MPI-Pest-Register-29-June-2025.csv")
+
+# 3. Filter ICMP records where CurrentNamePart_C1 matches any Pest name,
+#    but the SpecimenFlagExtract is NA (i.e. not marked as 'Unwanted Organism')
+results <- unwanted_CHR |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Pest name`,
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
+# EXtra check try synonyms
+synonyms_results <- unwanted_CHR |> 
+  filter(CurrentNamePart_C1 %in% mpi_unwanted$`Scientific name(s)`, 
+         is.na(SpecimenFlagExtract)) |> 
+  arrange(CurrentNamePart_C1)
+
+# View results
+print(results, n=40)
+print(synonyms_results, n=40)
+
+# 4. Export results to CSV
+write_csv(results, "./outputs/CHR/CHR_unflagged_unwanted_organisms.csv")
+write_csv(synonyms_results, "./outputs/CHR/CHR_unflagged_unwanted_organisms_synonyms.csv")
 
 #============Type Specimens================
 
 #ggplot code for type Specimens
-d <- subset(CHR.dump,!(TypeStatus == ""))
+d <- subset(CHR.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus)) + labs(title = "Types in the CHR") + labs(x = "'Kind' of type", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='CHR_types.png', width=10, height=10)
+ggsave(print_bars, file='./outputs/CHR/CHR_types.png', width=10, height=10)
 
 #another one showing just the number of types in each kind of culture?
 
 #ggplot code for type Specimens factored by Specimen type
-d <- subset(CHR.dump,!(TypeStatus == ""))
+d <- subset(CHR.df,!(TypeStatus == ""))
 attach(d) #this means we don't need the $ sign
 require(ggplot2)
 p <- ggplot(d, aes(TypeStatus, fill=SpecimenType)) + labs(title = "Types in the CHR") + labs(x = "'Kind' of type", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='CHR.types.by.kind.png', width=10, height=10)
+ggsave(print_bars, file='./outputs/CHR/CHR.types.by.kind.png', width=10, height=10)
 
 #============Kingdom Level barcharts================
 
 #plain code for a kingdom barchart
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType)) + labs(title = "Specimens in the CHR by Specimen type") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType)) + labs(title = "Specimens in the CHR by Specimen type") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_kingdoms.png', width=7, height=7)
 
 #kingdoms in GenBank
-attach(CHR.dump)
+attach(CHR.df)
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(GenBank)) + labs(title = "Specimens in the CHR in GenBank") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(GenBank)) + labs(title = "Specimens in the CHR in GenBank") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 #ggsave(print_bars, file='CHR_kingdoms_genbank.png', width=7, height=7)
 
 #kingdoms with literature
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType, fill=Literature)) + labs(title = "Specimens in the CHR in Literature") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType, fill=Literature)) + labs(title = "Specimens in the CHR in Literature") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_kingdoms_Literature.png', width=7, height=7)
 
 #kingdoms with images
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType, fill=Images)) + labs(title = "Specimens in the CHR with images") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType, fill=Images)) + labs(title = "Specimens in the CHR with images") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -90,27 +137,27 @@ ggsave(print_bars, file='CHR_kingdoms_images.png', width=7, height=7)
 #could also do a stacked bar chart with images, genbank, literature all on one chart.
 
 #kingdoms by Occurrence Description
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Specimens in the CHR by occurrence in NZ") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType, fill=OccurrenceDescription)) + labs(title = "Specimens in the CHR by occurrence in NZ") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_kingdoms_occurrence.png', width=7, height=7)
 
 #CollectionEventMethod
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(CollectionEventMethod)) + labs(title = "Specimens in the CHR by Collection Event Method") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(CollectionEventMethod)) + labs(title = "Specimens in the CHR by Collection Event Method") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_CollectionEventMethod.png', width=7, height=7)
 
 #kingdoms by Occurrence Description
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(OccurrenceDescription)) + labs(title = "Specimens in the CHR by occurrence in NZ") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(OccurrenceDescription)) + labs(title = "Specimens in the CHR by occurrence in NZ") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -119,18 +166,18 @@ ggsave(print_bars, file='CHR_kingdoms_occurrence2.png', width=7, height=7)
 
 
 #kingdoms by Order Status
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType, fill= LoanStatus)) + labs(title = "CHR Order Status") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType, fill= LoanStatus)) + labs(title = "CHR Order Status") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_kingdoms_ LoanStatus.png', width=7, height=7)
 
 #kingdoms by last updated by
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "CHR Last updated by") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(SpecimenType, fill= UpdatedBy)) + labs(title = "CHR Last updated by") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -144,45 +191,45 @@ ggsave(print_bars, file='CHR_kingdoms_updated_by.png', width=7, height=7)
 
 
 #Phylum
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(Phylum)) + labs(title = "CHR by phylum") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(Phylum_C1)) + labs(title = "CHR by phylum") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='CHR_phylum.png', width=10, height=10)
+ggsave(print_bars, file='./outputs/CHR/CHR_phylum.png', width=10, height=10)
 
 #ggplot code for Class
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(Class)) + labs(title = "CHR by class") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(Class_C1)) + labs(title = "CHR by class") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
-ggsave(print_bars, file='CHR_class.png', width=10, height=10)
+ggsave(print_bars, file='./outputs/CHR/CHR_class.png', width=10, height=10)
 
 #ggplot code for Order
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(Order)) + labs(title = "CHR by order") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(Order)) + labs(title = "CHR by order") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_order.png', width=10, height=10)
 
 #ggplot code for Order
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(Order, fill=SpecimenType)) + labs(title = "CHR by order") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(Order, fill=SpecimenType)) + labs(title = "CHR by order") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
 ggsave(print_bars, file='CHR_order-speciemtype.png', width=10, height=10)
 
 #ggplot code for Family
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(Family)) + labs(title = "CHR by bacterial family") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(Family)) + labs(title = "CHR by bacterial family") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -191,7 +238,7 @@ print_bars <- p + geom_bar()+ coord_flip()
 
 # -----  fungal taxon grouping ----- 
 
-f <- subset(CHR.dump, SpecimenType == "Fungal Culture")
+f <- subset(CHR.df, SpecimenType == "Fungal Culture")
 
 #ggplot code for fungal Phylum
 attach(f) 
@@ -232,7 +279,7 @@ ggsave(print_bars, file='CHR_fungal-family.png', width=20, height=10)
 #============Other names================
 
 # error Kingdom is missing
-names.present.fungi <- subset(CHR.dump,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
+names.present.fungi <- subset(CHR.df,(Kingdom == "Fungi" & OccurrenceDescription == "Present"))
 summary(names.present.fungi, maxsum=40)
 
 #ggplot code for fungal Phylum
@@ -284,10 +331,10 @@ ggsave(print_bars, file='names-Family-occurrence-NZ.png', width=10, height=35)
 #============Countries================
 
 
-CHR.dump.NZ <- subset(CHR.dump,(Country == "New Zealand"))
-attach(CHR.dump.NZ) 
+CHR.df.NZ <- subset(CHR.df,(Country == "New Zealand"))
+attach(CHR.df.NZ) 
 require(ggplot2)
-p <- ggplot(CHR.dump, aes(NZAreaCode)) + labs(title = "NZ Specimens in the CHR by Area Code") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df, aes(NZAreaCode)) + labs(title = "NZ Specimens in the CHR by Area Code") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()
@@ -297,7 +344,7 @@ ggsave(print_bars, file='CHR_NZAreaCode.png', width=7, height=7)
 
 
 #ggplot code for country
-cy <- subset(CHR.dump,!(Country == ""))
+cy <- subset(CHR.df,!(Country == ""))
 require(ggplot2)
 con <- ggplot(cy, aes(Country)) + labs(title = "Top 10 Countries") + labs(x = "Country", y = "number")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -308,7 +355,7 @@ ggsave(print_bars, file='CHR_country.png', width=10, height=10)
 
 #ggplot code for top ten countries by specimen type
 positions <- c("New Zealand", "United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "Italy", "France")
-c <- subset(CHR.dump, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(CHR.df, (Country == "New Zealand" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the CHR") + labs(x = "Country", y = "number of specimens")
@@ -320,7 +367,7 @@ ggsave(print_bars, file='CHR_country_by_kind.svg', width=6, height=5)
 ggsave(print_bars, file='CHR_country_by_kind.eps', width=6, height=5)
 
 #ggplot code for pacific country
-c <- subset(CHR.dump, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
+c <- subset(CHR.df, (Country == "Fiji" | Country == "American Samoa" | Country == "Cook Islands" | Country == "Solomon Islands" | Country == "Micronesia" | Country == "New Caledonia" | Country == "Niue" | Country == "Norfolk Island" | Country == "Samoa" | Country == "Vanuatu"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the CHR") + labs(x = "Country", y = "number of specimens")
@@ -332,7 +379,7 @@ ggsave(print_bars, file='CHR-pacific-countries.png', width=10, height=10)
 
 #ggplot code for country
 positions <- c("United States", "Australia", "United Kingdom", "Brazil", "Japan", "India", "China", "France", "Italy", "Canada")
-c <- subset(CHR.dump, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
+c <- subset(CHR.df, (Country == "Canada" | Country == "United States" | Country == "Australia" | Country == "United Kingdom" | Country == "Brazil" | Country == "Japan" | Country == "India" | Country == "France" | Country == "China" | Country == "Italy"))
 attach(c) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Top 10 Countries in the CHR (not including NZ)") + labs(x = "Country", y = "number of specimens")
@@ -356,9 +403,9 @@ ggsave(print_bars, file='CHR_country_by_kind_not_nz.png', width=10, height=10)
 
 
 
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-di <- ggplot(CHR.dump, aes(as.Date(CollectionDateISO))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(CHR.df, aes(as.Date(CollectionDateISO))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -366,39 +413,39 @@ ggsave(dip, file='CHR-isolation-dates.png', width=5, height=5)
 ggsave(dip, file='CHR-isolation-dates.svg', width=5, height=5)
 ggsave(dip, file='CHR-isolation-dates.eps', width=5, height=5)
 
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25)  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
 ggsave(dip, file='CHR-isolation-dates.png', width=5, height=5)
 
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_line()  # this is a bin of two years binwidth=730
 drp <- dr + geom_histogram(binwidth=365.25)
 ggsave(dip, file='CHR-isolation-dates.png', width=5, height=5)
 
 
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO))) + labs(title = "REC dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 dr <- dr + scale_x_date()
 dr + geom_point
 drp <- dr + geom_histogram(binwidth=365.25)
 ggsave(dip, file='CHR-isolation-dates.png', width=5, height=5)
 
 
-CHR.dump$topcontrib <- ifelse(CHR.dump$Contributor == "NZP", "NZP", "other")
-CHR.dump$topcontrib
+CHR.df$topcontrib <- ifelse(CHR.df$Contributor == "NZP", "NZP", "other")
+CHR.df$topcontrib
 
 
-attach(CHR.dump) 
+attach(CHR.df) 
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the CHR collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the CHR collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -408,7 +455,7 @@ ggsave(drp, file='CHR-received-dates-contributor.png', width=15, height=10)
 CHR.date <- read.csv("CHR.date.csv") #i removed all nulls
 
 
-qplot(factor(as.Date(IsolationDateISO)), data=CHR.dump, geom="bar") 
+qplot(factor(as.Date(IsolationDateISO)), data=CHR.df, geom="bar") 
 
 
 
@@ -416,9 +463,9 @@ qplot(factor(as.Date(IsolationDateISO)), data=CHR.dump, geom="bar")
 
 
 
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
-di <- ggplot(CHR.dump, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+di <- ggplot(CHR.df, aes(as.Date(IsolationDateISO))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 di <- di + scale_x_date()
 di + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 dip <- di + geom_histogram(binwidth=365.25)
@@ -427,12 +474,12 @@ ggsave(dip, file='CHR-isolation-dates2.png', width=4, height=3)
 
 
 
-CHR.dump$topcontrib <- ifelse(CHR.dump$Contributor == "NZP", "NZP", "other")
-CHR.dump$topcontrib
+CHR.df$topcontrib <- ifelse(CHR.df$Contributor == "NZP", "NZP", "other")
+CHR.df$topcontrib
 
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
-ditc <- ggplot(CHR.dump, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
+ditc <- ggplot(CHR.df, aes(as.Date(IsolationDateISO, fill=Contributor))) + labs(title = "Isolation dates of CHR Specimens") + labs(x = "Date of isolation", y =  "Number of Specimens" , fill = "") 
 ditc <- ditc + scale_x_date()
 ditc + geom_histogram(binwidth=365.25) # this is a bin of two years binwidth=730
 ditcp <- ditc + geom_histogram(binwidth=365.25)
@@ -441,9 +488,9 @@ ggsave(dip, file='CHR-isolation-dates2.png', width=4, height=3)
 
 
 
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of CHR Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO))) + labs(title = "Received dates of CHR Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2) + scale_x_continuous(breaks = scales::pretty_breaks(n = 10))
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -451,9 +498,9 @@ ggsave(drp, file='CHR-received-dates.png', width=10, height=10)
 
 ## CAN we do this by organism too?
 
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of CHR Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO),fill=SpecimenType)) + labs(title = "Received dates of CHR Specimens") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
@@ -464,21 +511,21 @@ sum2 <- ggplot_build(drp) #this extracts the values from the histogram
 sum2
 
 
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
-dr <- ggplot(CHR.dump, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the CHR collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
+dr <- ggplot(CHR.df, aes(as.Date(ReceivedDateISO),fill=topcontrib)) + labs(title = "Main Contributors to the CHR collection") + labs(x = "Date of Receipt", y =  "Number of Specimens" , fill = "") #Alternatively, dates can be specified by a numeric value, representing the number of days since January 1, 1970. To input dates stored as the day of the year, the origin= argument can be used to interpret numeric dates relative to a different date. 
 dr <- dr + scale_x_date()
 dr + geom_hline(yintercept=392, linetype=3) + geom_histogram(binwidth=365.25)
 drp <- dr + geom_histogram(binwidth=365.25) + geom_hline(yintercept=392, linetype=2)
 ggsave(drp, file='CHR-received-dates-contributor.png', width=15, height=10)
 
 
-CHR.dump$topcontrib <- ifelse(CHR.dump$Contributor == "NZP", "NZP", "other")
+CHR.df$topcontrib <- ifelse(CHR.df$Contributor == "NZP", "NZP", "other")
 
-CHR.dump$topcontrib
+CHR.df$topcontrib
 
 #ggplot code for collections over the years
-attach(CHR.dump) #this means we don't need the $ sign
+attach(CHR.df) #this means we don't need the $ sign
 require(ggplot2)
 con <- ggplot(c, aes(Country, fill=SpecimenType)) + labs(title = "Pacific Countries Specimens in the CHR") + labs(x = "Country", y = "number of specimens")
 con <- con + theme(axis.text.x=element_text(angle=-90, hjust=0))
@@ -487,7 +534,7 @@ print_bars <- con + geom_histogram()+ coord_flip()
 ggsave(print_bars, file='CHR-pacific-countries.png', width=10, height=10)
 
 #ggplot code for collections over the years in NZ
-c <- subset(CHR.dump, (Country == "New Zealand"))
+c <- subset(CHR.df, (Country == "New Zealand"))
 
 #also need something that plots monthly e.g. fungi versus collection month.
 
@@ -495,7 +542,7 @@ c <- subset(CHR.dump, (Country == "New Zealand"))
 #======MAPS========
 
 #New Zealand Area codes
-CHR.nz <- subset(CHR.dump,(Country == "New Zealand"))
+CHR.nz <- subset(CHR.df,(Country == "New Zealand"))
 attach(CHR.nz) 
 require(ggplot2)
 p <- ggplot(CHR.nz, aes(NZAreaCode)) + labs(title = "CHR specimens by NZ region") + labs(x = "Crosby Region", y = "number of specimens")
@@ -517,12 +564,12 @@ mp
 #======On Hosts========
 
 # subset out kiwifruit
-CHR.dump.kiwifruit <- subset(CHR.dump,(TaxonName_C2 == "Actinidia deliciosa"))
+CHR.df.kiwifruit <- subset(CHR.df,(TaxonName_C2 == "Actinidia deliciosa"))
 
 #ggplot code for bacterial Class
 attach(b) 
 require(ggplot2)
-p <- ggplot(CHR.dump.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the CHR") + labs(x = "Taxon", y = "number of specimens")
+p <- ggplot(CHR.df.kiwifruit, aes(Family)) + labs(title = "Family of microbes on kiwifruit in the CHR") + labs(x = "Taxon", y = "number of specimens")
 p <- p + theme(axis.text.x=element_text(angle=-90, hjust=0))
 p + geom_bar()+ coord_flip()
 print_bars <- p + geom_bar()+ coord_flip()

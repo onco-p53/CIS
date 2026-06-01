@@ -3,7 +3,7 @@ title: "ICMP data visualisation"
 author: 
   name: "Bevan Weir"
   affiliation: "Manaaki Whenua - Landcare Research"
-date: "data as of 20 June 2025"
+date: "data as of 1 April 2026"
 output:
   html_document:
     code_folding: hide
@@ -37,7 +37,7 @@ This is an R Markdown document for statistics derived from specimen data of the 
 ```{r import, echo=TRUE, message=FALSE, warning=FALSE}
 
 #import the files
-ICMP.as.imported.df <- read_csv("ICMP-export-20-june-2025.csv",
+ICMP.as.imported.df <- read_csv("ICMP-export-1-apr-2026.csv",
                                 guess_max = Inf,
                                 show_col_types = FALSE
                                 )
@@ -386,13 +386,13 @@ arrange(ICMP.NZ, date.isolated) |>
 
 ```
 
--   The earliest culture in ICMP is [*Erwinia* sp. ICMP 1580](https://scd.landcareresearch.co.nz/Specimen/ICMP_1580) isolated in 1901 from Canada
+- The earliest culture in ICMP is [*Erwinia* sp. ICMP 1580](https://scd.landcareresearch.co.nz/Specimen/ICMP_1580) isolated in 1901 from Canada
 
--   The earliest New Zealand bacteria culture is [*Sinorhizobium meliloti* ICMP 1322](https://scd.landcareresearch.co.nz/Specimen/ICMP_1322) isolated in 1927
+- The earliest New Zealand bacteria culture is [*Sinorhizobium meliloti* ICMP 1322](https://scd.landcareresearch.co.nz/Specimen/ICMP_1322) isolated in 1927
 
--   The earliest New Zealand fungal culture is [*Fuscoporia contigua* ICMP 13879](https://scd.landcareresearch.co.nz/Specimen/ICMP_13879) isolated in 1946
+- The earliest New Zealand fungal culture is [*Fuscoporia contigua* ICMP 13879](https://scd.landcareresearch.co.nz/Specimen/ICMP_13879) isolated in 1946
 
--   The earliest New Zealand yeast culture is [*Saccharomyces cerevisiae* ICMP 342](https://scd.landcareresearch.co.nz/Specimen/ICMP_342) isolated in 1949
+- The earliest New Zealand yeast culture is [*Saccharomyces cerevisiae* ICMP 342](https://scd.landcareresearch.co.nz/Specimen/ICMP_342) isolated in 1949
 
 ### Isolations and deposits over time
 

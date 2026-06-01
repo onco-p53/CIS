@@ -140,6 +140,64 @@ PDD.df |>
   arrange(CurrentNamePart_C1) |> 
   write_csv(file='./outputs/PDD/PDD-missing-occurrence.csv')
 
+#============Missing images================
+
+library(dplyr)
+library(readr)
+
+no_images <- PDD.df %>%
+  filter(StandardCountry_CE1 == "New Zealand") %>%
+  group_by(CurrentNamePart_C1) %>%
+  summarise(
+    record_count = n(),  # 👈 count how many rows collapsed
+    has_image = any(Images, na.rm = TRUE),
+    BiostatusDescription_C1 = paste(unique(na.omit(BiostatusDescription_C1)), collapse = "; "),
+    OccurrenceDescription_C1 = paste(unique(na.omit(OccurrenceDescription_C1)), collapse = "; "),
+    .groups = "drop"
+  ) %>%
+  filter(!has_image) %>%
+  select(CurrentNamePart_C1, record_count, BiostatusDescription_C1, OccurrenceDescription_C1)
+
+# Save to CSV
+write_csv(no_images, file="./outputs/PDD/taxa_without_images.csv")
+
+library(dplyr)
+library(readr)
+library(stringr)
+
+out <- PDD.df %>%
+  mutate(
+    Images = case_when(
+      is.logical(Images)   ~ Images,
+      is.numeric(Images)   ~ Images != 0,
+      is.character(Images) ~ tolower(Images) %in% c("true","t","yes","y","1"),
+      TRUE                 ~ FALSE
+    ),
+    StandardCountry_CE1 = str_trim(StandardCountry_CE1)
+  ) %>%
+  group_by(CurrentNamePart_C1) %>%
+  summarise(
+    n_total         = n(),
+    n_nz            = sum(StandardCountry_CE1 == "New Zealand", na.rm = TRUE),
+    has_image_any   = any(Images, na.rm = TRUE),
+    has_image_in_nz = any(Images & StandardCountry_CE1 == "New Zealand", na.rm = TRUE),
+    BiostatusDescription_C1  = paste(unique(na.omit(BiostatusDescription_C1[StandardCountry_CE1=="New Zealand"])), collapse = "; "),
+    OccurrenceDescription_C1 = paste(unique(na.omit(OccurrenceDescription_C1[StandardCountry_CE1=="New Zealand"])), collapse = "; "),
+    .groups = "drop"
+  ) %>%
+  # names that occur in NZ but have no NZ images
+  filter(n_nz > 0, !has_image_in_nz) %>%
+  select(
+    CurrentNamePart_C1,
+    n_total, n_nz,
+    has_image_any, has_image_in_nz,
+    BiostatusDescription_C1, OccurrenceDescription_C1
+  )
+
+# Save if you like
+write_csv(out, "./outputs/PDD/taxa_without_images_nz_view.csv")
+
+
 #============No identification================
 
 #filters for blank identification
