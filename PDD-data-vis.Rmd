@@ -132,7 +132,7 @@ kable(PDD.count.table, digits=0, "html",
 
 ## Type specimens
 
-```{r types, echo=TRUE, warning=FALSE}
+```{r types, echo=FALSE, warning=FALSE}
 
 PDD.types <- subset(PDD.df,!(TypeStatus == ""))
 
@@ -170,13 +170,58 @@ only.ext.specimen <- select(PDD.df, "AccessionNumber","specimen_kind", "GenBank"
 #create two new columns using "pivot_longer" into a tibble table
 tibble.ext.specimen <-pivot_longer(only.ext.specimen, cols=3:5, names_to="ExtendedSpecimen", values_to="present")
 
+#sub set out the interesting columns using "select" in dplyr
+only.ext.specimen <- select(
+  PDD.df,
+  "AccessionNumber",
+  "specimen_kind",
+  "GenBank",
+  "Literature",
+  "Images"
+)
+
+#create two new columns using "pivot_longer" into a tibble table
+tibble.ext.specimen <- pivot_longer(
+  only.ext.specimen,
+  cols = 3:5,
+  names_to = "ExtendedSpecimen",
+  values_to = "present"
+)
+
+# Calculate percentage of specimens with each type of extended specimen data
+percent_labels <- tibble.ext.specimen %>%
+  group_by(ExtendedSpecimen) %>%
+  summarise(
+    proportion = mean(present, na.rm = TRUE)
+  ) %>%
+  mutate(
+    label = scales::percent(proportion, accuracy = 1)
+  )
+
 # ** specimens with extended specimen data
-ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill=present)) +
-  labs(title = "specimens with GenBank DNA sequences, images, and citations in literature") +
-  labs(x = "extended specimen data", y = "proportion of specimens with this data") +
+ggplot(tibble.ext.specimen, aes(ExtendedSpecimen, fill = present)) +
+  labs(
+    title = "specimens with GenBank DNA sequences, images, and citations in literature",
+    x = "extended specimen data",
+    y = "proportion of specimens with this data"
+  ) +
   theme_bw() +
   scale_fill_brewer(palette = "Paired") +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  geom_text(
+    data = percent_labels,
+    aes(
+      x = ExtendedSpecimen,
+      y = proportion,
+      label = label
+    ),
+    inherit.aes = FALSE,
+    vjust = -0.5
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, 1.1)
+  )
 
 ```
 
